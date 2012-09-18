@@ -34,7 +34,7 @@ public class HomeController {
 	private HomeModel buildHomeModel() {
 		HomeModel model = new HomeModel();
 		model.getStockAlerts().addAll(componentService.stockAlerts());
-		//model.getUpcomingDeliveries().addAll(orderService.upcomingDeliveries());
+		model.getUpcomingDeliveries().addAll(orderService.upcomingDeliveries());
 		return model;
 	}
 

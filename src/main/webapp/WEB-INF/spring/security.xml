@@ -1,0 +1,39 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                    http://www.springframework.org/schema/security 
+                    http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<http use-expressions="true">
+		<!-- Members area of the site - can use remember me or full authentication -->
+		<intercept-url pattern="/*" access="isRememberMe() OR isFullyAuthenticated()" />
+
+		<form-login login-page="/login" default-target-url="/admin"
+			authentication-failure-handler-ref="loginFailureHandler" />
+		
+		<remember-me data-source-ref="dataSource" />
+
+		<logout logout-url="/logout" logout-success-url="/home" />
+	</http>
+
+	<beans:bean id="daoAuthenticationProvider"
+		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<beans:property name="userDetailsService" ref="userDetailsService" />
+	</beans:bean>
+
+	<beans:bean id="authenticationManager"
+		class="org.springframework.security.authentication.ProviderManager">
+		<beans:property name="providers">
+			<beans:list>
+				<beans:ref local="daoAuthenticationProvider" />
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<authentication-manager>
+		<authentication-provider user-service-ref="userDetailsService">
+			<!-- password-encoder hash="md5" / -->
+		</authentication-provider>
+	</authentication-manager>
+</beans:beans>

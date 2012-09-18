@@ -12,11 +12,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
-@ComponentScan(basePackages = {"com.yubi.application"}, excludeFilters = {@Filter(type = FilterType.ANNOTATION, value = Configuration.class)} )
-@Import({DispatcherConfig.class, HibernateConfig.class})
+@ComponentScan(basePackages = {"com.yubi.application"}, includeFilters = {@Filter(type = FilterType.ANNOTATION, value = Controller.class)} )
+@Import({DispatcherConfig.class})
 public class ApplicationConfig implements ApplicationListener<ContextRefreshedEvent> {
 	
 	@Inject
