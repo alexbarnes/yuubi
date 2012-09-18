@@ -8,7 +8,19 @@
 <jsp:include page="header.jsp" />
 
 <!-- The main container for the page -->
-<div class="container">
-<h3>Preferences</h3>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			<div class="well sidebar-nav">
+				<ul class="nav nav-list">
+					<li class="nav-header">Configuration</li>
+					<li class="active"><a href="#">Main</a></li>
+					<li class="nav-header">Status</li>
+					<li><a href="#">Database</a></li>
+					<li><a href="#">Mail</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </div>
 <jsp:include page="footer.jsp" />

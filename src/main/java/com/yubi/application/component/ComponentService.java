@@ -9,5 +9,7 @@ public interface ComponentService {
 	public List<StockAlert> stockAlerts();
 	
 	public Component loadComponentWithHistory(long id);
+	
+	public List<Component> search(String query);
 
 }

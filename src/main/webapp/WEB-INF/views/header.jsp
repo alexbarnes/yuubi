@@ -57,7 +57,7 @@
 	                           <li><a href="#"><i class="icon-road"></i> Take Delivery</a></li>
 	                        </ul>
 	                     </li>
-	                     <li class="active"><a href="#prefs"><i class="icon-wrench"></i> Configuration</a></li>
+	                     <li class="active"><a href="<spring:url value='/configuration/'/>"><i class="icon-wrench"></i> Configuration</a></li>
 	                  </ul>
 	                  <form:form cssClass="navbar-search pull-left" action="/search/quicksearch" commandName="search">
 	                  	<form:input path="searchString" cssClass="search-query"/>
@@ -67,7 +67,7 @@
 	                        <a class="btn btn-primary" href="#"><i class="icon-user icon-white"></i> Lisa</a>
 	                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
 	                        <ul class="dropdown-menu">
-	                           <li><a href="#"><i class="icon-pencil"></i> Preferences</a></li>
+	                           <li><a href="<spring:url value='/preferences/'/>"><i class="icon-pencil"></i> Preferences</a></li>
 	                           <li class="divider"></li>
 	                           <li><a href="#logout"><i class="i"></i> Logout</a></li>
 	                        </ul>
