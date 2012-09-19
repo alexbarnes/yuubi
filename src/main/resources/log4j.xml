@@ -10,8 +10,8 @@
 		</layout>
 	</appender>
 	
-	<category name="org.springframework.web">
-		<level value="INFO"></level>
+	<category name="org.springframework.security">
+		<level value="TRACE"></level>
 	</category>
 	
 	<!-- Root Logger -->

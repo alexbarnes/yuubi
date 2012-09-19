@@ -1,6 +1,7 @@
 package com.yubi.application.core.login;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LoginController {
 	
 	@RequestMapping("")
-	public String showLogin() {
+	public String showLogin(ModelMap map) {
 		return "login";
 	}
 }

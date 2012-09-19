@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yubi.application.home.StockAlert;
-import com.yubi.application.supplier.Supplier;
 
 @Service
 public class ComponentServiceImpl implements ComponentService {
@@ -54,6 +53,7 @@ public class ComponentServiceImpl implements ComponentService {
 		return component;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Transactional
 	public List<Component> search(String query) {
 		query = StringUtils.lowerCase(query);

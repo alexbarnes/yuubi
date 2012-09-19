@@ -35,10 +35,10 @@
 	               <span class="icon-bar"></span>
 	               <span class="icon-bar"></span>
 	               </a>
-	               <a class="brand" href="<spring:url value='/'/>">yuubi</a>
+	               <a class="brand" href="<spring:url value='/home'/>">yuubi</a>
 	               <div class="nav-collapse collapse">
 	                  <ul class="nav">
-	                     <li class="active"><a href="<spring:url value='/'/>"><i class="icon-home"></i> Home</a></li>
+	                     <li class="active"><a href="<spring:url value='/home'/>"><i class="icon-home"></i> Home</a></li>
 	                     <li class="dropdown active">
 	                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i> Actions <b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
@@ -69,7 +69,7 @@
 	                        <ul class="dropdown-menu">
 	                           <li><a href="<spring:url value='/preferences/'/>"><i class="icon-pencil"></i> Preferences</a></li>
 	                           <li class="divider"></li>
-	                           <li><a href="#logout"><i class="i"></i> Logout</a></li>
+	                           <li><a href="<spring:url value='/logout'/>"><i class="i"></i> Logout</a></li>
 	                        </ul>
 	                     </div>
 	                  </div>

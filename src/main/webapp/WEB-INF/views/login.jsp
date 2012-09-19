@@ -14,6 +14,7 @@
 
 <!-- Styles -->
 <link rel="stylesheet" type="text/css" href="<spring:url value='/resources/css/bootstrap.css'/>" />
+<link href="<spring:url value='/resources/img/favicon.png'/>" rel="shortcut icon" type="image/x-icon">
 <style type="text/css">
 body {
 	padding-top: 60px;
@@ -32,23 +33,27 @@ body {
 			<div class="well">
 				<form name='f' action="<c:url value='j_spring_security_check' />" method='POST' class="form-horizontal">
 					<div class="control-group">
-						<label class="control-label" for="j_username">Email</label>
+						<label class="control-label" for="j_username">Username</label>
 						<div class="controls">
-							<input type="text" id="j_username" placeholder="Email">
+							<input type="text" id="j_username" name="j_username">
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="j_password">Password</label>
 						<div class="controls">
-							<input type="password" id="j_password" placeholder="Password">
+							<input type="password" id="j_password" name="j_password">
 						</div>
+					</div>
+					
+					<div class="control-group">
+						<label class="control-label" for="_spring_security_remember_me">Remember me</label>
+						<div class="controls">
+							<input type="checkbox" name="_spring_security_remember_me">
+						</div> 
 					</div>
 					<div class="control-group">
 						<div class="controls">
-							<label class="checkbox"> <input type="checkbox"
-								name="j_username"> Remember me
-							</label>
-							<button type="submit" class="btn btn-primary">Sign in</button>
+							<button type="submit" class="btn btn-inverse" name="submit">Sign in</button>
 						</div>
 					</div>
 				</form>

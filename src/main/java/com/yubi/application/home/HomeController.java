@@ -25,7 +25,7 @@ public class HomeController {
 		this.orderService = orderService;
 	}
 
-	@RequestMapping("/")
+	@RequestMapping("/home")
 	public ModelAndView home() {
 		Model model = new Model(ScreenMode.ENQUIRE, "home", "model", buildHomeModel());
 		return model;

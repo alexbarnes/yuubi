@@ -52,14 +52,13 @@ public class HibernateConfig {
 
 	@Bean
 	public DataSource dataSource() {
-		/*return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
-				.build();
-		*/
-		return new DriverManagerDataSource(
-				"com.mysql.jdbc.Driver", 
+		
+		return new DriverManagerDataSource("com.mysql.jdbc.Driver", 
 				"jdbc:mysql://localhost:3306/yubi", 
 				"test", 
 				"test");
+		
+		//return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
 	}
 
 }

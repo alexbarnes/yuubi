@@ -5,18 +5,21 @@
                     http://www.springframework.org/schema/security 
                     http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 	
+	<!-- No security for resources -->
 	<http pattern="/resources/**" security="none"/>
 	<http use-expressions="true">
-		<!-- Members area of the site - can use remember me or full authentication -->
 		
+		<!-- Ensure anyone can see the login page -->
 		<intercept-url pattern="/login" access="isAnonymous()" />
-		<intercept-url pattern="/**" access="isRememberMe() OR isFullyAuthenticated()" />
+		
+		<!-- Everything else should be hidden -->
+		<intercept-url pattern="/**" access="isAuthenticated()" />
 
-		<form-login login-page="/login" default-target-url="/"/>
+		<form-login login-page="/login" default-target-url="/home" />
 		
 		<remember-me data-source-ref="dataSource" />
 
-		<logout logout-url="/logout" logout-success-url="/home" />
+		<logout logout-url="/logout" logout-success-url="/login" />
 	</http>
 
 	<beans:bean id="daoAuthenticationProvider"

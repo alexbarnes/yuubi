@@ -1,7 +1,10 @@
 package com.yubi.application.core.login;
 
+import java.util.HashSet;
+
 import javax.inject.Inject;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,15 +31,13 @@ public class HibernateUserDetailsService implements UserDetailsService {
 		
 		User internalUser = userAccess.loadByUserName(username);
 		
-		if (internalUser != null) {
-			return new org.springframework.security.core.userdetails.User(
-							internalUser.getUserName(), 
-							internalUser.getPassword(), 
-					null);
+		if (internalUser == null) {
+			throw new UsernameNotFoundException("User + " + username + " not found.");
 		}
 		
-		throw new UsernameNotFoundException("User + " + username + " not found.");
+		return new org.springframework.security.core.userdetails.User(
+				internalUser.getUserName(), 
+				internalUser.getPassword(), 
+		new HashSet<GrantedAuthority>());
 	}
-	
-
 }
