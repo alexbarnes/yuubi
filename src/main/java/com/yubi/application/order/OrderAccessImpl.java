@@ -23,7 +23,7 @@ public class OrderAccessImpl implements OrderAccess {
 	
 	@SuppressWarnings("unchecked")
 	public List<ComponentOrder> listDeliveriesBeforeOrOn(LocalDate date) {
-		Query query = sessionFactory.getCurrentSession().createQuery("from Order where deliveryDate <= :horizon");
+		Query query = sessionFactory.getCurrentSession().createQuery("from ComponentOrder where deliveryDate <= :horizon");
 		query.setParameter("horizon", new LocalDate().plusDays(3).toDate());
 		query.setCacheable(true);
 		

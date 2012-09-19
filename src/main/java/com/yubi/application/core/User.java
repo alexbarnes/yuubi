@@ -2,7 +2,10 @@ package com.yubi.application.core;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
 import javax.persistence.Version;
+
+import org.apache.avro.reflect.Union;
 
 @Entity
 public class User {
