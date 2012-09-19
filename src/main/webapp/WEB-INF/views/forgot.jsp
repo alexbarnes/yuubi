@@ -36,28 +36,13 @@ body {
 			<form name='f' action="<c:url value='j_spring_security_check' />"
 				method='POST' class="well">
 				<c:if test="${not empty error}">
-					<div class="alert alert-error">Your username and/or password
-						is incorrect. Try again.</div>
+					<div class="alert alert-error">Your e-mail address was not found</div>
 				</c:if>
-				<label class="offset2"></label> <label class="offset2">Username</label>
-				<input type="text" id="j_username" name="j_username"
-					class="input-large offset2"> <label class="offset2">Password</label>
-				<input type="password" id="j_password" name="j_password"
-					class="input-large offset2"> <label class="checkbox"
-					class="offset2"> <input type="checkbox" class="offset2"
-					name="_spring_security_remember_me">Remember me
-				</label>
+				<label class="offset2"></label> <label class="offset2">E-mail</label>
+				<input type="text" id="email" name="j_username" class="input-large offset2"> 
+				
 				<button type="submit" class="btn btn-inverse offset7">Login</button>
-
-				<c:if test="${not empty error}">
-					<div class="row-fluid">
-						<div class="span12">
-							<a href="<spring:url value='/forgotpassword'/>"><i class="icon-user"></i> Forgot Password</a>
-						</div>
-					</div>
-				</c:if>
 			</form>
-
 			<hr />
 			<footer>
 				<p>© Alex Barnes & Yubi Jewellery 2012</p>

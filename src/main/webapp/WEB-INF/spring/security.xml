@@ -10,12 +10,13 @@
 	<http use-expressions="true">
 		
 		<!-- Ensure anyone can see the login page -->
-		<intercept-url pattern="/login" access="isAnonymous()" />
+		<intercept-url pattern="/login*" access="isAnonymous()" />
+		<intercept-url pattern="/forgotpassword" access="isAnonymous()" />
 		
 		<!-- Everything else should be hidden -->
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 
-		<form-login login-page="/login" default-target-url="/home" />
+		<form-login login-page="/login" default-target-url="/home" authentication-failure-url="/loginfailed" />
 		
 		<remember-me data-source-ref="dataSource" />
 

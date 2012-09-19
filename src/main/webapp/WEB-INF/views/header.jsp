@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+ <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -64,7 +65,7 @@
 	                  </form:form>
 	                  <div class="navbar-form pull-right">
 	                     <div class="btn-group">
-	                        <a class="btn btn-primary" href="#"><i class="icon-user icon-white"></i> Lisa</a>
+	                        <a class="btn btn-primary" href="#"><i class="icon-user icon-white"></i> <sec:authentication property="principal.name" /></a>
 	                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
 	                        <ul class="dropdown-menu">
 	                           <li><a href="<spring:url value='/preferences/'/>"><i class="icon-pencil"></i> Preferences</a></li>

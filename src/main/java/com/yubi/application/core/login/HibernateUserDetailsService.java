@@ -35,9 +35,10 @@ public class HibernateUserDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException("User + " + username + " not found.");
 		}
 		
-		return new org.springframework.security.core.userdetails.User(
+		return new ApplicationUser(
 				internalUser.getUserName(), 
 				internalUser.getPassword(), 
-		new HashSet<GrantedAuthority>());
+		new HashSet<GrantedAuthority>(),
+		internalUser.getName());
 	}
 }
