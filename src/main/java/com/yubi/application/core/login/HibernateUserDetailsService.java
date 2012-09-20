@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yubi.application.core.User;
-import com.yubi.application.core.UserAccess;
+import com.yubi.application.user.User;
+import com.yubi.application.user.UserAccess;
 
 @Service("userDetailsService")
 public class HibernateUserDetailsService implements UserDetailsService {

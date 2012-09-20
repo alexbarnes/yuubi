@@ -1,8 +1,8 @@
-package com.yubi.application.core;
+package com.yubi.application.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 @Entity
@@ -18,6 +18,7 @@ public class User {
 
 	private String password;
 
+	@Column(unique = true, nullable = false)
 	private String emailAddress;
 
 	public User() {

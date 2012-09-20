@@ -13,6 +13,9 @@
       <meta name="author" content="" />
       <link href="<spring:url value='/resources/img/favicon.png'/>" rel="shortcut icon" type="image/x-icon">
       
+      <script src="<spring:url value='/resources/js/jquery.js'/>"></script>
+	  <script src="<spring:url value='/resources/js/bootstrap.js'/>"></script>
+      
       <!-- Le styles -->
       <link rel="stylesheet" type="text/css"
 		href="<spring:url value='/resources/css/bootstrap.css'/>" />
@@ -58,7 +61,14 @@
 	                           <li><a href="#"><i class="icon-road"></i> Take Delivery</a></li>
 	                        </ul>
 	                     </li>
-	                     <li class="active"><a href="<spring:url value='/configuration/'/>"><i class="icon-wrench"></i> Configuration</a></li>
+	                     
+	                     <li class="dropdown active">
+	                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i> Configuration <b class="caret"></b></a>
+	                        <ul class="dropdown-menu">
+	                           <li class="nav-header">User</li>
+	                           <li><a href="<spring:url value='/user/add'/>"><i class="icon-plus-sign"></i> Add</a></li>
+	                        </ul>
+	                     </li>
 	                  </ul>
 	                  <form:form cssClass="navbar-search pull-left" action="/search/quicksearch" commandName="search">
 	                  	<form:input path="searchString" cssClass="search-query"/>

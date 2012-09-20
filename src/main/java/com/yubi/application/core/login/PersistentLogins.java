@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.yubi.application.core.User;
+import com.yubi.application.user.User;
 
 @Entity(name = "persistent_logins")
 public class PersistentLogins {

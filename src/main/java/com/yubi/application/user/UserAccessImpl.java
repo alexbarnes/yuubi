@@ -1,4 +1,4 @@
-package com.yubi.application.core;
+package com.yubi.application.user;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class UserAccessImpl implements UserAccess {

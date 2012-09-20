@@ -1,4 +1,5 @@
-package com.yubi.application.core;
+package com.yubi.application.user;
+
 
 public interface UserAccess {
 	

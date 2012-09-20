@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.yubi.application.core.Model;
 import com.yubi.application.core.ScreenMode;
-import com.yubi.application.core.User;
+import com.yubi.application.user.User;
 
 @Controller
 @RequestMapping("/configuration")

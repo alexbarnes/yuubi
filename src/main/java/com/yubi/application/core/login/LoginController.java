@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yubi.application.core.User;
-import com.yubi.application.core.UserAccess;
+import com.yubi.application.user.User;
+import com.yubi.application.user.UserAccess;
 
 @Controller
 public class LoginController {
