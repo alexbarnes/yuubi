@@ -2,6 +2,7 @@ package com.yubi.application.core;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 @Entity

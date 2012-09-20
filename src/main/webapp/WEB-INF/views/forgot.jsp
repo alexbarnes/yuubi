@@ -31,9 +31,9 @@ body {
 </head>
 <body>
 	<div class="row-fluid">
-		<div class="span3 offset4">
+		<div class="span4 offset4">
 
-			<form name='f' action="<c:url value='j_spring_security_check' />"
+			<form name='f' action="<c:url value='/forgotpassword' />"
 				method='POST' class="well">
 				<c:if test="${not empty error}">
 					<div class="alert alert-error">Your e-mail address was not found</div>

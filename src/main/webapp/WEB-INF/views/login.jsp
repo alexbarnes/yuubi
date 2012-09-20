@@ -31,7 +31,7 @@ body {
 </head>
 <body>
 	<div class="row-fluid">
-		<div class="span3 offset4">
+		<div class="span4 offset4">
 
 			<form name='f' action="<c:url value='j_spring_security_check' />"
 				method='POST' class="well">
