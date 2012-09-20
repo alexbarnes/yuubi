@@ -15,14 +15,14 @@
 				<c:when test="${type == 'ORDER'}">
 					<h3>Order Search</h3>
 				</c:when>
-				<c:when test="${type == 'COMPONENT'}">
+				<c:when test="${type == 'COMPONENT'}"> 
 					<h3>Component Search</h3>
 				</c:when>
 			</c:choose>
 			<c:choose>
 				<c:when test="${type == 'SUPPLIER'}">
-					<form:form cssClass="form-search" action="/search/suppliersearch"
-						commandName="search">
+					<c:url var="url" value="/search/suppliersearch" /> 
+					<form:form cssClass="form-search" action="${url}" commandName="search">
 						<div class="input-append">
 							<form:input path="searchString" cssClass="span12 search-query" />
 							<button type="submit" class="btn">Search</button>
@@ -30,8 +30,8 @@
 					</form:form>
 				</c:when>
 				<c:when test="${type == 'ORDER'}">
-					<form:form cssClass="form-search" action="/search/ordersearch"
-						commandName="search">
+					<c:url var="url" value="/search/ordersearch" />
+					<form:form cssClass="form-search" action="${url}" commandName="search">
 						<div class="input-append">
 							<form:input path="searchString" cssClass="span12 search-query" />
 							<button type="submit" class="btn">Search</button>
@@ -39,8 +39,8 @@
 					</form:form>
 				</c:when>
 				<c:when test="${type == 'COMPONENT'}">
-					<form:form cssClass="form-search" action="/search/componentsearch"
-						commandName="search">
+					<c:url var="url" value="/search/componentsearch" />
+					<form:form cssClass="form-search" action="${url}" commandName="search">
 						<div class="input-append">
 							<form:input path="searchString" cssClass="span12 search-query" />
 							<button type="submit" class="btn">Search</button>

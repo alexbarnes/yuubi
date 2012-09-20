@@ -4,9 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.mvc.WebContentInterceptor;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
@@ -18,7 +20,7 @@ public class DispatcherConfig extends WebMvcConfigurerAdapter {
 		super.addResourceHandlers(registry);
 
 		registry.addResourceHandler("/resources/**").addResourceLocations(
-				"/resources/");
+				"/resources/").setCachePeriod(2592000);
 	}
 
 	@Override
@@ -39,5 +41,10 @@ public class DispatcherConfig extends WebMvcConfigurerAdapter {
 		resolver.setSuffix(".jsp");
 		resolver.setRequestContextAttribute("requestContext");
 		return resolver;
+	}
+	
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		super.addInterceptors(registry);
 	}
 }

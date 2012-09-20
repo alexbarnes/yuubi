@@ -1,5 +1,8 @@
 package com.yubi.application.user;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import javax.inject.Inject;
 import javax.validation.Valid;
 
@@ -34,6 +37,13 @@ public class UserController {
 	public ModelAndView checkDuplicate(@PathVariable(value = "name") String name) {
 		return new ModelAndView(new MappingJacksonJsonView(), "duplicate",
 				userAccess.loadByUserName(name) != null);
+	}
+	
+	@RequestMapping("/checkduplicateemail")
+	@ResponseBody
+	public ModelAndView checkDuplicateEmail(String address) {
+		return new ModelAndView(new MappingJacksonJsonView(), "duplicate",
+				userAccess.fetchByEmail(address) != null);
 	}
 
 	@RequestMapping("/add")
@@ -75,7 +85,11 @@ public class UserController {
 		
 		userAccess.save(user);
 		
-		return new Model("redirect:/user/view/" + user.getUserName());
-
+		// Send a redirect to the saved user. Ensure that we correctly encode the username.
+		try {
+			return new Model("redirect:/user/view/" + URLEncoder.encode(user.getUserName(), "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 }

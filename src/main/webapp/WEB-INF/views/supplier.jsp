@@ -25,9 +25,8 @@
 	<hr />
 
 	<!-- The main form backed by the supplier object - this posts to the save method -->
-	<form:form cssClass="form-horizontal" commandName="supplier"
-		action="/supplier/save">
-
+	<c:url var="url" value="/supplier/save" />
+	<form:form cssClass="form-horizontal" commandName="supplier" action="${url}">
 		<!-- The supplier name -->
 		<c:set var="nameErrors">
 			<form:errors path="name" />

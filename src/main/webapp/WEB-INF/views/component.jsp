@@ -26,15 +26,14 @@
 	
 	
 	<!-- The main form backed by the component object - this posts to the save method -->
-	<form:form cssClass="form-horizontal" commandName="component"
-		action="/component/save">
+	<c:url var="url" value="/component/save" />
+	<form:form cssClass="form-horizontal" commandName="component" action="${url}">
 		<div class="row-fluid">
 		
 			<!-- The left hand column of fields -->
 			<div class="span5 offset1">
 
 				<!-- The component name -->
-				<c:set var="descriptionErrors"><form:errors path="description"/></c:set>
 				<c:if test="${not empty descriptionErrors}">
 					<div class="control-group error">
 				</c:if>
@@ -185,12 +184,6 @@
 		</div>
 	</form:form>
 
-	<!-- Standard javascript imports -->
-	<script src="<spring:url value='/resources/js/jquery.js'/>"></script>
-	<script src="<spring:url value='/resources/js/bootstrap.js'/>"></script>
-	<script
-		src="<spring:url value='/resources/js/bootstrap-typeahead.js'/>"></script>
-
 	<!-- Javascript for the Typeahead field -->
 	<script type="text/javascript">
 		$('.supplier').typeahead({
@@ -273,3 +266,4 @@
 		</c:if>
 	</c:if>
 </div>
+<jsp:include page="footer.jsp"/>

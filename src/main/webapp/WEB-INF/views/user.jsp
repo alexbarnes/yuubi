@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
 
 <!-- Required variables for the page and imports -->
 <c:set var="readOnly" value="${screenMode == 'ENQUIRE'}" />
@@ -23,17 +24,18 @@
 				</c:when>
 			</c:choose>
 			<hr />
-			<form:form commandName="user" action="/user/save">
-				<div class="control-group">
+			<c:url var="url" value="/user/save" />
+			<form:form commandName="user" action="${url}">
+				<div class="control-group" id="userNameGroup">
 					<label class="control-label" for="userName">Username</label>
-					<div class="controls">
+					<div class="controls" id="userNameControls">
 
 						<!-- Can only set the username once -->
 						<c:if test="${screenMode == 'CREATE'}">
 							<form:input type="text" path="userName" cssClass="input-large" />
 						</c:if>
 						<c:if test="${screenMode != 'CREATE'}">
-							<span class="input-xlarge uneditable-input">${user.userName}</span>
+							<span class="input-large uneditable-input">${user.userName}</span>
 						</c:if>
 					</div>
 				</div>
@@ -45,10 +47,10 @@
 					</div>
 				</div>
 
-				<div class="control-group">
+				<div class="control-group" id="emailGroup">
 					<label class="control-label" for="emailAddress">E-mail
 						Address</label>
-					<div class="controls">
+					<div class="controls" id="emailControls">
 						<form:input type="text" path="emailAddress" cssClass="input-large" />
 					</div>
 				</div>
@@ -83,7 +85,7 @@
 				</c:if>
 
 				<c:if test="${not readOnly}">
-					<input name="screenMode" type="hidden" />
+					<input name="screenMode" type="hidden" value="${screenMode}" />
 				</c:if>
 
 				<div class="control-group">
@@ -113,28 +115,75 @@
 			</form:form>
 		</div>
 	</div>
+	<hr />
+	<footer>
+		<p>Â© Alex Barnes & Yubi Jewellery 2012</p>
+	</footer>
+</div>
 </div>
 
 <script type="text/javascript">
-	$('#userName')
-			.blur(
-					function() {
-						if ($("#userName").val() != '') {
-							$
-									.ajax({
-										type : "GET",
-										url : "<spring:url value='/user/checkduplicate'/>"
-												+ "/" + $("#userName").val(),
-										success : function(msg) {
-											if (msg.duplicate == true
-													&& $("#usernameError").length == 0) {
-												$('#form')
-														.prepend(
-																'<div class="alert alert-error" id="usernameError">The username you have entered is in use <button type="button" class="close" data-dismiss="alert">×</button></div>');
-											}
-										}
-									});
+	$('#userName').blur(
+			function() {
+				if ($("#userName").val() != '') {
+					$.ajax({
+						type : "GET",
+						url : "<spring:url value='/user/checkduplicate'/>"
+								+ "/"
+								+ encodeURIComponent($("#userName").val()),
+						success : function(msg) {
+
+							// If the username is a dupe and the error is not showing - show it
+							if (msg.duplicate == true) {
+								$('#userNameGroup').removeClass('success');
+								$('#userNameGroup').addClass('error');
+							}
+
+							// If the username is not a dupe and the error is showing - remove it
+							if (msg.duplicate == false) {
+								$('#userNameGroup').addClass('success');
+							}
 						}
 					});
+				}
+
+				// If we have a blank user name and the error is showing - remove it
+				if ($("#usernameError").length > 0
+						&& $("#userName").val() == '') {
+					$('#usernameError').remove();
+				}
+			});
+
+	// Do the same for e-mail
+	$('#emailAddress').blur(
+			function() {
+				if ($("#emailAddress").val() != '') {
+					$.ajax({
+						type : "GET",
+						url : "<spring:url value='/user/checkduplicateemail'/>"
+								+ "?address="
+								+ encodeURIComponent($("#emailAddress").val()),
+						success : function(msg) {
+
+							// If the username is a dupe and the error is not showing - show it
+							if (msg.duplicate == true) {
+								$('#emailGroup').removeClass('success');
+								$('#emailGroup').addClass('error');
+							}
+
+							// If the username is not a dupe and the error is showing - remove it
+							if (msg.duplicate == false) {
+								$('#emailGroup').addClass('success');
+							}
+						}
+					});
+				}
+
+				// If we have a blank user name and the error is showing - remove it
+				if ($("#emailError").length > 0
+						&& $("#emailAddress").val() == '') {
+					$('#emailError').remove();
+				}
+			});
 </script>
 </body>

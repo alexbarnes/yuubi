@@ -2,7 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
- <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+ 
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -12,13 +14,14 @@
       <meta name="description" content="" />
       <meta name="author" content="" />
       <link href="<spring:url value='/resources/img/favicon.png'/>" rel="shortcut icon" type="image/x-icon">
-      
-      <script src="<spring:url value='/resources/js/jquery.js'/>"></script>
-	  <script src="<spring:url value='/resources/js/bootstrap.js'/>"></script>
-      
       <!-- Le styles -->
       <link rel="stylesheet" type="text/css"
 		href="<spring:url value='/resources/css/bootstrap.css'/>" />
+		
+      <script src="<spring:url value='/resources/js/jquery.js'/>"></script>
+	  <script src="<spring:url value='/resources/js/bootstrap.js'/>"></script>
+	  <script src="<spring:url value='/resources/js/bootstrap-typeahead.js'/>"></script>
+      
       <style type="text/css">
          body {
          padding-top: 60px;
@@ -63,14 +66,15 @@
 	                     </li>
 	                     
 	                     <li class="dropdown active">
-	                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i> Configuration <b class="caret"></b></a>
+	                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i> Configuration <b class="caret"></b></a>
 	                        <ul class="dropdown-menu">
 	                           <li class="nav-header">User</li>
 	                           <li><a href="<spring:url value='/user/add'/>"><i class="icon-plus-sign"></i> Add</a></li>
 	                        </ul>
 	                     </li>
 	                  </ul>
-	                  <form:form cssClass="navbar-search pull-left" action="/search/quicksearch" commandName="search">
+	                  <c:url var="url" value="/search/quicksearch" />
+	                  <form:form cssClass="navbar-search pull-left" action="${url}" commandName="search">
 	                  	<form:input path="searchString" cssClass="search-query"/>
 	                  </form:form>
 	                  <div class="navbar-form pull-right">

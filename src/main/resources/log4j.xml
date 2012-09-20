@@ -10,7 +10,7 @@
 		</layout>
 	</appender>
 	
-	<category name="org.springframework.security">
+	<category name="org.springframework.web">
 		<level value="TRACE"></level>
 	</category>
 	

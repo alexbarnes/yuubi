@@ -27,6 +27,7 @@ public class UserAccessImpl implements UserAccess {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Transactional
 	public User fetchByEmail(String email) {
 		Query query = sessionFactory.getCurrentSession().createQuery(
 				"from User where emailAddress = :address");
