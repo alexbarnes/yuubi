@@ -16,9 +16,9 @@ import com.yubi.application.user.UserAccess;
 
 @Service("userDetailsService")
 public class HibernateUserDetailsService implements UserDetailsService {
-	
+
 	private final UserAccess userAccess;
-	
+
 	@Inject
 	public HibernateUserDetailsService(UserAccess userAccess) {
 		super();
@@ -28,17 +28,17 @@ public class HibernateUserDetailsService implements UserDetailsService {
 	@Transactional
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
-		
+
 		User internalUser = userAccess.loadByUserName(username);
-		
+
 		if (internalUser == null) {
-			throw new UsernameNotFoundException("User + " + username + " not found.");
+			throw new UsernameNotFoundException("User + " + username
+					+ " not found.");
 		}
-		
-		return new ApplicationUser(
-				internalUser.getUserName(), 
-				internalUser.getPassword(), 
-		new HashSet<GrantedAuthority>(),
-		internalUser.getName());
+
+		return new ApplicationUser(internalUser.getUserName(),
+				internalUser.getPassword(), new HashSet<GrantedAuthority>(),
+				internalUser.getName(), internalUser.isEnabled(),
+				internalUser.isAdministrator());
 	}
 }

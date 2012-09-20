@@ -1,10 +1,15 @@
 package com.yubi.application.user;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
@@ -46,5 +51,31 @@ public class UserController {
 	public Model editUser(@PathVariable(value = "name") String name) {
 		User user = userAccess.loadByUserName(name);
 		return new Model(ScreenMode.UPDATE, "user", "user", user);
+	}
+
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public Model save(@ModelAttribute("user") @Valid User user,
+			BindingResult result, String screenMode) {
+
+		if (screenMode.equals("CREATE")) {
+			if (userAccess.loadByUserName(user.getUserName()) != null) {
+				result.addError(new FieldError("user", "userName",
+						"The username is in use"));
+				return new Model(ScreenMode.CREATE, "user", "user", user);
+			} else {
+				return new Model(ScreenMode.CREATE, "user", "user", user);
+			}
+
+		}
+
+		// Otherwise we're editing and have errors
+		if (result.hasErrors()) {
+			return new Model(ScreenMode.UPDATE, "user", "user", user);
+		}
+		
+		userAccess.save(user);
+		
+		return new Model("redirect:/user/view/" + user.getUserName());
+
 	}
 }

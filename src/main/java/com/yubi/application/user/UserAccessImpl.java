@@ -9,7 +9,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Repository
 public class UserAccessImpl implements UserAccess {
 
@@ -29,18 +28,25 @@ public class UserAccessImpl implements UserAccess {
 
 	@SuppressWarnings("unchecked")
 	public User fetchByEmail(String email) {
-		Query query = sessionFactory.getCurrentSession().createQuery("from User where emailAddress = :address");
+		Query query = sessionFactory.getCurrentSession().createQuery(
+				"from User where emailAddress = :address");
 		query.setString("address", email);
-		
+
 		List<User> users = query.list();
-		
+
 		if (users.size() > 1) {
-			throw new IllegalStateException("Duplicate email address found for [" + email + "].");
+			throw new IllegalStateException(
+					"Duplicate email address found for [" + email + "].");
 		}
-		
-		if (users.size() == 1) 
+
+		if (users.size() == 1)
 			return users.get(0);
-		
+
 		return null;
+	}
+
+	@Transactional
+	public void save(User user) {
+		sessionFactory.getCurrentSession().saveOrUpdate(user);
 	}
 }

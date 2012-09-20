@@ -171,7 +171,7 @@
 									role="button" class="btn btn-inverse" data-toggle="modal">Cancel</a>
 							</c:if>
 							<c:if test="${component.id == 0}">
-								<a href="<spring:url value="/"/>" role="button"
+								<a href="<spring:url value="/home"/>" role="button"
 									class="btn btn-inverse" data-toggle="modal">Cancel</a>
 							</c:if>
 						</c:if>

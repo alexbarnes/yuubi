@@ -5,21 +5,31 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Entity
 public class User {
 
 	@Id
+	@NotEmpty
 	private String userName;
 
 	@Version
-	protected int version;
+	private int version;
 
+	@NotEmpty
 	private String name;
 
+	@NotEmpty
 	private String password;
 
+	@NotEmpty
 	@Column(unique = true, nullable = false)
 	private String emailAddress;
+
+	private boolean enabled;
+
+	private boolean isAdministrator;
 
 	public User() {
 
@@ -59,5 +69,29 @@ public class User {
 
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isAdministrator() {
+		return isAdministrator;
+	}
+
+	public void setAdministrator(boolean isAdministrator) {
+		this.isAdministrator = isAdministrator;
 	}
 }
