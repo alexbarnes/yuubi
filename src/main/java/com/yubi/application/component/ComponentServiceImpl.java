@@ -34,10 +34,11 @@ public class ComponentServiceImpl implements ComponentService {
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public List<StockAlert> stockAlerts() {
-		List<Component> components = sessionFactory.getCurrentSession()
-				.createQuery("from Component where stock <= stockAlertLimit")
-				.list();
-
+		org.hibernate.Query query = sessionFactory.getCurrentSession()
+				.createQuery("from Component where stock <= stockAlertLimit");
+		query.setCacheable(true);
+		
+		List<Component> components = query.list();
 		List<StockAlert> alerts = new ArrayList<StockAlert>();
 		for (Component component : components) {
 			alerts.add(new StockAlert(component.getId(), component.getStock(),

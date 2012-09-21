@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,6 +24,7 @@ import com.yubi.application.supplier.Supplier;
 
 @Entity
 @Indexed
+@Cacheable
 public class ComponentOrder {
 
 	@Id

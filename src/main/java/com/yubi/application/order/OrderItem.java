@@ -2,6 +2,7 @@ package com.yubi.application.order;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import javax.persistence.Version;
 import com.yubi.application.component.Component;
 
 @Entity
+@Cacheable
 public class OrderItem {
 	
 	@Id

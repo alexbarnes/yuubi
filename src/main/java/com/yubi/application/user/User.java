@@ -1,5 +1,6 @@
 package com.yubi.application.user;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,6 +9,7 @@ import javax.persistence.Version;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
+@Cacheable
 public class User {
 
 	@Id

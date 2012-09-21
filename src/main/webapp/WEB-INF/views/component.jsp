@@ -183,12 +183,13 @@
 			</div>
 		</div>
 	</form:form>
-
+	
+	<c:url var = "supplierurl" value="/supplier/search"></c:url>
 	<!-- Javascript for the Typeahead field -->
 	<script type="text/javascript">
 		$('.supplier').typeahead({
 			ajax : {
-				url : 'http://localhost:8080/supplier/search',
+				url : '${supplierurl}',
 				triggerLength : 3,
 				method : 'GET'
 			},
@@ -214,8 +215,9 @@
 					aria-hidden="true">×</button>
 				<h3 id="myModalLabel">Update Stock Level</h3>
 			</div>
+			<c:url var = "stockurl" value="/component/stockupdate"></c:url>
 			<form:form cssClass="form-horizontal" commandName="stockupdate"
-				action="/component/stockupdate">
+				action="${stockurl}">
 				<div class="modal-body">
 				
 				<div class="control-group">
