@@ -71,18 +71,21 @@ public class UserController {
 			if (userAccess.loadByUserName(user.getUserName()) != null) {
 				result.addError(new FieldError("user", "userName",
 						"The username is in use"));
-				return new Model(ScreenMode.CREATE, "user", "user", user);
-			} else {
-				return new Model(ScreenMode.CREATE, "user", "user", user);
+			} 
+			
+			if (userAccess.fetchByEmail(user.getEmailAddress()) != null) {
+				result.addError(new FieldError("user", "userName",
+						"The username is in use"));
 			}
-
 		}
 
-		// Otherwise we're editing and have errors
+		// Now check for binding errors and return to the screen if there
+		// are any. Ensure that the screen mode is retained.
 		if (result.hasErrors()) {
-			return new Model(ScreenMode.UPDATE, "user", "user", user);
+			return new Model(ScreenMode.valueOf(screenMode), "user", "user", user);
 		}
 		
+		// No binding errors? Save or update the user.
 		userAccess.save(user);
 		
 		// Send a redirect to the saved user. Ensure that we correctly encode the username.

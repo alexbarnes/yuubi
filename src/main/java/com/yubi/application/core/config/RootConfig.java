@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 		)
 @Import({HibernateConfig.class})
 @ImportResource(value = {"WEB-INF/spring/security.xml"})
+@PropertySource(value = "classpath:application.properties")
 public class RootConfig {
 
 }

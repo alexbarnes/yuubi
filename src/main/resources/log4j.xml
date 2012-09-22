@@ -11,7 +11,7 @@
 	</appender>
 	
 	<category name="org.springframework.web">
-		<level value="INFO"></level>
+		<level value="TRACE"></level>
 	</category>
 	
 	<!-- Root Logger -->

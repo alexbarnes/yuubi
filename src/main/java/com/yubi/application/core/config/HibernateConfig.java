@@ -2,6 +2,7 @@ package com.yubi.application.core.config;
 
 import java.util.Properties;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
@@ -17,6 +18,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 public class HibernateConfig {
+	
+	@Inject
+	private Environment env;
 
 	/**
 	 * Configure a hibernate session factory. This reads properties from the
@@ -54,13 +58,20 @@ public class HibernateConfig {
 
 	@Bean
 	public DataSource dataSource() {
+		DatabasePlatform platform = 
+				DatabasePlatform.valueOf(env.getProperty("database.platform"));
 		
-		return new DriverManagerDataSource("com.mysql.jdbc.Driver", 
-				"jdbc:mysql://localhost:3306/yubi", 
-				"test", 
-				"test");
-		
-		//return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+		return new DriverManagerDataSource(platform.getDriverName(), 
+				platform.getUrl(
+						getDatabaseProperty("host"), 
+						Integer.parseInt(getDatabaseProperty("port")), 
+						getDatabaseProperty("name")), 
+				getDatabaseProperty("username"), 
+				getDatabaseProperty("password"));
+	}
+	
+	private String getDatabaseProperty(String name) {
+		return env.getProperty("database." + name);
 	}
 
 }
