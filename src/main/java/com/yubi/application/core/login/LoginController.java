@@ -2,11 +2,13 @@ package com.yubi.application.core.login;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.yubi.application.user.User;
 import com.yubi.application.user.UserAccess;
@@ -41,14 +43,23 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
-	public ModelAndView forgot(String email) {
+	public ModelAndView forgot(String email, RedirectAttributes redirectAttrs) {
 		
+		if (StringUtils.isEmpty(email)) {
+			return new ModelAndView("forgot", "notSupplied", "true");
+		}
+		
+		// Check the supplied e-mail address
 		User user = userAccess.fetchByEmail(email);
 		
-		if (user != null)
-			return new ModelAndView("redirect:/login");
+		// If we have a user matching the e-mail send an e-mail
+		if (user != null) {
+			redirectAttrs.addFlashAttribute("success", "true");
+			return new ModelAndView("redirect:/forgotpassword");
+		}
 		
-		return new ModelAndView("login", "error", "not found");
+		// If we can't find a user, warn the user
+		return new ModelAndView("forgot", "notFound", "true");
 		
 	}
 }

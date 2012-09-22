@@ -31,6 +31,12 @@ public class HomeController {
 		return model;
 	}
 	
+	@RequestMapping("/")
+	public ModelAndView home2() {
+		Model model = new Model(ScreenMode.ENQUIRE, "home", "model", buildHomeModel());
+		return model;
+	}
+	
 	private HomeModel buildHomeModel() {
 		HomeModel model = new HomeModel();
 		model.getStockAlerts().addAll(componentService.stockAlerts());

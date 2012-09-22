@@ -32,17 +32,29 @@ body {
 <body>
 	<div class="row-fluid">
 		<div class="span4 offset4">
+			<c:set var="showForm" value="${success != 'true'}" />
+			<c:if test="${notFound}">
+				<div class="alert alert-error">Your e-mail address was not
+					found</div>
+			</c:if>
+			<c:if test="${notSupplied}">
+				<div class="alert alert-error">Please supply a valid e-mail
+					address</div>
+			</c:if>
+			<c:if test="${success}">
+				<div class="alert alert-success">Instructions have been sent
+					to the supplied address</div>
+			</c:if>
+			<c:if test="${showForm}">
+				<form name='f' action="<c:url value='/forgotpassword' />"
+					method='POST' class="well">
+					<label class="offset2"></label> <label class="offset2">E-mail</label>
+					<input type="text" id="email" name="email"
+						class="input-large offset2">
 
-			<form name='f' action="<c:url value='/forgotpassword' />"
-				method='POST' class="well">
-				<c:if test="${not empty error}">
-					<div class="alert alert-error">Your e-mail address was not found</div>
-				</c:if>
-				<label class="offset2"></label> <label class="offset2">E-mail</label>
-				<input type="text" id="email" name="j_username" class="input-large offset2"> 
-				
-				<button type="submit" class="btn btn-inverse offset7">Login</button>
-			</form>
+					<button type="submit" class="btn btn-inverse offset7">Login</button>
+				</form>
+			</c:if>
 			<hr />
 			<footer>
 				<p>© Alex Barnes & Yubi Jewellery 2012</p>

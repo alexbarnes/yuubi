@@ -50,6 +50,10 @@ public class Component {
 	@JoinColumn(name = "supplierId", nullable = true)
 	private Supplier supplier;
 	
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "categoryId")
+	private ComponentCategory category;
+	
 	@Transient
 	private long supplierId;
 

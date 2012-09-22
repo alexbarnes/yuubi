@@ -16,7 +16,7 @@
 		<!-- Everything else should be hidden -->
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 
-		<form-login login-page="/login" default-target-url="/home" authentication-failure-url="/loginfailed" />
+		<form-login login-page="/login" default-target-url="/home" authentication-failure-url="/loginfailed" always-use-default-target="false"/>
 		
 		<remember-me data-source-ref="dataSource" />
 

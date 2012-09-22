@@ -33,15 +33,16 @@ body {
 	<div class="row-fluid">
 		<div class="span4 offset4">
 
-			<form name='f' action="<c:url value='j_spring_security_check' />"
-				method='POST' class="well">
+			<form name='f' action="<c:url value='j_spring_security_check'/>"
+				method='POST' class="well" id="login-form">
+				<legend>Login</legend>
 				<c:if test="${not empty error}">
 					<div class="alert alert-error">Your username and/or password
 						is incorrect. Try again.</div>
 				</c:if>
 				<label class="offset2"></label> <label class="offset2">Username</label>
 				<input type="text" id="j_username" name="j_username"
-					class="input-large offset2"> <label class="offset2">Password</label>
+					class="input-large offset2 initial-focus"> <label class="offset2">Password</label>
 				<input type="password" id="j_password" name="j_password"
 					class="input-large offset2"> <label class="checkbox"
 					class="offset2"> <input type="checkbox" class="offset2"
@@ -52,7 +53,8 @@ body {
 				<c:if test="${not empty error}">
 					<div class="row-fluid">
 						<div class="span12">
-							<a href="<spring:url value='/forgotpassword'/>"><i class="icon-user"></i> Forgot Password</a>
+							<a href="<spring:url value='/forgotpassword'/>"><i
+								class="icon-user"></i> Forgot Password</a>
 						</div>
 					</div>
 				</c:if>
@@ -64,5 +66,10 @@ body {
 			</footer>
 		</div>
 	</div>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$("#login-form :input:visible:enabled:first").focus(); // choose first just in case
+	});
+</script>
 </body>
 </html>
