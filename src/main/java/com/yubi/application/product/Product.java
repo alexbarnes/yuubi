@@ -2,44 +2,48 @@ package com.yubi.application.product;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Product {
-	
+
 	@Id
-	@GeneratedValue
-	private long id;
-	
+	@NotEmpty
+	private String code;
+
 	@Version
 	private int version;
-	
+
+	@NotEmpty
 	private String description;
-	
+
 	private BigDecimal unitPrice;
 	
-	 @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.product", orphanRemoval = true)
+	private Currency currency;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id.product", orphanRemoval = true)
 	private List<ProductComponent> components = new ArrayList<ProductComponent>();
 
-	public long getId() {
-		return id;
+	public String getCode() {
+		return code;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public int getVersion() {
@@ -72,5 +76,13 @@ public class Product {
 
 	public void setUnitPrice(BigDecimal unitPrice) {
 		this.unitPrice = unitPrice;
+	}
+
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
 }

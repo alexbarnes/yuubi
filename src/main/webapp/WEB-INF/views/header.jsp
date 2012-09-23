@@ -64,6 +64,10 @@ body {
 								<li><a href="<spring:url value='/supplier/add'/>""><i
 										class="icon-plus-sign"></i> Add</a></li>
 								<li class="divider"></li>
+								<li class="nav-header">Product</li>
+								<li><a href="<spring:url value='/product/add'/>""><i
+										class="icon-plus-sign"></i> Add</a></li>
+								<li class="divider"></li>
 								<li class="nav-header">Order</li>
 								<li><a href="<spring:url value='/search/order'/>"><i
 										class="icon-edit"></i> Open</a></li>

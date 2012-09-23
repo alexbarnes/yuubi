@@ -1,16 +1,20 @@
 package com.yubi.application.component;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yubi.application.component.StockHistory.StockChangeType;
 import com.yubi.application.core.Model;
@@ -106,5 +110,18 @@ public class ComponentController {
 		
 		// Redirect to the normal view
 		return new Model("redirect:/component/view/" + component.getId());
+	}
+	
+	@RequestMapping("/search")
+	public @ResponseBody List<ComponentDTO> search(String query) {
+		String[] queryStrings = {"*", query, "*"};
+		List<Component> components = componentService.search(StringUtils.join(queryStrings));
+		List<ComponentDTO> results = new ArrayList<ComponentDTO>();
+		
+		for (Component component : components) {
+			results.add(new ComponentDTO(component.getId(), component.getDescription()));
+		}
+		
+		return results;
 	}
 }

@@ -7,6 +7,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.yubi.application.component.Component;
 
@@ -25,6 +26,8 @@ public class ProductComponent {
 		@JoinColumn(name = "componentId")
 		private Component component;
 
+		
+
 		public Product getProduct() {
 			return product;
 		}
@@ -40,13 +43,15 @@ public class ProductComponent {
 		public void setComponent(Component component) {
 			this.component = component;
 		}
-
 	}
 
 	@EmbeddedId
 	private final Id id = new Id();
 
 	private int number;
+	
+	@Transient
+	private long componentId;
 
 	public int getNumber() {
 		return number;
@@ -58,5 +63,13 @@ public class ProductComponent {
 
 	public Id getId() {
 		return id;
+	}
+	
+	public long getComponentId() {
+		return componentId;
+	}
+
+	public void setComponentId(long componentId) {
+		this.componentId = componentId;
 	}
 }
