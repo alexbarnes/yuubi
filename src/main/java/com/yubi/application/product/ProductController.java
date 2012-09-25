@@ -1,7 +1,5 @@
 package com.yubi.application.product;
 
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -59,6 +57,9 @@ public class ProductController {
 	public Model viewProduct(@PathVariable(value = "code") String code,
 			HttpSession session) {
 		Product product = productAccess.load(code);
+		
+		session.setAttribute(CURRENT_PRODUCT, product);
+		
 		return new Model(ScreenMode.ENQUIRE, "product", "product", product);
 	}
 
@@ -108,7 +109,7 @@ public class ProductController {
 
 		// If there are errors return the page
 		if (result.hasErrors()) {
-			return new Model(ScreenMode.valueOf(screenMode), "productform",
+			return new Model(ScreenMode.valueOf(screenMode), "product",
 					"product", product);
 		}
 		
@@ -122,7 +123,7 @@ public class ProductController {
 		}
 
 		productAccess.save(sessionProduct);
-		return new Model("redirect:/product/view" + sessionProduct.getCode());
+		return new Model("redirect:/product/view/" + sessionProduct.getCode());
 	}
 	
 	@RequestMapping("/cancel")
