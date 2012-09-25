@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -32,9 +34,9 @@ public class Product {
 	private String description;
 
 	private BigDecimal unitPrice;
-	
+
 	private Currency currency;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id.product", orphanRemoval = true)
 	private List<ProductComponent> components = new ArrayList<ProductComponent>();
 
@@ -84,5 +86,30 @@ public class Product {
 
 	public void setCurrency(Currency currency) {
 		this.currency = currency;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) 
+			return true;
+		
+		if (!(obj instanceof Product))
+			return false;
+
+		Product other = (Product) obj;
+		return new EqualsBuilder().append(this.code, other.code).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(code).toHashCode();
+	}
+
+	public ProductComponent addComponent() {
+		ProductComponent component = new ProductComponent();
+		component.getId().setProduct(this);
+		components.add(component);
+		return component;
+
 	}
 }

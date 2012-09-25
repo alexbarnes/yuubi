@@ -24,4 +24,9 @@ public class ProductAccessImpl implements ProductAccess {
 		Hibernate.initialize(product.getComponents());
 		return product;
 	}
+
+	@Transactional
+	public void save(Product product) {
+		sessionFactory.getCurrentSession().saveOrUpdate(product);
+	}
 }

@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.Analyze;
@@ -49,11 +50,11 @@ public class Component {
 	@ManyToOne
 	@JoinColumn(name = "supplierId", nullable = true)
 	private Supplier supplier;
-	
+
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "categoryId")
 	private ComponentCategory category;
-	
+
 	@Transient
 	private long supplierId;
 
@@ -62,7 +63,7 @@ public class Component {
 	private int stockAlertLimit;
 
 	private BigDecimal cost;
-	
+
 	@OneToMany(mappedBy = "component", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<StockHistory> stockHistory = new ArrayList<StockHistory>();
 
@@ -154,12 +155,25 @@ public class Component {
 	public void setSupplierId(long supplierId) {
 		this.supplierId = supplierId;
 	}
-	
-	
+
 	public StockHistory addHistory() {
 		StockHistory history = new StockHistory();
 		history.setComponent(this);
 		this.stockHistory.add(history);
 		return history;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Component)) {
+			return false;
+		}
+
+		return ((Component) obj).getId() == this.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(id).toHashCode();
 	}
 }

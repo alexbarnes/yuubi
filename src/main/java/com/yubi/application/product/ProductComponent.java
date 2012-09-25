@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.yubi.application.component.Component;
 
 @Entity
@@ -26,8 +28,6 @@ public class ProductComponent {
 		@JoinColumn(name = "componentId")
 		private Component component;
 
-		
-
 		public Product getProduct() {
 			return product;
 		}
@@ -43,13 +43,30 @@ public class ProductComponent {
 		public void setComponent(Component component) {
 			this.component = component;
 		}
+
+		@Override
+		public int hashCode() {
+			return new HashCodeBuilder().append(product.hashCode())
+					.append(component.hashCode()).toHashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (!(obj instanceof Id)) {
+				return false;
+			}
+			Id other = (Id) obj;
+			return product.equals(other.getProduct())
+					&& component.equals(other.getComponent());
+		}
+
 	}
 
 	@EmbeddedId
 	private final Id id = new Id();
 
 	private int number;
-	
+
 	@Transient
 	private long componentId;
 
@@ -64,7 +81,7 @@ public class ProductComponent {
 	public Id getId() {
 		return id;
 	}
-	
+
 	public long getComponentId() {
 		return componentId;
 	}

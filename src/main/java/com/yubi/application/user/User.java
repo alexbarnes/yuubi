@@ -8,6 +8,7 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -29,6 +30,7 @@ public class User {
 	private String password;
 
 	@NotEmpty
+	@Email(message="A valid e-mail address is required")
 	@Column(unique = true, nullable = false)
 	private String emailAddress;
 
