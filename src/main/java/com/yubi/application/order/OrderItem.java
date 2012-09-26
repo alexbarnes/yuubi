@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.Min;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -75,6 +76,7 @@ public class OrderItem {
 	@EmbeddedId
 	private Id id = new Id();
 
+	@Min(value = 1, message = "At least one of this component must be entered")
 	private int number;
 
 	private int numberReceived;
@@ -82,6 +84,7 @@ public class OrderItem {
 	private BigDecimal cost;
 
 	@Transient
+	@Min(value = 1, message = "The component must be set")
 	private long componentId;
 
 	public Id getId() {

@@ -55,7 +55,8 @@ public class OrderController {
 			item.setComponentId(item.getId().getComponent().getId());
 		}
 		
-		order.setSupplierId(order.getSupplier().getId());
+		if (order.getSupplier() != null)
+			order.setSupplierId(order.getSupplier().getId());
 		
 		session.setAttribute(CURRENT_ORDER, order);
 

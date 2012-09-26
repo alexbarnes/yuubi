@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+import javax.validation.constraints.Min;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
@@ -59,6 +60,7 @@ public class ComponentOrder {
 	private List<OrderItem> items = new ArrayList<OrderItem>();
 	
 	@Transient
+	@Min(1)
 	private long supplierId;
 
 	public long getId() {
