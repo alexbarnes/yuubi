@@ -28,6 +28,7 @@ public class HibernateConfig {
 	 * 
 	 * @return an initialised session factory
 	 */
+	@SuppressWarnings("deprecation")
 	@Bean
 	public SessionFactory sessionFactory() throws Exception {
 		Properties properties = new Properties();
@@ -56,6 +57,7 @@ public class HibernateConfig {
 		return new HibernateTransactionManager(sessionFactory());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Bean
 	public DataSource dataSource() {
 		DatabasePlatform platform = 

@@ -7,5 +7,7 @@ import com.yubi.application.home.UpcomingDelivery;
 public interface OrderService {
 	
 	public List<UpcomingDelivery> upcomingDeliveries();
+	
+	public void saveOrder(ComponentOrder order);
 
 }

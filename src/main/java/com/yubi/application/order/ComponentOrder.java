@@ -14,8 +14,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.Analyze;
@@ -53,8 +55,11 @@ public class ComponentOrder {
 	@Temporal(value = TemporalType.DATE)
 	private Date deliveryDate;
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderItem> items = new ArrayList<OrderItem>();
+	
+	@Transient
+	private long supplierId;
 
 	public long getId() {
 		return id;
@@ -118,5 +123,37 @@ public class ComponentOrder {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		
+		if (!(obj instanceof ComponentOrder))
+			return false;
+		
+		ComponentOrder order = (ComponentOrder)obj;
+		return this.id == order.getId();
+	}
+	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(id).toHashCode();
+	}
+	
+	public long getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(long supplierId) {
+		this.supplierId = supplierId;
+	}
+
+	public OrderItem addItem() {
+		OrderItem item = new OrderItem();
+		item.getId().setOrder(this);
+		this.items.add(item);
+		return item;
 	}
 }

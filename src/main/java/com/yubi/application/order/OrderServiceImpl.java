@@ -9,6 +9,7 @@ import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.yubi.application.component.ComponentAccess;
 import com.yubi.application.home.UpcomingDelivery;
 
 @Service
@@ -16,10 +17,13 @@ public class OrderServiceImpl implements OrderService {
 	
 	private OrderAccess orderAccess;
 	
+	private ComponentAccess componentAccess;
+	
 	@Inject
-	public OrderServiceImpl(OrderAccess orderAccess) {
+	public OrderServiceImpl(OrderAccess orderAccess, ComponentAccess componentAccess) {
 		super();
 		this.orderAccess = orderAccess;
+		this.componentAccess = componentAccess;
 	}
 
 	@Transactional(readOnly = true)
@@ -39,6 +43,11 @@ public class OrderServiceImpl implements OrderService {
 		}
 		
 		return deliveries;
+	}
+	
+	@Transactional
+	public void saveOrder(ComponentOrder order) {
+		orderAccess.save(order);
 	}
 
 }

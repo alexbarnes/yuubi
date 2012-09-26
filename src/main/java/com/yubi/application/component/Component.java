@@ -60,6 +60,8 @@ public class Component {
 
 	private int stock;
 
+	private int pendingStock;
+
 	private int stockAlertLimit;
 
 	private BigDecimal cost;
@@ -176,4 +178,13 @@ public class Component {
 	public int hashCode() {
 		return new HashCodeBuilder().append(id).toHashCode();
 	}
+
+	public int getPendingStock() {
+		return pendingStock;
+	}
+
+	public void setPendingStock(int pendingStock) {
+		this.pendingStock = pendingStock;
+	}
+
 }

@@ -69,7 +69,7 @@
 					</div>
 				</div>
 				<div class="row-fluid well controlContainer" >
-					<div class="offset8">
+					<div class="offset7">
 						<div class="control-group">
 							<div class="controls ">
 								<c:if test="${not readOnly}">

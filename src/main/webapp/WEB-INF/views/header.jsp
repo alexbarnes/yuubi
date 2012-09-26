@@ -71,7 +71,7 @@ body {
 								<li class="nav-header">Order</li>
 								<li><a href="<spring:url value='/search/order'/>"><i
 										class="icon-edit"></i> Open</a></li>
-								<li><a href="#"><i class="icon-shopping-cart"></i> Add</a></li>
+								<li><a href="<spring:url value='/order/add'/>"><i class="icon-shopping-cart"></i> Add</a></li>
 								<li><a href="#"><i class="icon-road"></i> Take Delivery</a></li>
 							</ul></li>
 
