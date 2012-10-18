@@ -98,7 +98,6 @@
 	<footer>
 		<p>© Alex Barnes & Yubi Jewellery 2012</p>
 	</footer>
-
 </div>
 <script type="text/javascript">
 	function addComponent() {

@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -24,6 +25,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.yubi.application.category.Category;
 import com.yubi.application.supplier.Supplier;
 
 @Entity
@@ -53,7 +55,7 @@ public class Component {
 
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "categoryId")
-	private ComponentCategory category;
+	private Category category;
 
 	@Transient
 	private long supplierId;
@@ -65,6 +67,9 @@ public class Component {
 	private int stockAlertLimit;
 
 	private BigDecimal cost;
+
+	@Lob
+	private byte[] image;
 
 	@OneToMany(mappedBy = "component", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<StockHistory> stockHistory = new ArrayList<StockHistory>();
@@ -185,6 +190,14 @@ public class Component {
 
 	public void setPendingStock(int pendingStock) {
 		this.pendingStock = pendingStock;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 
 }

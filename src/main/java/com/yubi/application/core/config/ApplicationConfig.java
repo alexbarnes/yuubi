@@ -2,7 +2,6 @@ package com.yubi.application.core.config;
 
 import javax.inject.Inject;
 
-import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.Search;
 import org.springframework.context.ApplicationListener;
@@ -16,25 +15,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
-@ComponentScan(basePackages = {"com.yubi.application"}, includeFilters = {@Filter(type = FilterType.ANNOTATION, value = Controller.class)} )
-@Import({DispatcherConfig.class})
-public class ApplicationConfig implements ApplicationListener<ContextRefreshedEvent> {
-	
+@ComponentScan(basePackages = { "com.yubi.application" }, includeFilters = { @Filter(type = FilterType.ANNOTATION, value = Controller.class) })
+@Import({ DispatcherConfig.class })
+public class ApplicationConfig implements
+		ApplicationListener<ContextRefreshedEvent> {
+
 	@Inject
 	private SessionFactory sessionFactory;
 
 	@Transactional
-	public void onApplicationEvent(ContextRefreshedEvent event)  {
+	public void onApplicationEvent(ContextRefreshedEvent event) {
 		try {
-			Search.getFullTextSession(sessionFactory.getCurrentSession()).createIndexer().threadsToLoadObjects(1).startAndWait();
-		} catch (HibernateException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			Search.getFullTextSession(sessionFactory.getCurrentSession())
+					.createIndexer().threadsToLoadObjects(1).startAndWait();
+		} catch (Exception e) {
+			throw new IllegalStateException(
+					"Failed to initialise search indexes");
 		}
-		
 	}
-	
-	
-
 }

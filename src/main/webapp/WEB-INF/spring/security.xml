@@ -7,17 +7,25 @@
 	
 	<!-- No security for resources -->
 	<http pattern="/resources/**" security="none"/>
-	<http use-expressions="true">
-		
+	<http pattern="/error" security="none" />
+	<http pattern="/shop/**" security="none" create-session="always"/>
+	
+	<http use-expressions="true" create-session="always">
 		<!-- Ensure anyone can see the login page -->
+		
 		<intercept-url pattern="/login*" access="isAnonymous()" />
 		<intercept-url pattern="/forgotpassword" access="isAnonymous()" />
 		
 		<!-- Everything else should be hidden -->
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 
-		<form-login login-page="/login" default-target-url="/home" authentication-failure-url="/loginfailed" always-use-default-target="false"/>
-		
+		<form-login 
+			login-page="/login" 
+			default-target-url="/home" 
+			authentication-failure-url="/loginfailed" 
+			always-use-default-target="false"/>
+			
+		<session-management invalid-session-url="/login"/>
 		<remember-me data-source-ref="dataSource" />
 
 		<logout logout-url="/logout" logout-success-url="/login" />

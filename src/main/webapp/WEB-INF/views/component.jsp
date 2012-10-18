@@ -90,6 +90,7 @@
 						</div>
 					</div>
 				</div>
+
 				<!-- The right hand column of fields -->
 				<div class="span6">
 
@@ -101,8 +102,10 @@
 							<c:if test="${screenMode != 'CREATE'}">
 								<span class="input-small uneditable-input">${component.stock}</span>
 								<c:if test="${readOnly}">
-									<a href="#myModal" role="button" class="btn btn-inverse"
+									<a href="#quantity" role="button" class="btn btn-inverse"
 										data-toggle="modal">Update</a>
+									<a href="#image" role="button" class="btn btn-inverse"
+										data-toggle="modal">Update Image</a>
 								</c:if>
 							</c:if>
 
@@ -145,6 +148,17 @@
 							</c:if>
 						</div>
 					</div>
+					<c:if test="${readOnly}">
+						<ul class="thumbnails">
+							<li class="span4">
+								<div class="thumbnail">
+									<img
+										src="<spring:url value="/component/image/${component.id}"/>"
+										alt="">
+								</div>
+							</li>
+						</ul>
+					</c:if>
 				</div>
 
 				<!-- Hidden fields which need to be provided to the model. Only required for updates -->
@@ -155,7 +169,7 @@
 		</div>
 
 		<!--  The form controls -->
-		<div class="row-fluid well controlContainer" >
+		<div class="row-fluid well controlContainer">
 			<div class="offset7">
 				<!-- The form buttons, these depend on the screen mode -->
 				<div class="control-group">
@@ -206,7 +220,7 @@
 
 		<!-- If we're in enquiry mode we can show the edit stock pop-up -->
 		<c:if test="${screenMode == 'ENQUIRE'}">
-			<div class="modal hide" id="myModal" tabindex="-1" role="dialog"
+			<div class="modal hide" id="quantity" tabindex="-1" role="dialog"
 				aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
@@ -247,25 +261,45 @@
 							<form:input type="text" path="narrative" cssClass="input-medium" />
 						</div>
 					</div>
+
+					<form:input type="hidden" path="componentId" />
+
+					<div class="modal-footer">
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+						<button type="submit" class="btn btn-inverse">Apply</button>
+					</div>
+				</form:form>
+			</div>
+		</div>
+			<div class="modal hide" id="image" tabindex="-1" role="dialog"
+				aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">×</button>
+					<h3 id="myModalLabel">Update Component Image</h3>
+				</div>
+				<c:url var="imageUrl" value="/component/image/save"></c:url>
+				<form method="post" action="/component/image/save/${component.id}" enctype="multipart/form-data">
+					<input type="file" name="image" /> 
+					
+					<input type="hidden" name="componentId" value="${component.id}" />
+					<div class="modal-footer">
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+						<button type="submit" class="btn btn-inverse">Apply</button>
+					</div>
+				</form>
+
 			</div>
 
-			<form:input type="hidden" path="componentId" />
-
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-				<button type="submit" class="btn btn-inverse">Apply</button>
-			</div>
-			</form:form>
+			<!-- If we have set the showpopup variable to true show the popup on page load -->
+			<c:if test="${showpopup}">
+				<script type="text/javascript">
+					$(window).load(function() {
+						$('#quantity').modal('show');
+					});
+				</script>
+			</c:if>
+		</c:if>
 	</div>
-
-	<!-- If we have set the showpopup variable to true show the popup on page load -->
-	<c:if test="${showpopup}">
-		<script type="text/javascript">
-		$(window).load(function() {
-			$('#myModal').modal('show');
-		});
-	</script>
-	</c:if>
-	</c:if>
 </div>
 <jsp:include page="footer.jsp" />
