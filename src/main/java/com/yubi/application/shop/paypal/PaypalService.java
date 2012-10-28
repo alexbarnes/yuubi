@@ -14,6 +14,6 @@ public interface PaypalService {
 	 * Complete the flow. This is where the order is written to the database. We 
 	 * also obtain the shipping information from here.
 	 */
-	public void completeTransaction();
+	public void completeTransaction(String token);
 
 }

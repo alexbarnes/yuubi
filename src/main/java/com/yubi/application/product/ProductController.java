@@ -98,7 +98,6 @@ public class ProductController {
 	
 	
 	private void mapViewProductToSession(Product sessionProduct, Product viewProduct) {
-		sessionProduct.setCurrency(viewProduct.getCurrency());
 		sessionProduct.setDescription(viewProduct.getDescription());
 		sessionProduct.setUnitPrice(viewProduct.getUnitPrice());
 	}

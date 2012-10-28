@@ -1,7 +1,6 @@
 package com.yubi.application.product;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
@@ -39,12 +39,13 @@ public class Product {
 
 	private BigDecimal unitPrice;
 
-	private Currency currency;
-	
 	private int stockLevel;
+	
+	@Lob
+	private byte[] thumbnail;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
-	private Set<ProductImage> images = new HashSet<ProductImage>();
+	private final Set<ProductImage> images = new HashSet<ProductImage>();
 
 	@ManyToOne
 	@JoinColumn(name = "categoryId", nullable = false)
@@ -82,14 +83,6 @@ public class Product {
 		this.unitPrice = unitPrice;
 	}
 
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -121,5 +114,25 @@ public class Product {
 
 	public void setStockLevel(int stockLevel) {
 		this.stockLevel = stockLevel;
+	}
+
+	public byte[] getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setThumbnail(byte[] thumbnail) {
+		this.thumbnail = thumbnail;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public Set<ProductImage> getImages() {
+		return images;
 	}
 }

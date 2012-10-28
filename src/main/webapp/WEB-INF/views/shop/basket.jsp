@@ -162,7 +162,7 @@
 					<button class="btn btn-primary" type="submit">Continue</button>
 				</div>		  
 				<div class="span5">
-					<a href="<spring:url value='/shop/paypal/checkout'/>" class="pull-right">
+					<a href="<spring:url value='/shop/checkout'/>" class="pull-right">
 					<img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" align="left" style="margin-right:7px;">
 					</a>
 				</div>

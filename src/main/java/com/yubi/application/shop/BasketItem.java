@@ -21,17 +21,12 @@ public class BasketItem {
 		return productCode;
 	}
 
-	public void setProductCode(String productCode) {
-		this.productCode = productCode;
-	}
+	
 
 	public int getNumber() {
 		return number;
 	}
 
-	public void setNumber(int number) {
-		this.number = number;
-	}
 
 	@Override
 	public boolean equals(Object other) {

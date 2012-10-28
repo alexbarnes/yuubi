@@ -13,4 +13,6 @@ public class PaypalConstants {
 	public static final String PAYPAL_CANCEL_URL = "paypal.cancel.url";
 
 	public static final String PAYPAL_PAYMENT_URL = "paypal.payment.url";
+	
+	public static final String PAYPAL_API_ENDPOINT = "paypal.api.url";
 }

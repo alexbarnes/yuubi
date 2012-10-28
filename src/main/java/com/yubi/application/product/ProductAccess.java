@@ -9,5 +9,7 @@ public interface ProductAccess {
 	public void deleteImage(long id);
 	
 	public ProductImage loadImage(long id);
+	
+	public ProductImage loadPrimaryImage(String code);
 
 }

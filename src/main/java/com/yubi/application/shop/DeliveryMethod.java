@@ -1,5 +1,7 @@
 package com.yubi.application.shop;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,6 +22,8 @@ public class DeliveryMethod {
 	@ManyToOne
 	@JoinColumn(name = "countryCode")
 	private Country country;
+	
+	private BigDecimal cost;
 
 	public long getId() {
 		return id;
@@ -43,5 +47,13 @@ public class DeliveryMethod {
 
 	public void setCountry(Country country) {
 		this.country = country;
+	}
+
+	public BigDecimal getCost() {
+		return cost;
+	}
+
+	public void setCost(BigDecimal cost) {
+		this.cost = cost;
 	}
 }

@@ -2,6 +2,7 @@ package com.yubi.application.product;
 
 import javax.inject.Inject;
 
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,5 +41,14 @@ public class ProductAccessImpl implements ProductAccess {
 	public ProductImage loadImage(long id) {
 		return (ProductImage) sessionFactory.getCurrentSession()
 				.get(ProductImage.class, id);
+	}
+
+	@Transactional
+	public ProductImage loadPrimaryImage(String code) {
+		Query query = 
+				sessionFactory.getCurrentSession().createQuery("from ProductImage where product.code = ? and primaryImage = true");
+		
+		query.setParameter(0, code);
+		return (ProductImage) query.uniqueResult();
 	}
 }

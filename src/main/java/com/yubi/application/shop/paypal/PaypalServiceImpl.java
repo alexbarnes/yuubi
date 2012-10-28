@@ -1,7 +1,9 @@
 package com.yubi.application.shop.paypal;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
@@ -13,12 +15,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.yubi.application.product.Product;
+import com.yubi.application.product.ProductAccess;
 import com.yubi.application.shop.Basket;
+import com.yubi.application.shop.BasketItem;
 
 @Service
 class PaypalServiceImpl implements PaypalService {
 	
 	private Logger logger = LoggerFactory.getLogger(PaypalServiceImpl.class);
+	
+	private final ProductAccess productAccess;
 	
 	private String userName;
 	
@@ -30,38 +37,30 @@ class PaypalServiceImpl implements PaypalService {
 	
 	private String cancelURL;
 	
+	private String paypalURL;
+	
 	@Inject
-	public PaypalServiceImpl(Environment env) {
+	public PaypalServiceImpl(Environment env, ProductAccess productAccess) {
 		super();
+		this.productAccess = productAccess;
 		this.userName = env.getProperty(PaypalConstants.PAYPAL_USERNAME);
 		this.password = env.getProperty(PaypalConstants.PAYPAL_PASSWORD);
 		this.signature = env.getProperty(PaypalConstants.PAYPAL_SIGNATURE);
 		this.successURL = env.getProperty(PaypalConstants.PAYPAL_SUCCESS_URL);
 		this.cancelURL = env.getProperty(PaypalConstants.PAYPAL_CANCEL_URL);
+		this.paypalURL = env.getProperty(PaypalConstants.PAYPAL_API_ENDPOINT);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.yubi.application.shop.paypal.PaypalService#setupTransaction()
 	 */
 	public String setupTransaction(Basket basket) {
-		String request = 
-				String.format(
-						"USER=%s&" +
-						"PWD=%s&" +
-						"SIGNATURE=%s&" +
-						"METHOD=SetExpressCheckout&" +
-						"VERSION=72.0&" +
-						"PAYMENTREQUEST_0_PAYMENTACTION=Sale&" +
-						"PAYMENTREQUEST_0_AMT=10&" +
-						"PAYMENTREQUEST_0_ITEMAMT=10&" +
-						"RETURNURL=%s&" +
-						"CANCELURL=%s&" +
-						"SOLUTIONTYPE=Sole", 
-						userName, password, signature, successURL, cancelURL);
 		
-		logger.info("Requesting token for request [" + request + "].");
+		String request = setupRequest(basket).createRequest();
 		
-		ResponseEntity<String> response = new RestTemplate().postForEntity("https://api-3t.sandbox.paypal.com/nvp", request, String.class);
+		logger.info(request);
+		
+		ResponseEntity<String> response = new RestTemplate().postForEntity(paypalURL, request, String.class);
 		
 		Map<String, String> resultMap = new HashMap<String, String>();
 		String[] result = StringUtils.split(response.getBody(), "&");
@@ -79,7 +78,51 @@ class PaypalServiceImpl implements PaypalService {
 		return resultMap.get("TOKEN");
 	}
 
-	public void completeTransaction() {
-		// TODO Auto-generated method stub
+	public void completeTransaction(String token) {
+		String request = "";
+		
+		ResponseEntity<String> response = new RestTemplate().postForEntity(paypalURL, request, String.class);
+		
+		Map<String, String> resultMap = new HashMap<String, String>();
+		String[] result = StringUtils.split(response.getBody(), "&");
+		
+		for (String entry : result) {
+			resultMap.put(StringUtils.split(entry, "=")[0], StringUtils.split(entry, "=")[1]);
+		}
+		
+		logger.info("Get express checkout details request result map + [" + resultMap.toString() + "].");
+		
+		if (!resultMap.get("ACK").equals("Success")) {
+			throw new RuntimeException("An error occurred creating the express checkout");
+		}
+	}
+	
+	
+	private SetupExpressTransactionRequestBuilder setupRequest(Basket basket) {
+		SetupExpressTransactionRequestBuilder request = 
+				new SetupExpressTransactionRequestBuilder(userName, password, signature);
+		
+		request.
+			withCancelURL(cancelURL).
+			withReturnURL(successURL).
+			withShippingCost(basket.getDeliveryMethod().getCost());
+			
+		// Add all of the basket items to the paypal request
+		for (Entry<String, BasketItem> item : basket.getItems().entrySet()) {
+			
+			Product product = new Product();
+			product.setDescription("Bracelet");
+			product.setUnitPrice(new BigDecimal(35.00));
+			
+			ExpressTransactionItem checkoutItem = 
+					new ExpressTransactionItem(
+							product.getDescription(), 
+							StringUtils.EMPTY, 
+							item.getValue().getNumber(), 
+							product.getUnitPrice());
+			request.addItem(checkoutItem);
+		}
+		
+		return request;
 	}
 }

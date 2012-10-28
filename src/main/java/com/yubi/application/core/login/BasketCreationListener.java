@@ -1,11 +1,15 @@
 package com.yubi.application.core.login;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.web.session.HttpSessionCreatedEvent;
 
 import com.yubi.application.shop.Basket;
+import com.yubi.application.shop.BasketItem;
+import com.yubi.application.shop.DeliveryMethod;
 
 public class BasketCreationListener implements
 		ApplicationListener<HttpSessionCreatedEvent> {
@@ -20,7 +24,16 @@ public class BasketCreationListener implements
 		event.getSession().setMaxInactiveInterval(60);
 		if (event.getSession() != null
 				&& event.getSession().getAttribute("basket") == null) {
-			event.getSession().setAttribute(BASKET_KEY, new Basket());
+			 // TODO remove me!
+			 Basket basket = new Basket();
+			 basket.getItems().put("CODE", new BasketItem("CODE", 2));
+			 
+			 DeliveryMethod method = new DeliveryMethod();
+			 method.setCost(new BigDecimal(3.00));
+			 method.setDescription("First Class");
+			 basket.setDeliveryMethod(method);
+			 
+			event.getSession().setAttribute(BASKET_KEY, basket);
 		}
 	}
 
