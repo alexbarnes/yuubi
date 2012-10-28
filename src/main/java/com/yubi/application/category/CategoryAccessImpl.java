@@ -35,7 +35,7 @@ public class CategoryAccessImpl implements CategoryAccess {
 				.createQuery("from Category where type = ? AND parentCategoryId is NULL");
 		query.setString(0, Category.CategoryType.PRODUCT.toString());
 		
-		List<Category> categories = query.list();
+		List<Category> categories = query.setCacheable(true).list();
 		return categories;
 	}
 }

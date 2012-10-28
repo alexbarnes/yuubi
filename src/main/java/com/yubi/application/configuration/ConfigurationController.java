@@ -8,7 +8,7 @@ import com.yubi.application.core.ScreenMode;
 import com.yubi.application.user.User;
 
 @Controller
-@RequestMapping("/configuration")
+@RequestMapping("/admin/configuration")
 public class ConfigurationController {
 	
 	@RequestMapping("/")

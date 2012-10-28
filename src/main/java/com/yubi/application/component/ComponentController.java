@@ -1,6 +1,5 @@
 package com.yubi.application.component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,19 +8,13 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.yubi.application.component.StockHistory.StockChangeType;
 import com.yubi.application.core.Model;
@@ -29,7 +22,7 @@ import com.yubi.application.core.ScreenMode;
 import com.yubi.application.supplier.SupplierAccess;
 
 @Controller
-@RequestMapping("/component")
+@RequestMapping("/admin/component")
 public class ComponentController {
 
 	private final ComponentAccess componentAccess;
@@ -74,16 +67,16 @@ public class ComponentController {
 		return model;
 	}
 
-	@RequestMapping(value = "/image/{id}", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/image/{id}", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getImage(
 			@PathVariable(value = "id") final long id) throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.IMAGE_GIF);
 		return new ResponseEntity<byte[]>(componentAccess.load(id).getImage(),
 				headers, HttpStatus.OK);
-	}
+	}*/
 
-	@RequestMapping(value = "/image/save/{id}", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/image/save/{id}", method = RequestMethod.POST)
 	public Model uploadImage(@PathVariable(value = "id") final long id, @RequestParam("image") MultipartFile file)
 			throws IllegalStateException, IOException {
 		
@@ -91,8 +84,8 @@ public class ComponentController {
 		component.setImage(file.getBytes());
 		componentAccess.save(component);
 		
-		return new Model("redirect:/component/view/" + component.getId());
-	}
+		return new Model("redirect:/admin/component/view/" + component.getId());
+	}*/
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public Model save(@ModelAttribute("component") @Valid Component component,
@@ -111,7 +104,7 @@ public class ComponentController {
 		// Save the component
 		componentAccess.save(component);
 
-		return new Model("redirect:/component/view/" + component.getId());
+		return new Model("redirect:/admin/component/view/" + component.getId());
 	}
 
 	@RequestMapping(value = "/stockupdate", method = RequestMethod.POST)
@@ -144,7 +137,7 @@ public class ComponentController {
 		componentAccess.save(component);
 
 		// Redirect to the normal view
-		return new Model("redirect:/component/view/" + component.getId());
+		return new Model("redirect:/admin/component/view/" + component.getId());
 	}
 
 	@RequestMapping("/search")

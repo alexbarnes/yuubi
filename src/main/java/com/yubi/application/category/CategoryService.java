@@ -1,8 +1,8 @@
 package com.yubi.application.category;
 
-import java.util.Map;
+import java.util.List;
 
 public interface CategoryService {
 	
-	public Map<String, Integer> buildProductMenu();
+	public List<Category> buildProductMenu();
 }

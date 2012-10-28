@@ -4,7 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <c:set var="readOnly" value="${screenMode == 'ENQUIRE'}" />
-<c:url var="componentUrl" value="/component/search"></c:url>
+<c:url var="componentUrl" value="/admin/component/search"/>
 <script type="text/javascript">
 
 	// When ready loop over the inputs with class component

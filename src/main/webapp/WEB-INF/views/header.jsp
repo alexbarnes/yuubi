@@ -41,39 +41,39 @@ body {
 				<a class="btn btn-navbar" data-toggle="collapse"
 					data-target=".nav-collapse"> <span class="icon-bar"></span> <span
 					class="icon-bar"></span> <span class="icon-bar"></span>
-				</a> <a class="brand" href="<spring:url value='/home'/>">yuubi</a>
+				</a> <a class="brand" href="<spring:url value='/admin/home'/>">yuubi</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li class="active"><a href="<spring:url value='/home'/>"><i
+						<li class="active"><a href="<spring:url value='/admin/home'/>"><i
 								class="icon-home"></i> Home</a></li>
 						<li class="dropdown active"><a href="#"
 							class="dropdown-toggle" data-toggle="dropdown"><i
 								class="icon-user"></i> Actions <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li class="nav-header">Component</li>
-								<li><a href="<spring:url value='/search/component'/>"><i
+								<li><a href="<spring:url value='/admin/search/component'/>"><i
 										class="icon-edit"></i> Open</a></li>
-								<li><a href="<spring:url value='/component/add'/>"><i
+								<li><a href="<spring:url value='/admin/component/add'/>"><i
 										class="icon-plus-sign"></i> Add</a></li>
 								<li><a href="#stock"><i class="icon-list-alt"></i>
 										Stock Levels</a></li>
 								<li class="divider"></li>
 								<li class="nav-header">Supplier</li>
-								<li><a href="<spring:url value='/search/supplier'/>"><i
+								<li><a href="<spring:url value='/admin/search/supplier'/>"><i
 										class="icon-edit"></i> Open</a></li>
-								<li><a href="<spring:url value='/supplier/add'/>""><i
+								<li><a href="<spring:url value='/admin/supplier/add'/>""><i
 										class="icon-plus-sign"></i> Add</a></li>
 								<li class="divider"></li>
 								<li class="nav-header">Product</li>
-								<li><a href="<spring:url value='/product/add'/>""><i
+								<li><a href="<spring:url value='/admin/product/add'/>""><i
 										class="icon-plus-sign"></i> Create</a></li>
 								<li><a href=""><i
 										class="icon-plus-sign"></i> Add Completed</a></li>
 								<li class="divider"></li>
 								<li class="nav-header">Order</li>
-								<li><a href="<spring:url value='/search/order'/>"><i
+								<li><a href="<spring:url value='/admin/search/order'/>"><i
 										class="icon-edit"></i> Open</a></li>
-								<li><a href="<spring:url value='/order/add'/>"><i class="icon-shopping-cart"></i> Add</a></li>
+								<li><a href="<spring:url value='/admin/order/add'/>"><i class="icon-shopping-cart"></i> Add</a></li>
 								<li><a href="#"><i class="icon-road"></i> Take Delivery</a></li>
 							</ul></li>
 
@@ -82,11 +82,11 @@ body {
 								class="icon-wrench"></i> Configuration <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li class="nav-header">User</li>
-								<li><a href="<spring:url value='/user/add'/>"><i
+								<li><a href="<spring:url value='/admin/user/add'/>"><i
 										class="icon-plus-sign"></i> Add</a></li>
 							</ul></li>
 					</ul>
-					<c:url var="url" value="/search/quicksearch" />
+					<c:url var="url" value="/admin/search/quicksearch" />
 					<form:form cssClass="navbar-search pull-left" action="${url}"
 						commandName="search">
 						<form:input path="searchString" cssClass="search-query" />
@@ -99,10 +99,10 @@ body {
 								class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
 								href="#"><span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="<spring:url value='/preferences/'/>"><i
+								<li><a href="<spring:url value='/admin/preferences/'/>"><i
 										class="icon-pencil"></i> Preferences</a></li>
 								<li class="divider"></li>
-								<li><a href="<spring:url value='/logout'/>"><i
+								<li><a href="<spring:url value='/admin/logout'/>"><i
 										class="i"></i> Logout</a></li>
 							</ul>
 						</div>

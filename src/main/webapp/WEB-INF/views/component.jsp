@@ -12,7 +12,7 @@
 	<div class="row-fluid">
 		<div class="span8 offset2">
 			<!-- The main form backed by the component object - this posts to the save method -->
-			<c:url var="url" value="/component/save" />
+			<c:url var="url" value="/admin/component/save" />
 			<form:form cssClass="form-horizontal" commandName="component"
 				action="${url}">
 				<div class="row-fluid well">
@@ -153,7 +153,7 @@
 							<li class="span4">
 								<div class="thumbnail">
 									<img
-										src="<spring:url value="/component/image/${component.id}"/>"
+										src="<spring:url value="/admin/component/image/${component.id}"/>"
 										alt="">
 								</div>
 							</li>
@@ -178,16 +178,16 @@
 							<button type="submit" class="btn">Save</button>
 							<!-- Cancel should either show the component in edit mode or return home -->
 							<c:if test="${component.id > 0}">
-								<a href="<spring:url value="/component/view/${component.id}"/>"
+								<a href="<spring:url value="/admin/component/view/${component.id}"/>"
 									role="button" class="btn btn-inverse" data-toggle="modal">Cancel</a>
 							</c:if>
 							<c:if test="${component.id == 0}">
-								<a href="<spring:url value="/home"/>" role="button"
+								<a href="<spring:url value="/admin/home"/>" role="button"
 									class="btn btn-inverse" data-toggle="modal">Cancel</a>
 							</c:if>
 						</c:if>
 						<c:if test="${readOnly}">
-							<a href="<spring:url value="/component/edit/${component.id}"/>"
+							<a href="<spring:url value="/admin/component/edit/${component.id}"/>"
 								role="button" class="btn btn-inverse" data-toggle="modal">Edit</a>
 						</c:if>
 					</div>
@@ -196,7 +196,7 @@
 		</div>
 		</form:form>
 
-		<c:url var="supplierurl" value="/supplier/search"></c:url>
+		<c:url var="supplierurl" value="/admin/supplier/search"></c:url>
 		<!-- Javascript for the Typeahead field -->
 		<script type="text/javascript">
 			$('.supplier').typeahead({
@@ -227,7 +227,7 @@
 						aria-hidden="true">×</button>
 					<h3 id="myModalLabel">Update Stock Level</h3>
 				</div>
-				<c:url var="stockurl" value="/component/stockupdate"></c:url>
+				<c:url var="stockurl" value="/admin/component/stockupdate"></c:url>
 				<form:form cssClass="form-horizontal" commandName="stockupdate"
 					action="${stockurl}">
 					<div class="modal-body">
@@ -278,8 +278,8 @@
 						aria-hidden="true">×</button>
 					<h3 id="myModalLabel">Update Component Image</h3>
 				</div>
-				<c:url var="imageUrl" value="/component/image/save"></c:url>
-				<form method="post" action="/component/image/save/${component.id}" enctype="multipart/form-data">
+				<c:url var="imageUrl" value="/admin/component/image/save"></c:url>
+				<form method="post" action="/admin/component/image/save/${component.id}" enctype="multipart/form-data">
 					<input type="file" name="image" /> 
 					
 					<input type="hidden" name="componentId" value="${component.id}" />

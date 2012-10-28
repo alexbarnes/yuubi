@@ -24,12 +24,12 @@ public class LoginController {
 		this.userAccess = userAccess;
 	}
 
-	@RequestMapping("/login")
+	@RequestMapping("/admin/login")
 	public String showLogin(ModelMap map) {
 		return "login";
 	}
 	
-	@RequestMapping(value="/loginfailed", method = RequestMethod.GET)
+	@RequestMapping(value="/admin/loginfailed", method = RequestMethod.GET)
 	public String loginerror(ModelMap model) {
  
 		model.addAttribute("error", "true");
@@ -37,12 +37,12 @@ public class LoginController {
  
 	}
 	
-	@RequestMapping("/forgotpassword")
+	@RequestMapping("/admin/forgotpassword")
 	public String forgotPassword() {
 		return "forgot";
 	}
 	
-	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/forgotpassword", method = RequestMethod.POST)
 	public ModelAndView forgot(String email, RedirectAttributes redirectAttrs) {
 		
 		if (StringUtils.isEmpty(email)) {
@@ -55,7 +55,7 @@ public class LoginController {
 		// If we have a user matching the e-mail send an e-mail
 		if (user != null) {
 			redirectAttrs.addFlashAttribute("success", "true");
-			return new ModelAndView("redirect:/forgotpassword");
+			return new ModelAndView("redirect:/admin/admin/forgotpassword");
 		}
 		
 		// If we can't find a user, warn the user

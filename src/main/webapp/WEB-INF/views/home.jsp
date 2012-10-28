@@ -60,7 +60,7 @@
 								<tr>
 									<td>${current.itemDescription}</td>
 									<td>${current.number}</td>
-									<td><a href="<spring:url value="/component/view/${current.stockItem}"/>" role="button"
+									<td><a href="<spring:url value="/admin/component/view/${current.stockItem}"/>" role="button"
 													class="btn btn-inverse" data-toggle="modal">Open</a></td>
 								</tr>
 							</c:forEach>

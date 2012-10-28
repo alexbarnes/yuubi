@@ -19,7 +19,7 @@ import com.yubi.application.core.Model;
 import com.yubi.application.core.ScreenMode;
 
 @Controller
-@RequestMapping(value = "/supplier")
+@RequestMapping(value = "/admin/supplier")
 public class SupplierController {
 	
 	private final SupplierAccess supplierAccess;
@@ -72,7 +72,7 @@ public class SupplierController {
 		supplierAccess.save(supplier);
 		
 		// On success show the supplier in enquiry mode
-		return new Model("redirect:/supplier/view/" + supplier.getId());
+		return new Model("redirect:/admin/supplier/view/" + supplier.getId());
 	}
 	
 	

@@ -12,7 +12,7 @@
 		<div class="span8 offset2">
 
 			<!-- The main form backed by the supplier object - this posts to the save method -->
-			<c:url var="url" value="/supplier/save" />
+			<c:url var="url" value="/admin/supplier/save" />
 			<form:form cssClass="form-horizontal" commandName="supplier"
 				action="${url}">
 				<div class="row-fluid well">
@@ -99,18 +99,18 @@
 					<c:if test="${not readOnly}">
 						<button type="submit" class="btn">Save</button>
 						<c:if test="${supplier.id > 0}">
-							<a href="<spring:url value="/supplier/view/${supplier.id}"/>"
+							<a href="<spring:url value="/admin/supplier/view/${supplier.id}"/>"
 								role="button" class="btn btn-inverse" data-toggle="modal">Cancel</a>
 						</c:if>
 
 						<c:if test="${supplier.id == 0}">
-							<a href="<spring:url value="/home"/>" role="button"
+							<a href="<spring:url value="/admin/home"/>" role="button"
 								class="btn btn-inverse" data-toggle="modal">Cancel</a>
 						</c:if>
 					</c:if>
 
 					<c:if test="${readOnly}">
-						<a href="<spring:url value="/supplier/edit/${supplier.id}"/>"
+						<a href="<spring:url value="/admin/supplier/edit/${supplier.id}"/>"
 							role="button" class="btn btn-inverse" data-toggle="modal">Edit</a>
 					</c:if>
 				</div>

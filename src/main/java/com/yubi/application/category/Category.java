@@ -1,12 +1,12 @@
 package com.yubi.application.category;
 
-import java.util.Set;
+import java.util.List;
 
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -18,7 +18,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Cacheable
 public class Category {
 	
 	public enum CategoryType {
@@ -36,8 +35,8 @@ public class Category {
 	@JoinColumn(name = "parentCategoryId", nullable = true)
 	private Category parentCategory;
 	
-	@OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<Category> childCategories;
+	@OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
+	private List<Category> childCategories;
 	
 	@Enumerated(EnumType.STRING)
 	private CategoryType type;
@@ -66,11 +65,11 @@ public class Category {
 		this.parentCategory = parentCategory;
 	}
 
-	public Set<Category> getChildCategories() {
+	public List<Category> getChildCategories() {
 		return childCategories;
 	}
 
-	public void setChildCategories(Set<Category> childCategories) {
+	public void setChildCategories(List<Category> childCategories) {
 		this.childCategories = childCategories;
 	}
 

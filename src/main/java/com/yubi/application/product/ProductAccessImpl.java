@@ -2,7 +2,6 @@ package com.yubi.application.product;
 
 import javax.inject.Inject;
 
-import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,6 @@ public class ProductAccessImpl implements ProductAccess {
 	public Product load(String code) {
 		Product product = (Product) sessionFactory.getCurrentSession().get(
 				Product.class, code);
-		Hibernate.initialize(product.getComponents());
 		return product;
 	}
 

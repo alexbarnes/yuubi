@@ -24,7 +24,7 @@
 				</c:when>
 			</c:choose>
 			<hr />
-			<c:url var="url" value="/user/save" />
+			<c:url var="url" value="/admin/user/save" />
 			<form:form commandName="user" action="${url}">
 				<div class="control-group" id="userNameGroup">
 					<label class="control-label" for="userName">Username</label>
@@ -96,18 +96,18 @@
 
 							<!-- Cancel should either show the component in edit mode or return home -->
 							<c:if test="${screenMode == 'UPDATE'}">
-								<a href="<spring:url value="/user/view/${user.userName}"/>"
+								<a href="<spring:url value="/admin/user/view/${user.userName}"/>"
 									role="button" class="btn btn-inverse" data-toggle="modal">Cancel</a>
 							</c:if>
 							<c:if test="${screenMode == 'CREATE'}">
-								<a href="<spring:url value="/home"/>" role="button"
+								<a href="<spring:url value="/admin/home"/>" role="button"
 									class="btn btn-inverse" data-toggle="modal">Cancel</a>
 							</c:if>
 						</c:if>
 
 						<!--  Read only mode, we are enquiring and wish to edit -->
 						<c:if test="${readOnly}">
-							<a href="<spring:url value="/user/edit/${user.userName}"/>"
+							<a href="<spring:url value="/admin/user/edit/${user.userName}"/>"
 								role="button" class="btn btn-inverse" data-toggle="modal">Edit</a>
 						</c:if>
 					</div>
@@ -128,7 +128,7 @@
 				if ($("#userName").val() != '') {
 					$.ajax({
 						type : "GET",
-						url : "<spring:url value='/user/checkduplicate'/>"
+						url : "<spring:url value='/admin/user/checkduplicate'/>"
 								+ "/"
 								+ encodeURIComponent($("#userName").val()),
 						success : function(msg) {
@@ -160,7 +160,7 @@
 				if ($("#emailAddress").val() != '') {
 					$.ajax({
 						type : "GET",
-						url : "<spring:url value='/user/checkduplicateemail'/>"
+						url : "<spring:url value='/admin/user/checkduplicateemail'/>"
 								+ "?address="
 								+ encodeURIComponent($("#emailAddress").val()),
 						success : function(msg) {

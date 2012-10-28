@@ -1,10 +1,8 @@
 package com.yubi.application.product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Currency;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Cacheable;
@@ -45,9 +43,6 @@ public class Product {
 	
 	private int stockLevel;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id.product", orphanRemoval = true)
-	private List<ProductComponent> components = new ArrayList<ProductComponent>();
-
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
 	private Set<ProductImage> images = new HashSet<ProductImage>();
 
@@ -77,14 +72,6 @@ public class Product {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public List<ProductComponent> getComponents() {
-		return components;
-	}
-
-	public void setComponents(List<ProductComponent> components) {
-		this.components = components;
 	}
 
 	public BigDecimal getUnitPrice() {
@@ -120,12 +107,6 @@ public class Product {
 		return new HashCodeBuilder().append(code).toHashCode();
 	}
 
-	public ProductComponent addComponent() {
-		ProductComponent component = new ProductComponent();
-		component.getId().setProduct(this);
-		components.add(component);
-		return component;
-	}
 
 	public ProductImage addImage() {
 		ProductImage image = new ProductImage();

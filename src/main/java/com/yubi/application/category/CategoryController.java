@@ -10,7 +10,7 @@ import com.yubi.application.core.Model;
 import com.yubi.application.core.ScreenMode;
 
 @Controller
-@RequestMapping("/category")
+@RequestMapping("/admin/category")
 public class CategoryController {
 	
 	private final CategoryAccess categoryAccess;

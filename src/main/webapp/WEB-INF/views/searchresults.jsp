@@ -40,15 +40,15 @@
 									<td>${result.description}</td>
 									<c:choose>
 										<c:when test="${result.entityType == 'SUPPLIER'}">
-											<td><a href='<spring:url value="/supplier/view/${result.id}"/>' role="button"
+											<td><a href='<spring:url value="/admin/supplier/view/${result.id}"/>' role="button"
 												class="btn btn-inverse" data-toggle="modal">Open</a></td>
 										</c:when>
 										<c:when test="${result.entityType == 'ORDER'}">
-											<td><a href="<spring:url value="/order/view/${result.id}"/>" role="button"
+											<td><a href="<spring:url value="/admin/order/view/${result.id}"/>" role="button"
 												class="btn btn-inverse" data-toggle="modal">Open</a></td>
 										</c:when>
 										<c:when test="${result.entityType == 'COMPONENT'}">
-											<td><a href="<spring:url value="/component/view/${result.id}"/>" role="button"
+											<td><a href="<spring:url value="/admin/component/view/${result.id}"/>" role="button"
 												class="btn btn-inverse" data-toggle="modal">Open</a></td>
 										</c:when>
 									</c:choose>

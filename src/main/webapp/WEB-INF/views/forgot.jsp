@@ -46,7 +46,7 @@ body {
 					to the supplied address</div>
 			</c:if>
 			<c:if test="${showForm}">
-				<form name='f' action="<c:url value='/forgotpassword' />"
+				<form name='f' action="<c:url value='/admin/forgotpassword' />"
 					method='POST' class="well">
 					<label class="offset2"></label> <label class="offset2">E-mail</label>
 					<input type="text" id="email" name="email"

@@ -10,26 +10,21 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.yubi.application.component.ComponentAccess;
 import com.yubi.application.core.Model;
 import com.yubi.application.core.ScreenMode;
 
 @Controller
-@RequestMapping("/product")
+@RequestMapping("/admin/product")
 public class ProductController {
 	
 	private static final String CURRENT_PRODUCT = "current_product";
 
 	private final ProductAccess productAccess;
 
-	private final ComponentAccess componentAccess;
-
 	@Inject
-	public ProductController(ProductAccess productAccess,
-			ComponentAccess componentAccess) {
+	public ProductController(ProductAccess productAccess) {
 		super();
 		this.productAccess = productAccess;
-		this.componentAccess = componentAccess;
 	}
 
 	@RequestMapping("/add")
@@ -42,11 +37,6 @@ public class ProductController {
 	@RequestMapping("/edit/{code}")
 	public Model editProduct(@PathVariable(value = "code") String code, HttpSession session) {
 		Product product = productAccess.load(code);
-		
-		// Set up the component ids so that the view knows what to show
-		for (ProductComponent component : product.getComponents()) {
-			component.setComponentId(component.getId().getComponent().getId());
-		}
 		
 		session.setAttribute(CURRENT_PRODUCT, product);
 
@@ -71,37 +61,6 @@ public class ProductController {
 				"product", product);
 	}
 
-	@RequestMapping("/component/add")
-	public Model addComponent(@ModelAttribute("product") Product product,
-			String screenMode) {
-
-		// Set objects on the product to reflect the ids set from the
-		// UI.
-		for (ProductComponent component : product.getComponents()) {
-			component.getId().setComponent(
-					componentAccess.load(component.getComponentId()));
-		}
-
-		product.getComponents().add(new ProductComponent());
-		return new Model(ScreenMode.valueOf(screenMode), "productform",
-				"product", product);
-	}
-
-	@RequestMapping("/component/remove/{index}")
-	public Model removeComponent(@ModelAttribute("product") Product product,
-			@PathVariable(value = "index") int index, String screenMode) {
-
-		product.getComponents().remove(index);
-
-		// For the remaining components set the actual objects
-		for (ProductComponent component : product.getComponents()) {
-			component.getId().setComponent(
-					componentAccess.load(component.getComponentId()));
-		}
-
-		return new Model(ScreenMode.valueOf(screenMode), "productform",
-				"product", product);
-	}
 
 	@RequestMapping("/save")
 	public Model save(@ModelAttribute("product") @Valid Product product,
@@ -123,7 +82,7 @@ public class ProductController {
 		}
 
 		productAccess.save(sessionProduct);
-		return new Model("redirect:/product/view/" + sessionProduct.getCode());
+		return new Model("redirect:/admin/product/view/" + sessionProduct.getCode());
 	}
 	
 	@RequestMapping("/cancel")
@@ -131,9 +90,9 @@ public class ProductController {
 		session.setAttribute(CURRENT_PRODUCT, null);
 		
 		if (ScreenMode.valueOf(screenMode) == ScreenMode.CREATE) {
-			return "redirect:/home";
+			return "redirect:/admin/home";
 		} else {
-			return "redirect:/product/view/" + code;
+			return "redirect:/admin/product/view/" + code;
 		}
 	}
 	
@@ -142,16 +101,5 @@ public class ProductController {
 		sessionProduct.setCurrency(viewProduct.getCurrency());
 		sessionProduct.setDescription(viewProduct.getDescription());
 		sessionProduct.setUnitPrice(viewProduct.getUnitPrice());
-		
-		// Handle the components by detatching all and then adding back
-		sessionProduct.getComponents().clear();
-		
-		for (ProductComponent component : viewProduct.getComponents()) {
-			ProductComponent addedComponent = sessionProduct.addComponent();
-			addedComponent.getId().setComponent(
-					componentAccess.load(component.getComponentId()));
-			addedComponent.setNumber(component.getNumber());
-		}
 	}
-	
 }

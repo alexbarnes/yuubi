@@ -1,0 +1,204 @@
+body{
+	font-size: 12px;
+	font-family: 'Marcellus SC', serif;
+	background:url(../img/bg-container.png) center repeat-y;
+}
+a:link,a:visited{
+	color:#666;
+}
+a:hover{
+	color:#EE3C1F;
+	text-decoration:none;
+}
+#top-bar{	
+	padding:0;
+	text-transform: uppercase;
+	font-size:11px;
+	width:980px;
+	border-bottom:1px solid #EEE;
+}
+#top-bar .active a{
+	background-color:transparent;
+	color:#EE3C1F;
+}
+.logo-title,#nav,#myTab.home a,h2.title,.nav-header{
+	font-family: 'Marcellus SC', serif;
+	text-transform: uppercase;
+	font-weight:bold;
+	font-size: 14px;
+	height:20px;	
+}
+#nav li.open a{
+	text-shadow: 0 1px 0 #fff;
+}
+.nav-header{
+	color:#000;border-bottom:2px solid #000
+}
+.nav-list > .active > a, .nav-list > .active > a:hover{
+	background-color:#999
+}
+.nav-list.below{
+	margin-top:15px;
+}
+.logo-title{
+	color:#8B8B8B;
+}
+.logo-title span{
+	color:#000;
+}
+.logo img{
+	margin:25px 0
+}
+#myTab.home a,h2.title{	
+	font-size:16px;
+}
+#myTab li.active a{
+	color:#EE3C1F;
+}
+#nav li.search_form{
+	padding-left:20px;
+}
+#top-bar .nav{
+	margin:0;
+	padding:0;
+}
+#top-bar #languages{
+	position:relative;
+	left:19px;
+	background-color:#EEE;
+}
+.account{
+	border-right:1px solid #e8e8e8;
+	text-align:right;
+	padding-right:20px;
+}
+.account,.cart{
+	margin-top:20px;
+}
+.account a,.cart a{
+	font-weight:bold;
+}
+footer{
+	background:url(../img/bg_page.jpg);
+}
+footer h4 {	
+	font-family: 'Marcellus SC', serif;
+	font-size: 14px;
+	font-weight:bold;
+	text-transform: uppercase;
+	color: #8B8B8B;	
+	margin: 0 0 5px 0;
+}
+footer ul{
+	list-style-type:square;
+	color: #8B8B8B;
+	margin:0 0 0 13px;
+	padding:4px;
+}
+footer div.company_info{
+	padding-left:10px;
+}
+.navbar-inner {
+  background-color: #000; /* background color will be black for all browsers */
+  background-image: none;
+  background-repeat: no-repeat;
+  filter: none;
+}
+.navbar .nav > li > a{color:#fff;text-shadow: 0 1px 0 #000;}
+.navbar .nav > li > a:hover{color:#ddd;text-shadow: 0 1px 0 #000;}
+.navbar .nav > .active > a, .navbar .nav > .active > a:hover, .navbar .nav > .active > a:focus{color:#000;text-shadow: 0 1px 0 #fff;}
+
+.dropdown-menu li > a:hover,
+.dropdown-menu li > a:focus,
+.dropdown-submenu:hover > a {
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #8B8B8B;
+  background-color: #000;
+  background-image: -moz-linear-gradient(top, #8B8B8B, #000);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#8B8B8B), to(#000));
+  background-image: -webkit-linear-gradient(top, #8B8B8B, #000);
+  background-image: -o-linear-gradient(top, #8B8B8B, #000);
+  background-image: linear-gradient(to bottom, #8B8B8B, #000);
+  background-repeat: repeat-x;
+  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#8B8B8B', endColorstr='#000', GradientType=0);
+}
+
+.listing-products li{
+	min-height:230px;
+	background-color:#fff;
+}
+.listing-products li .product-box{	
+	min-height:270px;
+	padding:0 8px;
+	border:1px solid #eee;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	position: relative;
+}
+.listing-products li .product-box img{
+	display:block;
+	margin:0 auto 5px;
+}
+.listing-products li .product-box:hover{
+	border:1px solid #ccc;
+}
+.listing-products li .product-box h4{
+	font-size:14px;
+}
+.listing-products li .product-box .bottom{
+	position: absolute;
+    bottom:0;
+	right:8px;
+	color:#666;
+	font-size:10px;
+}
+#myCarousel.home .carousel-caption {
+	position: absolute;
+	right: 0;
+	bottom: 100px;
+	left: 0;
+	padding: 10px;
+	background: #333;
+	background: rgba(0, 0, 0, 0.25);
+	width:400px;
+	height:103px;
+}
+#myCarousel.home .carousel-control.right {
+	right: 20px;
+	top:290px;
+}
+#myCarousel.home .carousel-control.left {
+	left: 840px;
+	top:290px;
+}
+.bg_slider{
+	background: url(../img/bg_slider.png) center no-repeat;
+	height:18px;
+	margin:-17px 0 15px 0;
+}
+.manufactures img{
+	text-align:center
+}
+.pagination{
+	margin:0;
+}
+.pagination li.active{
+	background-color:#eee;
+}
+a.thumbnail:hover{
+	border:1px solid #999
+}
+.thumbnails.small{
+	margin-top:10px;
+}
+.thumbnails p{
+	padding-top:5px;
+}
+ul.social{padding:0;margin:0;list-style:none;}
+ul.social li{float:left;margin-right:10px;}
+.table td.center{
+	text-align:center;
+}
+#myModal{width:515px;}

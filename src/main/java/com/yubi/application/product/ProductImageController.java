@@ -18,7 +18,7 @@ import com.yubi.application.core.Model;
 import com.yubi.application.core.ScreenMode;
 
 @Controller
-@RequestMapping("/product/image")
+@RequestMapping("/admin/product/image")
 public class ProductImageController {
 
 	private final ProductAccess productAccess;
@@ -58,7 +58,7 @@ public class ProductImageController {
 
 		productAccess.save(product);
 
-		return new Model("redirect:/product/view/" + code);
+		return new Model("redirect:/admin/product/view/" + code);
 	}
 
 	

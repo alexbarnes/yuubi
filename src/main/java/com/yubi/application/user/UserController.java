@@ -21,7 +21,7 @@ import com.yubi.application.core.Model;
 import com.yubi.application.core.ScreenMode;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/admin/user")
 public class UserController {
 
 	private final UserAccess userAccess;
@@ -90,7 +90,7 @@ public class UserController {
 		
 		// Send a redirect to the saved user. Ensure that we correctly encode the username.
 		try {
-			return new Model("redirect:/user/view/" + URLEncoder.encode(user.getUserName(), "UTF-8"));
+			return new Model("redirect:/admin/user/view/" + URLEncoder.encode(user.getUserName(), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalArgumentException(e);
 		}

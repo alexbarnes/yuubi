@@ -16,7 +16,7 @@ import com.yubi.application.core.ScreenMode;
 import com.yubi.application.supplier.SupplierAccess;
 
 @Controller
-@RequestMapping("/order")
+@RequestMapping("/admin/order")
 public class OrderController {
 	
 	private static final String CURRENT_ORDER = "current_order";
@@ -132,7 +132,7 @@ public class OrderController {
 		mapViewOrderToSession(sessionOrder, order);
 		
 		orderService.saveOrder(sessionOrder);
-		return new Model("redirect:/order/view/" + sessionOrder.getId());
+		return new Model("redirect:/admin/order/view/" + sessionOrder.getId());
 	}
 	
 	@RequestMapping("/cancel")
@@ -142,7 +142,7 @@ public class OrderController {
 		if (ScreenMode.valueOf(screenMode) == ScreenMode.CREATE) {
 			return "redirect:/home";
 		} else {
-			return "redirect:/order/view/" + code;
+			return "redirect:/admin/order/view/" + code;
 		}
 	}
 	

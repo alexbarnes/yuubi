@@ -6,6 +6,7 @@
                     http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 	
 	<!-- No security for resources -->
+	<http pattern="/" security="none"/>
 	<http pattern="/resources/**" security="none"/>
 	<http pattern="/error" security="none" />
 	<http pattern="/shop/**" security="none" create-session="always"/>
@@ -13,22 +14,22 @@
 	<http use-expressions="true" create-session="always">
 		<!-- Ensure anyone can see the login page -->
 		
-		<intercept-url pattern="/login*" access="isAnonymous()" />
-		<intercept-url pattern="/forgotpassword" access="isAnonymous()" />
+		<intercept-url pattern="/admin/login*" access="isAnonymous()" />
+		<intercept-url pattern="/admin/forgotpassword" access="isAnonymous()" />
 		
 		<!-- Everything else should be hidden -->
-		<intercept-url pattern="/**" access="isAuthenticated()" />
+		<intercept-url pattern="/admin/**" access="isAuthenticated()" />
 
 		<form-login 
-			login-page="/login" 
-			default-target-url="/home" 
-			authentication-failure-url="/loginfailed" 
+			login-page="/admin/login" 
+			default-target-url="/admin/home" 
+			authentication-failure-url="/admin/loginfailed" 
 			always-use-default-target="false"/>
 			
-		<session-management invalid-session-url="/login"/>
+		<session-management invalid-session-url="/admin/login"/>
 		<remember-me data-source-ref="dataSource" />
 
-		<logout logout-url="/logout" logout-success-url="/login" />
+		<logout logout-url="/admin/logout" logout-success-url="/admin/login" />
 	</http>
 
 	<beans:bean id="daoAuthenticationProvider"

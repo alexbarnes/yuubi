@@ -21,7 +21,7 @@
 			</c:choose>
 			<c:choose>
 				<c:when test="${type == 'SUPPLIER'}">
-					<c:url var="url" value="/search/suppliersearch" /> 
+					<c:url var="url" value="/admin/search/suppliersearch" /> 
 					<form:form cssClass="form-search" action="${url}" commandName="search">
 						<div class="input-append">
 							<form:input path="searchString" cssClass="span12 search-query" />
@@ -30,7 +30,7 @@
 					</form:form>
 				</c:when>
 				<c:when test="${type == 'ORDER'}">
-					<c:url var="url" value="/search/ordersearch" />
+					<c:url var="url" value="/admin/search/ordersearch" />
 					<form:form cssClass="form-search" action="${url}" commandName="search">
 						<div class="input-append">
 							<form:input path="searchString" cssClass="span12 search-query" />
@@ -39,7 +39,7 @@
 					</form:form>
 				</c:when>
 				<c:when test="${type == 'COMPONENT'}">
-					<c:url var="url" value="/search/componentsearch" />
+					<c:url var="url" value="/admin/search/componentsearch" />
 					<form:form cssClass="form-search" action="${url}" commandName="search">
 						<div class="input-append">
 							<form:input path="searchString" cssClass="span12 search-query" />

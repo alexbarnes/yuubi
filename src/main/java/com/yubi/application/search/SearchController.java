@@ -16,7 +16,7 @@ import com.yubi.application.supplier.Supplier;
 import com.yubi.application.supplier.SupplierService;
 
 @Controller
-@RequestMapping("/search")
+@RequestMapping("/admin/search")
 public class SearchController {
 	
 	private SupplierService supplierService;
@@ -35,7 +35,7 @@ public class SearchController {
 
 		redirectAttrs.addFlashAttribute("results", searchService.search(parameter.getSearchString()));
 
-		return "redirect:/search/results";
+		return "redirect:/admin/search/results";
 	}
 
 	@RequestMapping(value = "/suppliersearch", method = RequestMethod.POST)
@@ -51,7 +51,7 @@ public class SearchController {
 
 
 		redirectAttrs.addFlashAttribute("results", results);
-		return "redirect:/search/results";
+		return "redirect:/admin/search/results";
 	}
 
 	@RequestMapping(value = "/componentsearch", method = RequestMethod.POST)
@@ -62,7 +62,7 @@ public class SearchController {
 
 		redirectAttrs.addFlashAttribute("results", results);
 
-		return "redirect:/search/results";
+		return "redirect:/admin/search/results";
 	}
 
 	@RequestMapping(value = "/ordersearch", method = RequestMethod.POST)
@@ -74,7 +74,7 @@ public class SearchController {
 
 		redirectAttrs.addFlashAttribute("results", results);
 
-		return "redirect:/search/results";
+		return "redirect:/admin/search/results";
 	}
 
 	@RequestMapping(value = "/supplier")

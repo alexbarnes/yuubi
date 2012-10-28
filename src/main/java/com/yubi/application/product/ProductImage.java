@@ -1,6 +1,8 @@
 package com.yubi.application.product;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -8,12 +10,21 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class ProductImage {
+	
+	public enum ProductImageType {
+		THUMBNAIL,
+		PRIMARY,
+		OTHER;
+	}
 
 	@Id
 	private long id;
 
 	@Lob
 	private byte[] image;
+	
+	@Enumerated(EnumType.STRING)
+	private ProductImageType imageType;
 
 	@ManyToOne
 	@JoinColumn(name = "productId", nullable = false)
@@ -51,5 +62,13 @@ public class ProductImage {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public ProductImageType getImageType() {
+		return imageType;
+	}
+
+	public void setImageType(ProductImageType imageType) {
+		this.imageType = imageType;
 	}
 }

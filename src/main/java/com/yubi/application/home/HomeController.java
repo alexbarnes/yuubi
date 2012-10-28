@@ -29,7 +29,7 @@ public class HomeController {
 		this.orderService = orderService;
 	}
 
-	@RequestMapping("/home")
+	@RequestMapping({"/admin/home","/admin"})
 	public ModelAndView home() {
 		Model model = new Model(ScreenMode.ENQUIRE, "home", "model",
 				buildHomeModel());
@@ -37,10 +37,8 @@ public class HomeController {
 	}
 
 	@RequestMapping("/")
-	public ModelAndView home2() {
-		Model model = new Model(ScreenMode.ENQUIRE, "home", "model",
-				buildHomeModel());
-		return model;
+	public String shop() {
+		return "redirect:/shop";
 	}
 	
 	@SuppressWarnings("rawtypes")
