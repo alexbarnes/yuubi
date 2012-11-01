@@ -1,5 +1,7 @@
 package com.yubi.application.shop.order;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -41,5 +43,9 @@ public class ProductOrderItem {
 	
 	@EmbeddedId
 	private Id id;
+	
+	private int quantity;
+	
+	private BigDecimal totalCost;
 
 }
