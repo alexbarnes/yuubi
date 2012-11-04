@@ -1,4 +1,4 @@
-package com.yubi.application.core;
+package com.yubi.core.view;
 
 public enum ScreenMode {
 	

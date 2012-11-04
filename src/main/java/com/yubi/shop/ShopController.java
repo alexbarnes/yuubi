@@ -1,4 +1,4 @@
-package com.yubi.application.shop;
+package com.yubi.shop;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yubi.application.category.CategoryService;
-import com.yubi.application.core.login.BasketCreationListener;
-import com.yubi.application.shop.paypal.PaypalConstants;
-import com.yubi.application.shop.paypal.PaypalService;
+import com.yubi.shop.basket.Basket;
+import com.yubi.shop.basket.BasketCreationListener;
+import com.yubi.shop.paypal.PaypalConstants;
+import com.yubi.shop.paypal.PaypalService;
 
 @Controller
 @RequestMapping("/shop")
@@ -24,19 +25,15 @@ public class ShopController {
 	
 	private final Environment env;
 	
-	private final DeliveryMethodAccess deliveryMethodAccess;
-	
 	@Inject
 	public ShopController(
 			CategoryService categoryService, 
 			PaypalService paypalService, 
-			Environment env,
-			DeliveryMethodAccess deliveryMethodAccess) {
+			Environment env) {
 		super();
 		this.categoryService = categoryService;
 		this.paypalService = paypalService;
 		this.env = env;
-		this.deliveryMethodAccess = deliveryMethodAccess;
 	}
 
 	
@@ -79,7 +76,7 @@ public class ShopController {
 		// First check the returned token matches that in the session
 		String sessionToken = (String) session.getAttribute("paypal-token");
 		
-		// How should be deal with this?
+		//TODO How should be deal with this?
 		if (!sessionToken.equals(token))
 			throw new IllegalStateException();
 		

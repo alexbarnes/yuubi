@@ -1,4 +1,4 @@
-package com.yubi.application.shop;
+package com.yubi.shop.delivery;
 
 import java.util.List;
 

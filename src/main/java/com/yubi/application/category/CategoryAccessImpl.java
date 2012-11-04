@@ -32,9 +32,7 @@ public class CategoryAccessImpl implements CategoryAccess {
 	@SuppressWarnings("unchecked")
 	public List<Category> listProductParentCategories() {
 		Query query = sessionFactory.getCurrentSession()
-				.createQuery("from Category where type = ? AND parentCategoryId is NULL");
-		query.setString(0, Category.CategoryType.PRODUCT.toString());
-		
+				.createQuery("from Category where parentCategoryId is NULL");
 		List<Category> categories = query.setCacheable(true).list();
 		return categories;
 	}

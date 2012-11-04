@@ -154,14 +154,11 @@
 					</div>
                 </div>
             </div>
-			<div class="row">
-				<div class="span5">
+			<div class="row pull-right">
+				<div class="span2">
 					<button class="btn btn-primary" type="submit">Update</button>
 				</div>		  
 				<div class="span2">
-					<button class="btn btn-primary" type="submit">Continue</button>
-				</div>		  
-				<div class="span5">
 					<a href="<spring:url value='/shop/checkout'/>" class="pull-right">
 					<img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" align="left" style="margin-right:7px;">
 					</a>

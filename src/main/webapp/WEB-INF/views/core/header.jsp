@@ -14,15 +14,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content="" />
 <meta name="author" content="" />
-<link href="<spring:url value='/resources/img/favicon.png'/>"
+<link href="<spring:url value='/resources/admin/img/favicon.png'/>"
 	rel="shortcut icon" type="image/x-icon">
 <!-- Le styles -->
 <link rel="stylesheet" type="text/css"
-	href="<spring:url value='/resources/css/bootstrap.css'/>" />
+	href="<spring:url value='/resources/admin/css/bootstrap.css'/>" />
 
-<script src="<spring:url value='/resources/js/jquery.js'/>"></script>
-<script src="<spring:url value='/resources/js/bootstrap.js'/>"></script>
-<script src="<spring:url value='/resources/js/bootstrap-typeahead.js'/>"></script>
+<script src="<spring:url value='/resources/admin/js/jquery.js'/>"></script>
+<script src="<spring:url value='/resources/admin/js/bootstrap.js'/>"></script>
+<script src="<spring:url value='/resources/admin/js/bootstrap-typeahead.js'/>"></script>
 <style type="text/css">
 body {
 	padding-top: 60px;
@@ -87,10 +87,6 @@ body {
 							</ul></li>
 					</ul>
 					<c:url var="url" value="/admin/search/quicksearch" />
-					<form:form cssClass="navbar-search pull-left" action="${url}"
-						commandName="search">
-						<form:input path="searchString" cssClass="search-query" />
-					</form:form>
 					<div class="navbar-form pull-right">
 						<div class="btn-group">
 							<a class="btn btn-primary" href="#"><i

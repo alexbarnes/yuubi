@@ -4,7 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-<jsp:include page="header.jsp"/>
+<jsp:include page="core/header.jsp"/>
 
 <div class="container">
 	<div class="row-fluid">
@@ -75,4 +75,4 @@
 		<p>© Alex Barnes & Yubi Jewellery 2012</p>
 	</footer>
 </div>
-<jsp:include page="footer.jsp"/>
+<jsp:include page="core/footer.jsp"/>

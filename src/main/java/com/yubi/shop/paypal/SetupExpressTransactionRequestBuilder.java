@@ -1,4 +1,4 @@
-package com.yubi.application.shop.paypal;
+package com.yubi.shop.paypal;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

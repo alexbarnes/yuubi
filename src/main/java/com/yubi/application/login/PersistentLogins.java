@@ -1,4 +1,4 @@
-package com.yubi.application.core.login;
+package com.yubi.application.login;
 
 import java.util.Date;
 

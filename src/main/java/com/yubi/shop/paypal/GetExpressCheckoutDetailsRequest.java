@@ -1,17 +1,22 @@
-package com.yubi.application.shop.paypal;
+package com.yubi.shop.paypal;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 public class GetExpressCheckoutDetailsRequest {
 	
 	private String token;
 	
-	public GetExpressCheckoutDetailsRequest() {
+	public GetExpressCheckoutDetailsRequest(String token) {
 		this.token = token;
 	}
 	
 	public String createRequest() {
-		return "TOKEN=" + URLEncoder.encode(token)
+		try {
+			return "METHOD=GetExpressCheckoutDetails&TOKEN=" + URLEncoder.encode(token, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("Failed to encode token [" + token + "] using [UTF-8]");
+		}
 	}
 
 }

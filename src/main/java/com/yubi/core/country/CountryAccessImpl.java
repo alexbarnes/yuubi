@@ -1,4 +1,4 @@
-package com.yubi.application.core;
+package com.yubi.core.country;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class CountryAccessImpl implements CountryAccess {

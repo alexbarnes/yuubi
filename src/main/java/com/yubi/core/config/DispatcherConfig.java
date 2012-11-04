@@ -1,4 +1,4 @@
-package com.yubi.application.core.config;
+package com.yubi.core.config;
 
 import javax.inject.Inject;
 
@@ -10,13 +10,16 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import com.yubi.application.core.login.BasketCreationListener;
-import com.yubi.application.core.login.BasketExpiryListener;
 import com.yubi.application.product.ProductService;
+import com.yubi.shop.basket.BasketCreationListener;
+import com.yubi.shop.basket.BasketExpiryListener;
 
 @Configuration
 @EnableWebMvc
 public class DispatcherConfig extends WebMvcConfigurerAdapter {
+	
+	@Inject
+	private ProductService productService;
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -39,9 +42,6 @@ public class DispatcherConfig extends WebMvcConfigurerAdapter {
 	public StandardServletMultipartResolver multipartResolver() {
 		return new StandardServletMultipartResolver();
 	}
-
-	@Inject
-	private ProductService productService;
 
 	@Bean
 	public BasketCreationListener basketCreationListener() {

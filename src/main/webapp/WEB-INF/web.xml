@@ -10,7 +10,7 @@ version="3.0">
 	</context-param>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>com.yubi.application.core.config.RootConfig</param-value>
+		<param-value>com.yubi.core.config.RootConfig</param-value>
 	</context-param>
 
 	<!-- Creates the Spring Container shared by all Servlets and Filters -->
@@ -35,7 +35,7 @@ version="3.0">
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>
-            com.yubi.application.core.config.ApplicationConfig
+            com.yubi.core.config.ApplicationConfig
         </param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>

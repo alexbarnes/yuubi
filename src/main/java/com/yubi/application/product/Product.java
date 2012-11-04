@@ -41,6 +41,8 @@ public class Product {
 
 	private int stockLevel;
 	
+	private boolean isGiftVoucher;
+	
 	@Lob
 	private byte[] thumbnail;
 
@@ -134,5 +136,13 @@ public class Product {
 
 	public Set<ProductImage> getImages() {
 		return images;
+	}
+
+	public boolean isGiftVoucher() {
+		return isGiftVoucher;
+	}
+
+	public void setGiftVoucher(boolean isGiftVoucher) {
+		this.isGiftVoucher = isGiftVoucher;
 	}
 }

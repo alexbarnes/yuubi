@@ -1,6 +1,6 @@
-package com.yubi.application.shop.paypal;
+package com.yubi.shop.paypal;
 
-import com.yubi.application.shop.Basket;
+import com.yubi.shop.basket.Basket;
 
 public interface PaypalService {
 	

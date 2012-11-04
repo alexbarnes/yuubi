@@ -1,4 +1,4 @@
-package com.yubi.application.shop.paypal;
+package com.yubi.shop.paypal;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -16,16 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.yubi.application.product.Product;
-import com.yubi.application.product.ProductAccess;
-import com.yubi.application.shop.Basket;
-import com.yubi.application.shop.BasketItem;
+import com.yubi.shop.basket.Basket;
+import com.yubi.shop.basket.BasketItem;
 
 @Service
 class PaypalServiceImpl implements PaypalService {
 	
 	private Logger logger = LoggerFactory.getLogger(PaypalServiceImpl.class);
-	
-	private final ProductAccess productAccess;
 	
 	private String userName;
 	
@@ -40,9 +37,8 @@ class PaypalServiceImpl implements PaypalService {
 	private String paypalURL;
 	
 	@Inject
-	public PaypalServiceImpl(Environment env, ProductAccess productAccess) {
+	public PaypalServiceImpl(Environment env) {
 		super();
-		this.productAccess = productAccess;
 		this.userName = env.getProperty(PaypalConstants.PAYPAL_USERNAME);
 		this.password = env.getProperty(PaypalConstants.PAYPAL_PASSWORD);
 		this.signature = env.getProperty(PaypalConstants.PAYPAL_SIGNATURE);
@@ -69,7 +65,7 @@ class PaypalServiceImpl implements PaypalService {
 			resultMap.put(StringUtils.split(entry, "=")[0], StringUtils.split(entry, "=")[1]);
 		}
 		
-		logger.info("Express checkout request successful. With result map + [" + resultMap.toString() + "].");
+		logger.info("Express checkout setup request successful. With result map + [" + resultMap.toString() + "].");
 		
 		if (!resultMap.get("ACK").equals("Success")) {
 			throw new RuntimeException("An error occurred creating the express checkout");
@@ -79,9 +75,10 @@ class PaypalServiceImpl implements PaypalService {
 	}
 
 	public void completeTransaction(String token) {
-		String request = "";
+		GetExpressCheckoutDetailsRequest request =
+				new GetExpressCheckoutDetailsRequest(token);
 		
-		ResponseEntity<String> response = new RestTemplate().postForEntity(paypalURL, request, String.class);
+		ResponseEntity<String> response = new RestTemplate().postForEntity(paypalURL, request.createRequest(), String.class);
 		
 		Map<String, String> resultMap = new HashMap<String, String>();
 		String[] result = StringUtils.split(response.getBody(), "&");

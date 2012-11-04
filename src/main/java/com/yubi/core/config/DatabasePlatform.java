@@ -1,4 +1,4 @@
-package com.yubi.application.core.config;
+package com.yubi.core.config;
 
 public enum DatabasePlatform {
 	

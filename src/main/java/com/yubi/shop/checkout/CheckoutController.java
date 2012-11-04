@@ -1,10 +1,10 @@
-package com.yubi.application.configuration;
+package com.yubi.shop.checkout;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/admin/configuration")
-public class ConfigurationController {
-	
+@RequestMapping("/shop/checkout")
+public class CheckoutController {
+
 }

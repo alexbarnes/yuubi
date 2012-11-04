@@ -14,8 +14,8 @@
 
 <!-- Styles -->
 <link rel="stylesheet" type="text/css"
-	href="<spring:url value='/resources/css/bootstrap.css'/>" />
-<link href="<spring:url value='/resources/img/favicon.png'/>"
+	href="<spring:url value='/resources/admin/css/bootstrap.css'/>" />
+<link href="<spring:url value='/resources/admin/img/favicon.png'/>"
 	rel="shortcut icon" type="image/x-icon">
 <style type="text/css">
 body {

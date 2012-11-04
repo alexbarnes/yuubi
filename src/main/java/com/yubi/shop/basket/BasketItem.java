@@ -1,4 +1,4 @@
-package com.yubi.application.shop;
+package com.yubi.shop.basket;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;

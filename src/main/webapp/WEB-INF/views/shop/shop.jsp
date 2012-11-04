@@ -79,8 +79,8 @@
 													</c:if>
 												</c:forEach>
 											</ul></li>
-
 									</c:forEach>
+									<li><a href="#">Gift Vouchers</a></li>
 								</ul>
 							</div>
 						</div>
@@ -98,21 +98,14 @@
 							<img alt="" src="<spring:url value='/resources/shop/img/1.jpg'/>" />
 							<div class="carousel-caption">
 								<h4>Slide Image 1</h4>
-								<p>Lorem Ipsum is simply dummy text of the printing and
-									typesetting industry. Lorem Ipsum has been the industry's
-									standard dummy text ever since the 1500s, when an unknown
-									printer took a galley of type and scrambled it to make a type
-									specimen book.</p>
+								<p></p>
 							</div>
 						</div>
 						<div class="item">
 							<img alt="" src="<spring:url value='/resources/shop/img/2.jpg'/>" />
 							<div class="carousel-caption">
 								<h4>Slide Image 2</h4>
-								<p>Sed ut perspiciatis unde omnis iste natus error sit
-									voluptatem accusantium doloremque laudantium, totam rem
-									aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
-									architecto beatae vitae dicta sunt explicabo.</p>
+								<p></p>
 							</div>
 						</div>
 					</div>

@@ -1,4 +1,4 @@
-package com.yubi.application.core.config;
+package com.yubi.core.config;
 
 import java.util.Properties;
 
@@ -14,6 +14,7 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 
 @Configuration
 @EnableTransactionManagement
@@ -42,7 +43,7 @@ public class HibernateConfig {
 				"org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
 
 		return new LocalSessionFactoryBuilder(dataSource())
-				.scanPackages("com.yubi.application").addProperties(properties)
+				.scanPackages("com.yubi").addProperties(properties)
 				.buildSessionFactory();
 	}
 

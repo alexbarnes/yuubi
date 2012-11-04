@@ -1,4 +1,4 @@
-package com.yubi.application.shop;
+package com.yubi.shop.delivery;
 
 import java.math.BigDecimal;
 
@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.yubi.application.core.Country;
+import com.yubi.core.country.Country;
 
 @Entity
 public class DeliveryMethod {

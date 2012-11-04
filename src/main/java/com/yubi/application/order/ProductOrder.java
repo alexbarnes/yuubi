@@ -1,4 +1,4 @@
-package com.yubi.application.shop.order;
+package com.yubi.application.order;
 
 import java.util.List;
 
@@ -21,10 +21,4 @@ public class ProductOrder {
 	
 	@OneToMany(mappedBy = "id.order", cascade=CascadeType.ALL, orphanRemoval=true)
 	private List<ProductOrderItem> items;
-	
-	private String customerTitle;
-	
-	private String customerFirstName;
-	
-	private String customerLastName;
 }

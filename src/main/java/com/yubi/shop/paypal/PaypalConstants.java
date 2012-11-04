@@ -1,4 +1,4 @@
-package com.yubi.application.shop.paypal;
+package com.yubi.shop.paypal;
 
 public class PaypalConstants {
 	

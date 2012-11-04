@@ -1,7 +1,9 @@
-package com.yubi.application.shop;
+package com.yubi.shop.basket;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.yubi.shop.delivery.DeliveryMethod;
 
 public class Basket {
 	

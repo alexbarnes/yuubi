@@ -1,4 +1,4 @@
-package com.yubi.application.core;
+package com.yubi.core.country;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import javax.persistence.OneToMany;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.yubi.application.shop.DeliveryMethod;
+import com.yubi.shop.delivery.DeliveryMethod;
 
 @Entity
 public class Country {

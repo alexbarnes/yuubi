@@ -1,6 +1,7 @@
-package com.yubi.application.core;
+package com.yubi.core.country;
 
 import java.util.List;
+
 
 public interface CountryAccess {
 	

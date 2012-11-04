@@ -1,4 +1,4 @@
 Yuubi
 =====
 
-This is the Java application which powers the Yuubi stock tracking and product management system.
+This is the Java application which powers the Yuubi product mangement and shop application.

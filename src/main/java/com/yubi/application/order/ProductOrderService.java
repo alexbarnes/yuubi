@@ -1,4 +1,4 @@
-package com.yubi.application.shop.order;
+package com.yubi.application.order;
 
 public interface ProductOrderService {
 

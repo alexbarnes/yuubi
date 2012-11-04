@@ -1,4 +1,4 @@
-package com.yubi.application.core.login;
+package com.yubi.shop.basket;
 
 import java.util.Map.Entry;
 
@@ -11,8 +11,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.security.web.session.HttpSessionDestroyedEvent;
 
 import com.yubi.application.product.ProductService;
-import com.yubi.application.shop.Basket;
-import com.yubi.application.shop.BasketItem;
 
 public class BasketExpiryListener implements ApplicationListener<HttpSessionDestroyedEvent> {
 	
