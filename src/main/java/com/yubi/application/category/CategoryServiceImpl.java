@@ -22,4 +22,10 @@ public class CategoryServiceImpl implements CategoryService {
 	public List<Category> buildProductMenu() {
 		return categoryAccess.listProductParentCategories();
 	}
+
+	
+	@Transactional
+	public List<Category> listTopLevelCategories() {
+		return categoryAccess.listProductParentCategories();
+	}
 }

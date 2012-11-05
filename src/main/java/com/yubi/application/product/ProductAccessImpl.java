@@ -1,7 +1,10 @@
 package com.yubi.application.product;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
@@ -22,6 +25,8 @@ public class ProductAccessImpl implements ProductAccess {
 	public Product load(String code) {
 		Product product = (Product) sessionFactory.getCurrentSession().get(
 				Product.class, code);
+		
+		Hibernate.initialize(product.getImages());
 		return product;
 	}
 
@@ -50,5 +55,17 @@ public class ProductAccessImpl implements ProductAccess {
 		
 		query.setParameter(0, code);
 		return (ProductImage) query.uniqueResult();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<Product> listForCategory(long id) {
+		Query query = 
+				sessionFactory.getCurrentSession().createQuery("from Product where category.id = ?");
+		
+		
+		query.setLong(0, id);
+		query.setCacheable(true);
+		return query.list();
 	}
 }

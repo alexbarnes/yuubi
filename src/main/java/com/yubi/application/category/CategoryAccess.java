@@ -7,5 +7,4 @@ public interface CategoryAccess {
 	public Category loadWithChildren(long id);
 	
 	public List<Category> listProductParentCategories();
-
 }

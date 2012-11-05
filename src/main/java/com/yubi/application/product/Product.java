@@ -33,6 +33,8 @@ public class Product {
 
 	@Version
 	private int version;
+	
+	private String title;
 
 	@NotEmpty
 	private String description;
@@ -49,8 +51,8 @@ public class Product {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
 	private final Set<ProductImage> images = new HashSet<ProductImage>();
 
-	@ManyToOne
-	@JoinColumn(name = "categoryId", nullable = false)
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "categoryId")
 	private Category category;
 	
 	public String getCode() {
@@ -144,5 +146,13 @@ public class Product {
 
 	public void setGiftVoucher(boolean isGiftVoucher) {
 		this.isGiftVoucher = isGiftVoucher;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

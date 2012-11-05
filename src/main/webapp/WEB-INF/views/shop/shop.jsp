@@ -20,8 +20,10 @@
 <title>YUBI JEWELLERY</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
-<link href="<spring:url value='/resources/shop/css/bootstrap.min.css'/>" rel="stylesheet">
-<link href="<spring:url value='/resources/shop/css/main.css'/>" rel="stylesheet" />
+<link href="<spring:url value='/resources/shop/css/bootstrap.min.css'/>"
+	rel="stylesheet">
+<link href="<spring:url value='/resources/shop/css/main.css'/>"
+	rel="stylesheet" />
 
 
 <!--[if lt IE 9]>
@@ -51,7 +53,8 @@
 					<div class="span3"></div>
 					<div class="span2">
 						<div class="cart pull-right">
-							<a href="<spring:url value='/shop/basket/show'/>">Basket</a><br />2 items
+							<a href="<spring:url value='/shop/basket/show'/>">Basket</a><br />2
+							items
 						</div>
 					</div>
 				</div>
@@ -73,7 +76,8 @@
 											<ul class="dropdown-menu">
 												<c:forEach items="${current.childCategories}" var="child"
 													varStatus="status">
-													<li><a href="products.html">${child.description}</a></li>
+													<li><a
+														href="<spring:url value='/shop/category/view/${child.id}'/>">${child.description}</a></li>
 													<c:if test="${status.last == false}">
 														<li class="divider"></li>
 													</c:if>
@@ -94,7 +98,7 @@
 				<div id="myCarousel" class="carousel slide home">
 					<div class="carousel-inner">
 						<div class="item active">
-						
+
 							<img alt="" src="<spring:url value='/resources/shop/img/1.jpg'/>" />
 							<div class="carousel-caption">
 								<h4>Slide Image 1</h4>
@@ -114,6 +118,40 @@
 						href="#myCarousel" data-slide="next">›</a>
 				</div>
 				<div class="bg_slider"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span12">
+				<ul class="nav nav-tabs home" id="myTab">
+					<c:forEach items="${menu}" var="current">
+						<li><a href="#tab${current.id}">${current.description}</a></li>
+					</c:forEach>
+				</ul>
+				<div class="tab-content">
+					<c:forEach items="${menu}" var="current">
+						<div class="tab-pane active" id="tab${current.id}">
+							<div class="row">
+								<div class="span12">
+									<ul class="thumbnails listing-products">
+										<c:forEach items="${current.childCategories}" var="child"
+											varStatus="status">
+											<li class="span3">
+												<div class="product-box">
+													<a
+														href="<spring:url value='/shop/category/view/${child.id}'/>"><h4>${child.description}</h4></a>
+													<a
+														href="<spring:url value='/shop/category/view/${child.id}'/>"><img
+														src="<spring:url value='/shop/category/image/${child.id}'/>" /></a>
+												</div>
+											</li>
+										</c:forEach>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</c:forEach>
+
+				</div>
 			</div>
 		</div>
 		<footer>
@@ -142,21 +180,22 @@
 			</div>
 		</footer>
 	</div>
-	
-	<script src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
+
+	<script
+		src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
 	<script src="<spring:url value='/resources/shop/js/bootstrap.min.js'/>"></script>
 	<script type="text/javascript">
-            $(document).ready(function(){
-                $('.carousel').carousel({
-                    interval: 2000
-                })
-				
-				$('#myTab a:first').tab('show');
-				$('#myTab a').click(function (e) {
-					e.preventDefault();
-					$(this).tab('show');
-				})
-            });
-        </script>
+		$(document).ready(function() {
+			$('.carousel').carousel({
+				interval : 2000
+			})
+
+			$('#myTab a:first').tab('show');
+			$('#myTab a').click(function(e) {
+				e.preventDefault();
+				$(this).tab('show');
+			})
+		});
+	</script>
 </body>
 </html>

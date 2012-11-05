@@ -1,19 +1,19 @@
 package com.yubi.shop;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.yubi.application.category.CategoryAccess;
 import com.yubi.application.category.CategoryService;
-import com.yubi.shop.basket.Basket;
-import com.yubi.shop.basket.BasketCreationListener;
-import com.yubi.shop.paypal.PaypalConstants;
-import com.yubi.shop.paypal.PaypalService;
+import com.yubi.application.product.ProductAccess;
 
 @Controller
 @RequestMapping("/shop")
@@ -21,19 +21,19 @@ public class ShopController {
 	
 	private final CategoryService categoryService;
 	
-	private final PaypalService paypalService;
+	private ProductAccess productAccess;
 	
-	private final Environment env;
+	private CategoryAccess categoryAccess;
 	
 	@Inject
 	public ShopController(
-			CategoryService categoryService, 
-			PaypalService paypalService, 
-			Environment env) {
+			CategoryService categoryService,
+			ProductAccess productAccess,
+			CategoryAccess categoryAccess) {
 		super();
 		this.categoryService = categoryService;
-		this.paypalService = paypalService;
-		this.env = env;
+		this.productAccess = productAccess;
+		this.categoryAccess = categoryAccess;
 	}
 
 	
@@ -44,54 +44,54 @@ public class ShopController {
 		return model;
 	}
 	
-	
-	@RequestMapping("/checkout")
-	public String expressCheckout(HttpSession session) {
-		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
-		
-		// Setup the delivery method on the basket prior to calling Paypal
-		//basket.setDeliveryMethod(deliveryMethodAccess.get(1));
-		
-		String token;
-		//try {
-			token = paypalService.setupTransaction(basket);
-			session.setAttribute("paypal-token", token);
-		//} catch (RuntimeException e) {
-			// Add an error and return to the basket
-			//return "shop/basket";
-	//}
-		
-		return String.format("redirect:%s?cmd=_express-checkout&useraction=commit&token=%s", env.getProperty(PaypalConstants.PAYPAL_PAYMENT_URL), token);
+	/**
+	 * 
+	 * List the products for a certain category.
+	 * @return
+	 */
+	@RequestMapping("/category/view/{id}")
+	public ModelAndView showCategory(@PathVariable("id") long id) {
+		ModelAndView mav =  new ModelAndView("shop/productlist");
+		mav.addObject("products", productAccess.listForCategory(id));
+		mav.addObject("menu", categoryService.buildProductMenu());
+		mav.addObject("category", categoryAccess.loadWithChildren(id));
+		return mav;
 	}
 	
+	
+	/**
+	 * View a specific product detail.
+	 */
 	@RequestMapping("/product/view/{code}")
-	public String viewProduct(@PathVariable("code") String code) {
-		return "shop/productdetail";
+	public ModelAndView viewProduct(@PathVariable("code") String code) {
+		ModelAndView mav = new ModelAndView("shop/productdetail");
+		mav.addObject("product", productAccess.load(code));
+		mav.addObject("menu", categoryService.buildProductMenu());
+		return mav;
 	}
 	
 	
-	@RequestMapping("/confirmation")
-	public ModelAndView confirmPurchase(HttpSession session, String token) {
-		
-		// First check the returned token matches that in the session
-		String sessionToken = (String) session.getAttribute("paypal-token");
-		
-		//TODO How should be deal with this?
-		if (!sessionToken.equals(token))
-			throw new IllegalStateException();
-		
-		ModelAndView model = new ModelAndView("confirmation");
-		
-		// Call Paypal to get the shipping address and order details
-		paypalService.completeTransaction(sessionToken);
-		
-		// Add everything to the model by loading the order from the database
-		
-		
-		// Reset the basket once we're done here
-		
-		
-		return model;
+	@RequestMapping(value = "/product/image/{id}", produces = "image/png")
+	public @ResponseBody byte[] loadImage(@PathVariable("id") long id) {
+		return productAccess.loadImage(id).getImage();
+	}
+	
+	
+	@RequestMapping(value = "/product/primaryimage/{code}", produces = "image/png")
+	public @ResponseBody byte[] loadProductPrimaryImage(@PathVariable("code") String code, ServletResponse response) {
+		response.setContentType("");
+		return productAccess.loadPrimaryImage(code).getImage();
+	}
+	
+	
+	@RequestMapping(value = "/product/thumbnail/{code}", produces = "image/png")
+	public @ResponseBody byte[] loadProductThumbnail(@PathVariable("code") String code) {
+		return productAccess.load(code).getThumbnail();
+	}
+	
+	
+	@RequestMapping(value = "/category/image/{id}", produces = "image/png")
+	public @ResponseBody byte[] loadCategoryImage(@PathVariable("id") long id) {
+		return categoryAccess.loadWithChildren(id).getImage();
 	}
 }
-

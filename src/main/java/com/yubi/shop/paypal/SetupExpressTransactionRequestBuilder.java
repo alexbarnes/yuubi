@@ -18,6 +18,8 @@ public class SetupExpressTransactionRequestBuilder {
 	
 	private BigDecimal shippingCost;
 	
+	private BigDecimal orderTotal;
+	
 	private final List<ExpressTransactionItem> items = new ArrayList<ExpressTransactionItem>();
 	
 	public SetupExpressTransactionRequestBuilder(String username,
@@ -49,6 +51,11 @@ public class SetupExpressTransactionRequestBuilder {
 	
 	public SetupExpressTransactionRequestBuilder withShippingCost(BigDecimal cost) {
 		this.shippingCost = cost;
+		return this;
+	}
+	
+	public SetupExpressTransactionRequestBuilder withTotalCost(BigDecimal cost) {
+		this.orderTotal = cost;
 		return this;
 	}
 
@@ -88,21 +95,12 @@ public class SetupExpressTransactionRequestBuilder {
 		buffer.append("PAYMENTREQUEST_0_SHIPPINGAMT=" + shippingCost.toString());
 		buffer.append("&");
 		
-		BigDecimal itemTotal = new BigDecimal(0.00);
-		
-		// Now add the items to get the total
 		int i =0;
 		for (ExpressTransactionItem item : items) {
-			itemTotal  = itemTotal.add(item.getTotalCost());
 			buffer.append(item.createRequest(i));
 			i++;
 		}
 				
-		buffer.append("PAYMENTREQUEST_0_ITEMAMT=" + itemTotal);
-		buffer.append("&");
-		
-		BigDecimal orderTotal = itemTotal.add(shippingCost);
-		
 		buffer.append("PAYMENTREQUEST_0_AMT=" + orderTotal.toString());
 		
 		return buffer.toString();

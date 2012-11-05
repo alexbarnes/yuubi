@@ -1,21 +1,16 @@
 package com.yubi.shop.basket;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yubi.application.category.CategoryService;
 import com.yubi.application.product.ProductService;
 import com.yubi.core.country.CountryAccess;
-import com.yubi.shop.delivery.DeliveryMethod;
-import com.yubi.shop.delivery.DeliveryMethodAccess;
 
 @Controller
 @RequestMapping("/shop/basket")
@@ -27,19 +22,15 @@ public class BasketController {
 	
 	private final CountryAccess countryAccess;
 	
-	private final DeliveryMethodAccess deliveryMethodAccess;
-	
 	@Inject
 	public BasketController(
 			ProductService productService, 
 			CategoryService categoryService,
-			CountryAccess countryAccess,
-			DeliveryMethodAccess deliveryMethodAccess) {
+			CountryAccess countryAccess) {
 		super();
 		this.productService = productService;
 		this.categoryService = categoryService;
 		this.countryAccess = countryAccess;
-		this.deliveryMethodAccess = deliveryMethodAccess;
 	}
 
 	@RequestMapping("/add/{code}")
@@ -90,10 +81,5 @@ public class BasketController {
 		model.addObject("basket", session.getAttribute(BasketCreationListener.BASKET_KEY));
 		model.addObject("countries", countryAccess.listAll());
 		return model;
-	}
-	
-	@RequestMapping("/listdeliverymethods/{code}")
-	public @ResponseBody List<DeliveryMethod> getDeliveryMethodsForCountry(@PathVariable("code" )String code) {
-		return deliveryMethodAccess.loadForCountry(code);
 	}
 }

@@ -1,6 +1,5 @@
 package com.yubi.shop.paypal;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.yubi.application.product.Product;
+import com.yubi.application.product.ProductAccess;
 import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.BasketItem;
+import com.yubi.shop.basket.BasketService;
 
 @Service
 class PaypalServiceImpl implements PaypalService {
@@ -36,8 +37,15 @@ class PaypalServiceImpl implements PaypalService {
 	
 	private String paypalURL;
 	
+	private final ProductAccess productAccess;
+	
+	private final BasketService basketService;
+	
 	@Inject
-	public PaypalServiceImpl(Environment env) {
+	public PaypalServiceImpl(
+			Environment env, 
+			ProductAccess productAccess, 
+			BasketService basketService) {
 		super();
 		this.userName = env.getProperty(PaypalConstants.PAYPAL_USERNAME);
 		this.password = env.getProperty(PaypalConstants.PAYPAL_PASSWORD);
@@ -45,6 +53,8 @@ class PaypalServiceImpl implements PaypalService {
 		this.successURL = env.getProperty(PaypalConstants.PAYPAL_SUCCESS_URL);
 		this.cancelURL = env.getProperty(PaypalConstants.PAYPAL_CANCEL_URL);
 		this.paypalURL = env.getProperty(PaypalConstants.PAYPAL_API_ENDPOINT);
+		this.productAccess = productAccess;
+		this.basketService = basketService;
 	}
 
 	/* (non-Javadoc)
@@ -102,15 +112,13 @@ class PaypalServiceImpl implements PaypalService {
 		request.
 			withCancelURL(cancelURL).
 			withReturnURL(successURL).
-			withShippingCost(basket.getDeliveryMethod().getCost());
+			withShippingCost(basket.getDeliveryMethod().getCost()).
+			withTotalCost(basketService.getBasketTotal(basket));
 			
 		// Add all of the basket items to the paypal request
 		for (Entry<String, BasketItem> item : basket.getItems().entrySet()) {
 			
-			Product product = new Product();
-			product.setDescription("Bracelet");
-			product.setUnitPrice(new BigDecimal(35.00));
-			
+			Product product = productAccess.load(item.getValue().getProductCode());
 			ExpressTransactionItem checkoutItem = 
 					new ExpressTransactionItem(
 							product.getDescription(), 

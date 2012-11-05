@@ -1,15 +1,19 @@
 package com.yubi.shop.basket;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.yubi.shop.delivery.DeliveryMethod;
 
 public class Basket {
 	
-	public final Map<String, BasketItem> items = new HashMap<String, BasketItem>();
+	private final Map<String, BasketItem> items = new HashMap<String, BasketItem>();
 	
-	public DeliveryMethod deliveryMethod;
+	private DeliveryMethod deliveryMethod;
+	
+	private final Set<String> discounts = new HashSet<String>();
 	
 	public Map<String, BasketItem> getItems() {
 		return items;
@@ -26,5 +30,9 @@ public class Basket {
 
 	public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
 		this.deliveryMethod = deliveryMethod;
+	}
+	
+	public Set<String> getDiscounts() {
+		return discounts;
 	}
 }

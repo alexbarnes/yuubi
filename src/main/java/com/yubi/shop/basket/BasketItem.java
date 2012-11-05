@@ -21,12 +21,9 @@ public class BasketItem {
 		return productCode;
 	}
 
-	
-
 	public int getNumber() {
 		return number;
 	}
-
 
 	@Override
 	public boolean equals(Object other) {

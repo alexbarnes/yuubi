@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -29,6 +30,9 @@ public class Category {
 	
 	@OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
 	private List<Category> childCategories;
+	
+	@Lob
+	private byte[] image;
 	
 	public long getId() {
 		return id;
@@ -60,5 +64,13 @@ public class Category {
 
 	public void setChildCategories(List<Category> childCategories) {
 		this.childCategories = childCategories;
+	}
+	
+	public byte[] getImage() {
+		return image;
+	}
+	
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 }

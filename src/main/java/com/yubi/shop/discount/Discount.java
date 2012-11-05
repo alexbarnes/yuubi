@@ -27,7 +27,7 @@ public class Discount {
 	
 	private BigDecimal amount;
 	
-	private BigDecimal percentage;
+	private int percentage;
 	
 	private LocalDate validFrom;
 	
@@ -62,11 +62,11 @@ public class Discount {
 		this.amount = amount;
 	}
 
-	public BigDecimal getPercentage() {
+	public int getPercentage() {
 		return percentage;
 	}
 
-	public void setPercentage(BigDecimal percentage) {
+	public void setPercentage(int percentage) {
 		this.percentage = percentage;
 	}
 
