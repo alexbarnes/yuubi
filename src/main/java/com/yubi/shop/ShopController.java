@@ -71,6 +71,24 @@ public class ShopController {
 	}
 	
 	
+	@RequestMapping("/about")
+	public String showAbout() {
+		return "shop/about";
+	}
+	
+	
+	@RequestMapping("/deliveryinfo")
+	public String showDeliveryInfo() {
+		return "shop/deliveryinfo";
+	}
+	
+	
+	@RequestMapping("/terms")
+	public String showTerms() {
+		return "shop/terms";
+	}
+	
+	
 	@RequestMapping(value = "/product/image/{id}", produces = "image/png")
 	public @ResponseBody byte[] loadImage(@PathVariable("id") long id) {
 		return productAccess.loadImage(id).getImage();
