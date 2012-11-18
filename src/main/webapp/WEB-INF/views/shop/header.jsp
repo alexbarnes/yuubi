@@ -16,8 +16,10 @@
 	rel="stylesheet" />
 <link href="<spring:url value='/resources/shop/css/jquery.fancybox.css'/>"
 	rel="stylesheet" />
-
-
+<link rel="icon" 
+      type="image/png" 
+      href="<spring:url value='/resources/shop/img/favicon.ico'/>">
+      
 <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -37,7 +39,7 @@
 		<!-- Start Header-->
 		<div class="row show-grid">
 			<div class="span3 logo">
-				<a href="index.html"> <img alt="" src="img/logo.png" />
+				<a href="index.html"> <img alt="" src="<spring:url value='/resources/shop/img/logo.jpg'/>" />
 				</a>
 			</div>
 			<div class="span5 offset4">
@@ -45,8 +47,8 @@
 					<div class="span3"></div>
 					<div class="span2">
 						<div class="cart pull-right">
-							<a href="<spring:url value='/shop/basket/show'/>">Basket</a><br />2
-							items
+							<a id ="basket" href="<spring:url value='/shop/basket/show'/>" rel="popover">Basket</a><br />
+							<p id="basketTotal">£<c:out value="${basket.total}"/></p>
 						</div>
 					</div>
 				</div>
@@ -62,7 +64,7 @@
 							<div class="nav-collapse">
 								<ul class="nav pull-left" id="nav">
 									<c:forEach items="${menu}" var="current">
-										<li class="dropdown"><a href="products.html"
+										<li class="dropdown"><a href="#"
 											class="dropdown-toggle" data-toggle="dropdown">${current.description}<b
 												class="caret"></b></a>
 											<ul class="dropdown-menu">
@@ -76,7 +78,6 @@
 												</c:forEach>
 											</ul></li>
 									</c:forEach>
-									<li><a href="#">Gift Vouchers</a></li>
 								</ul>
 							</div>
 						</div>

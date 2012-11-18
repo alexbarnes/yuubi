@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,12 +22,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.yubi.application.category.Category;
 
 @Entity
-@Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Product {
 
 	@Id
-	@NotEmpty
 	private String code;
 
 	@Version
@@ -44,6 +41,10 @@ public class Product {
 	private int stockLevel;
 	
 	private boolean isGiftVoucher;
+	
+	@ManyToOne
+	@JoinColumn(name = "setCode")
+	private ProductSet set;
 	
 	@Lob
 	private byte[] thumbnail;
@@ -154,5 +155,9 @@ public class Product {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public ProductSet getSet() {
+		return set;
 	}
 }

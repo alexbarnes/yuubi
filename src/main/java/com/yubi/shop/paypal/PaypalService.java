@@ -11,8 +11,14 @@ public interface PaypalService {
 	
 	
 	/**
-	 * Complete the flow. This is where the order is written to the database. We 
-	 * also obtain the shipping information from here.
+	 * @param token
+	 */
+	public void loadTransactionDetail(String token);
+	
+	
+	/**
+	 * Complete the flow. This is where the order is written to the database.
+	 * 
 	 */
 	public void completeTransaction(String token);
 

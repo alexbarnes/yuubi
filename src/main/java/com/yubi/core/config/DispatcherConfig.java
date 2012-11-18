@@ -17,10 +17,10 @@ import com.yubi.shop.basket.BasketExpiryListener;
 @Configuration
 @EnableWebMvc
 public class DispatcherConfig extends WebMvcConfigurerAdapter {
-	
+
 	@Inject
 	private ProductService productService;
-
+	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		super.addResourceHandlers(registry);

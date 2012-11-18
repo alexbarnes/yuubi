@@ -39,7 +39,9 @@ public class BasketServiceImpl implements BasketService {
 		}
 		
 		// Add shipping if selected
-		total.add(basket.getDeliveryMethod().getCost());
+		if (basket.getDeliveryMethod() != null) {
+			total.add(basket.getDeliveryMethod().getCost());
+		}
 		
 		// Apply any discounts
 		for (String item : basket.getDiscounts()) {

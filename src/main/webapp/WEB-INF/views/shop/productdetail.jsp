@@ -2,16 +2,25 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <jsp:include page="header.jsp" />
 <div class="row">
+	<div class="row">
+		<div class="span12">
+			<div class="row">
+				<div class="span12">
+					<ul class="breadcrumb">
+						<li><a href="<spring:url value='/shop'/>"><i
+								class="icon-home"></i></a> <span class="divider">/</span></li>
+						<li><a
+							href="<spring:url value='/shop/category/view/${product.category.id}'/>">${product.category.description}</a><span
+							class="divider">/</span></li>
+						<li class="active">${product.title}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="span9">
 		<div class="row">
 			<div class="span9">
@@ -33,57 +42,46 @@
 						<li class="span1"><a
 							href="<spring:url value='/shop/product/image/${image.id}'/>"
 							class="thumbnail" data-fancybox-group="group1"
-							title="Description 2"> <img
+							title="${image.description}"> <img
 								src="<spring:url value='/shop/product/image/${image.id}'/>"
 								alt=""></a></li>
 					</c:forEach>
 				</ul>
 			</div>
-			<div class="span5">
-				<address>
-					<strong>Product Code:</strong> <span>${product.code }</span><br>
-					<strong>Availability:</strong>
-					<c:if test="${product.stockLevel  == 0}">
-						<span>Out Of Stock</span>
-					</c:if>
-					<c:if test="${product.stockLevel > 0}">
-						<span>${product.stockLevel}</span>
-					</c:if>
-
-
-					<br>
-				</address>
-				<h4>
-					<strong>Price: £${product.unitPrice}</strong>
-				</h4>
-			</div>
-			<div class="span5">
-				<form class="form-inline">
-					<label>Qty:</label> <input type="text" class="span1"
-						placeholder="1">
-					<button class="btn" type="submit">Add to cart</button>
-				</form>
-			</div>
-			<div class="span5">
-				<ul class="social">
-					<li>
-						<div class="fb-like" send="false" layout="button_count"
-							data-href="example.org"></div> <script
-							src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
-					</li>
-					<li><a href="https://twitter.com/share"
-						class="twitter-share-button" data-count="horizontal"
-						data-url="http://dev.a-smart.vn/products/itab-a989i3g-goi-dien.html"
-						data-text="iTab A989i(3G,Gọi Điện)" data-via="a-smart.vn">Tweet</a>
-						<script type="text/javascript"
-							src="http://platform.twitter.com/widgets.js"></script></li>
-				</ul>
-			</div>
+			<div id="stock"></div>
 		</div>
 	</div>
+	<c:if test="${product.set != null}">
+		<div class="span9">
+			<div class="row">
+				<div class="span9">
+					<h2 class="title">Matching products</h2>
+					<hr />
+				</div>
+			</div>
+			<div class="row">
+				<div class="span4">
+					<ul class="thumbnails listing-products">
+						<c:forEach items="${product.set.items}" var="current">
+							<c:if test="${current.code != product.code}">
+								<li class="span3">
+									<div class="product-box">
+										<a
+											href="<spring:url value='/shop/product/view/${current.code}'/>"><h4>${current.title}</h4></a>
+										<a
+											href="<spring:url value='/shop/product/view/${current.code}'/>"><img
+											src="<spring:url value='/shop/product/primaryimage/${current.code}'/>" /></a>
+										<p>${current.description}</p>
+									</div>
+								</li>
+							</c:if>
+						</c:forEach>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</c:if>
 </div>
-
-
 <footer>
 	<hr>
 	<div class="row">
@@ -110,6 +108,29 @@
 	</div>
 </footer>
 </div>
+<div class="modal" id="myModal" style="display: none;">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">×</button>
+		<h2 class="title" id="myModalLabel">Notify me when this product
+			is back in stock</h2>
+	</div>
+	<form:form action="/shop/notification/add">
+		<div class="modal-body">
+
+			<fieldset>
+				<label>e-mail</label>
+				<div class="div_text">
+					<input name="email" type="text" value="" class="span6">
+				</div>
+				<input type="hidden" name="productCode" value="${product.code}">
+			</fieldset>
+		</div>
+		<div class="modal-footer">
+			<button type="submit" class="btn">Confirm</button>
+		</div>
+	</form:form>
+</div>
 
 <script
 	src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
@@ -123,7 +144,7 @@
 					e.preventDefault();
 					$(this).tab('show');
 				});
-			})
+			});
 			
 			$(document).ready(function() {
 				$('.thumbnail').fancybox({
@@ -135,7 +156,42 @@
 				$('.carousel').carousel({
                     interval: false
                 });
+				
+				// Setup the stock level details
+				$.get('<spring:url value='/shop/product/stock/${product.code}'/>', function(data) {
+					$('#stock').html(data)
+				});
 			});
+			
+			$(function () { 
+				$("#basket").popover({placement: 'bottom', content: 'Basket updated', trigger: 'manual'});  
+			});
+			
+			// When the user clicks anywhere destroy the popover and recreate it for next time
+			$('html').click(function(e) {
+			    $('#basket').popover('destroy');
+			    $("#basket").popover({placement: 'bottom', content: 'Basket updated', trigger: 'manual'});
+			});
+			
+			// Handle the addition of a product to the basket. Update the summary and the stock level
+			function addItem() {
+				$.get('<spring:url value='/shop/basket/add/${product.code}'/>', function(data) {
+					if (data == true) {
+						// Update the basket total
+						$.get('<spring:url value='/shop/basket/total'/>', function(data) {
+							var html = '£' + data;
+							$('#basketTotal').html(html)
+						});
+						
+						$('#basket').popover('show');
+					} 
+					
+					// Update the displayed stock level in either case
+					$.get('<spring:url value='/shop/product/stock/${product.code}'/>', function(data) {
+						$('#stock').html(data)
+					});
+				});
+			}
 		</script>
 </body>
 </html>

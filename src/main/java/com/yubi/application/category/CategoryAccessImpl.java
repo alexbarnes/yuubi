@@ -30,10 +30,17 @@ public class CategoryAccessImpl implements CategoryAccess {
 	
 	
 	@SuppressWarnings("unchecked")
+	@Transactional
 	public List<Category> listProductParentCategories() {
 		Query query = sessionFactory.getCurrentSession()
 				.createQuery("from Category where parentCategoryId is NULL");
 		List<Category> categories = query.setCacheable(true).list();
 		return categories;
+	}
+
+	
+	@Transactional
+	public Category load(long id) {
+		return (Category) sessionFactory.getCurrentSession().get(Category.class, id);
 	}
 }

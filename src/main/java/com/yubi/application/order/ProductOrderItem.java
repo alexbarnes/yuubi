@@ -9,6 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.yubi.application.product.Product;
 
 @Entity
@@ -42,6 +45,31 @@ public class ProductOrderItem {
 		public void setOrder(ProductOrder order) {
 			this.order = order;
 		}
+		
+		@Override
+		public int hashCode() {
+			return new HashCodeBuilder()
+				.append(product.getCode())
+				.append(order.getId())
+				.toHashCode();
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == this)
+				return true;
+			
+			if (!(obj instanceof Id)) {
+				return false;
+			}
+			
+			Id id = (Id)obj;
+			
+			return new EqualsBuilder()
+				.append(id.getOrder().getId(), order.getId())
+				.append(id.getProduct().getCode(), product.getCode())
+				.isEquals();
+		}
 	}
 	
 	@EmbeddedId
@@ -69,5 +97,23 @@ public class ProductOrderItem {
 
 	public void setTotalCost(BigDecimal totalCost) {
 		this.totalCost = totalCost;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof ProductOrderItem)) {
+			return false;
+		}
+		ProductOrderItem other = (ProductOrderItem)obj;
+		return new EqualsBuilder().append(other.getId(), this.getId()).isEquals();
+	}
+	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this.id).toHashCode();
 	}
 }

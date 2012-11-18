@@ -83,25 +83,11 @@ class PaypalServiceImpl implements PaypalService {
 		
 		return resultMap.get("TOKEN");
 	}
+	
+	
 
 	public void completeTransaction(String token) {
-		GetExpressCheckoutDetailsRequest request =
-				new GetExpressCheckoutDetailsRequest(token);
 		
-		ResponseEntity<String> response = new RestTemplate().postForEntity(paypalURL, request.createRequest(), String.class);
-		
-		Map<String, String> resultMap = new HashMap<String, String>();
-		String[] result = StringUtils.split(response.getBody(), "&");
-		
-		for (String entry : result) {
-			resultMap.put(StringUtils.split(entry, "=")[0], StringUtils.split(entry, "=")[1]);
-		}
-		
-		logger.info("Get express checkout details request result map + [" + resultMap.toString() + "].");
-		
-		if (!resultMap.get("ACK").equals("Success")) {
-			throw new RuntimeException("An error occurred creating the express checkout");
-		}
 	}
 	
 	
@@ -129,5 +115,25 @@ class PaypalServiceImpl implements PaypalService {
 		}
 		
 		return request;
+	}
+
+	public void loadTransactionDetail(String token) {
+		GetExpressCheckoutDetailsRequest request =
+				new GetExpressCheckoutDetailsRequest(token);
+		
+		ResponseEntity<String> response = new RestTemplate().postForEntity(paypalURL, request.createRequest(), String.class);
+		
+		Map<String, String> resultMap = new HashMap<String, String>();
+		String[] result = StringUtils.split(response.getBody(), "&");
+		
+		for (String entry : result) {
+			resultMap.put(StringUtils.split(entry, "=")[0], StringUtils.split(entry, "=")[1]);
+		}
+		
+		logger.info("Get express checkout details request result map + [" + resultMap.toString() + "].");
+		
+		if (!resultMap.get("ACK").equals("Success")) {
+			throw new RuntimeException("An error occurred creating the express checkout");
+		}
 	}
 }

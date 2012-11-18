@@ -8,7 +8,11 @@ public interface ProductAccess {
 	
 	public List<Product> listForCategory(long categoryCode);
 	
+	public List<ProductSet> listSets();
+	
 	public void save(Product product);
+	
+	public int getStockCount(String code);
 	
 	public void deleteImage(long id);
 	

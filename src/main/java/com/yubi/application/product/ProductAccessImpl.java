@@ -27,6 +27,8 @@ public class ProductAccessImpl implements ProductAccess {
 				Product.class, code);
 		
 		Hibernate.initialize(product.getImages());
+		Hibernate.initialize(product.getSet());
+		Hibernate.initialize(product.getSet().getItems());
 		return product;
 	}
 
@@ -67,5 +69,19 @@ public class ProductAccessImpl implements ProductAccess {
 		query.setLong(0, id);
 		query.setCacheable(true);
 		return query.list();
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<ProductSet> listSets() {
+		return sessionFactory.getCurrentSession().createQuery("from ProductSet").list();
+	}
+
+	@Transactional
+	public int getStockCount(String code) {
+		Query query =  sessionFactory.getCurrentSession().createQuery("select stockLevel from Product where code = ?");
+		query.setString(0, code);
+		return (Integer) query.uniqueResult();
 	}
 }

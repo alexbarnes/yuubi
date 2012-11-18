@@ -1,10 +1,7 @@
 package com.yubi.shop;
 
 import javax.inject.Inject;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,29 +16,32 @@ import com.yubi.application.product.ProductAccess;
 @RequestMapping("/shop")
 public class ShopController {
 	
+	private final ProductAccess productAccess;
+	
+	private final CategoryAccess categoryAccess;
+	
 	private final CategoryService categoryService;
-	
-	private ProductAccess productAccess;
-	
-	private CategoryAccess categoryAccess;
 	
 	@Inject
 	public ShopController(
-			CategoryService categoryService,
 			ProductAccess productAccess,
-			CategoryAccess categoryAccess) {
+			CategoryAccess categoryAccess,
+			CategoryService categoryService) {
 		super();
-		this.categoryService = categoryService;
 		this.productAccess = productAccess;
 		this.categoryAccess = categoryAccess;
+		this.categoryService = categoryService;
 	}
 
 	
 	@RequestMapping
 	public ModelAndView showShopHome() {
-		ModelAndView model = new ModelAndView("shop/shop");
-		model.addObject("menu", categoryService.buildProductMenu());
-		return model;
+		ModelAndView modelAndView =  new ModelAndView("shop/shop");
+		
+		modelAndView.addObject("menu", categoryService.buildProductMenu());
+		modelAndView.addObject("sets", productAccess.listSets());
+		
+		return modelAndView;
 	}
 	
 	/**
@@ -52,8 +52,8 @@ public class ShopController {
 	@RequestMapping("/category/view/{id}")
 	public ModelAndView showCategory(@PathVariable("id") long id) {
 		ModelAndView mav =  new ModelAndView("shop/productlist");
-		mav.addObject("products", productAccess.listForCategory(id));
 		mav.addObject("menu", categoryService.buildProductMenu());
+		mav.addObject("products", productAccess.listForCategory(id));
 		mav.addObject("category", categoryAccess.loadWithChildren(id));
 		return mav;
 	}
@@ -65,51 +65,39 @@ public class ShopController {
 	@RequestMapping("/product/view/{code}")
 	public ModelAndView viewProduct(@PathVariable("code") String code) {
 		ModelAndView mav = new ModelAndView("shop/productdetail");
-		mav.addObject("product", productAccess.load(code));
 		mav.addObject("menu", categoryService.buildProductMenu());
+		mav.addObject("product", productAccess.load(code));
 		return mav;
 	}
 	
 	
 	@RequestMapping("/about")
-	public String showAbout() {
-		return "shop/about";
+	public ModelAndView showAbout() {
+		ModelAndView mav = new ModelAndView("shop/about");
+		mav.addObject("menu", categoryService.buildProductMenu());
+		return mav;
 	}
 	
 	
 	@RequestMapping("/deliveryinfo")
-	public String showDeliveryInfo() {
-		return "shop/deliveryinfo";
+	public ModelAndView showDeliveryInfo() {
+		ModelAndView mav = new ModelAndView("shop/deliveryinfo");
+		mav.addObject("menu", categoryService.buildProductMenu());
+		return mav;
 	}
 	
 	
 	@RequestMapping("/terms")
-	public String showTerms() {
-		return "shop/terms";
+	public ModelAndView showTerms() {
+		ModelAndView mav = new ModelAndView("shop/terms");
+		mav.addObject("menu", categoryService.buildProductMenu());
+		return mav;
 	}
 	
-	
-	@RequestMapping(value = "/product/image/{id}", produces = "image/png")
-	public @ResponseBody byte[] loadImage(@PathVariable("id") long id) {
-		return productAccess.loadImage(id).getImage();
-	}
-	
-	
-	@RequestMapping(value = "/product/primaryimage/{code}", produces = "image/png")
-	public @ResponseBody byte[] loadProductPrimaryImage(@PathVariable("code") String code, ServletResponse response) {
-		response.setContentType("");
-		return productAccess.loadPrimaryImage(code).getImage();
-	}
-	
-	
-	@RequestMapping(value = "/product/thumbnail/{code}", produces = "image/png")
-	public @ResponseBody byte[] loadProductThumbnail(@PathVariable("code") String code) {
-		return productAccess.load(code).getThumbnail();
-	}
-	
-	
-	@RequestMapping(value = "/category/image/{id}", produces = "image/png")
-	public @ResponseBody byte[] loadCategoryImage(@PathVariable("id") long id) {
-		return categoryAccess.loadWithChildren(id).getImage();
+	@RequestMapping("/product/stock/{code}")
+	public ModelAndView getProductStock(@PathVariable("code") String code) {
+		ModelAndView view =  new ModelAndView("shop/stocklevel");
+		view.addObject("product", productAccess.load(code));
+		return view;
 	}
 }
