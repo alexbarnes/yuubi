@@ -29,13 +29,8 @@ public class DeliveryMethodAccessImpl implements DeliveryMethodAccess {
 	@Transactional
 	public List<DeliveryMethod> loadForCountry(String code) {
 		Query query =  sessionFactory.getCurrentSession().createQuery("from DeliveryMethod where country.code = ?");
-		query.setParameter(0, code);
-		
-		return query.list();
+		query.setString(0, code);
+		List<DeliveryMethod> methods = query.list();
+		return methods;
 	}
-
-
-
-
-
 }

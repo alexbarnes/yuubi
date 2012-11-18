@@ -101,7 +101,7 @@ class PaypalServiceImpl implements PaypalService {
 			withShippingCost(basket.getDeliveryMethod().getCost()).
 			withTotalCost(basketService.getBasketTotal(basket));
 			
-		// Add all of the basket items to the paypal request
+		// Add all of the basket items to the Paypal request
 		for (Entry<String, BasketItem> item : basket.getItems().entrySet()) {
 			
 			Product product = productAccess.load(item.getValue().getProductCode());

@@ -44,6 +44,13 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
+		
+		<!-- Integration -->
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-mail</artifactId>
+			<version>2.1.4.RELEASE</version>
+		</dependency>
 
 		<dependency>
 			<groupId>cglib</groupId>

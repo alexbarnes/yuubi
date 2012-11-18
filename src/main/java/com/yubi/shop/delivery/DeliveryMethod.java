@@ -2,11 +2,13 @@ package com.yubi.shop.delivery;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
 
 import com.yubi.core.country.Country;
 
@@ -23,6 +25,7 @@ public class DeliveryMethod {
 	@JoinColumn(name = "countryCode")
 	private Country country;
 	
+	@Column(nullable = false)
 	private BigDecimal cost;
 
 	public long getId() {

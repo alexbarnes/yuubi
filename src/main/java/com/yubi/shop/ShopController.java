@@ -1,16 +1,21 @@
 package com.yubi.shop;
 
+import java.util.Date;
+
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yubi.application.category.CategoryAccess;
 import com.yubi.application.category.CategoryService;
 import com.yubi.application.product.ProductAccess;
+import com.yubi.core.statistics.EventGateway;
+import com.yubi.core.statistics.ShopEvent;
+import com.yubi.core.statistics.ShopEventType;
 
 @Controller
 @RequestMapping("/shop")
@@ -22,18 +27,25 @@ public class ShopController {
 	
 	private final CategoryService categoryService;
 	
+	private final EventGateway eventGateway;
+	
 	@Inject
 	public ShopController(
 			ProductAccess productAccess,
 			CategoryAccess categoryAccess,
-			CategoryService categoryService) {
+			CategoryService categoryService,
+			EventGateway eventGateway) {
 		super();
 		this.productAccess = productAccess;
 		this.categoryAccess = categoryAccess;
 		this.categoryService = categoryService;
+		this.eventGateway = eventGateway;
 	}
 
 	
+	/**
+	 * Show the shop home page. 
+	 */
 	@RequestMapping
 	public ModelAndView showShopHome() {
 		ModelAndView modelAndView =  new ModelAndView("shop/shop");
@@ -45,16 +57,22 @@ public class ShopController {
 	}
 	
 	/**
-	 * 
 	 * List the products for a certain category.
-	 * @return
 	 */
 	@RequestMapping("/category/view/{id}")
-	public ModelAndView showCategory(@PathVariable("id") long id) {
+	public ModelAndView showCategory(@PathVariable("id") long id, HttpSession session) {
 		ModelAndView mav =  new ModelAndView("shop/productlist");
 		mav.addObject("menu", categoryService.buildProductMenu());
 		mav.addObject("products", productAccess.listForCategory(id));
 		mav.addObject("category", categoryAccess.loadWithChildren(id));
+		
+		ShopEvent event = new ShopEvent();
+		event.setDate(new Date());
+		event.setEntityKey(String.valueOf(id));
+		event.setSessionId(session.getId());
+		event.setType(ShopEventType.CATEGORY_VIEW);
+		eventGateway.recordShopEvent(event);
+		
 		return mav;
 	}
 	
@@ -63,14 +81,25 @@ public class ShopController {
 	 * View a specific product detail.
 	 */
 	@RequestMapping("/product/view/{code}")
-	public ModelAndView viewProduct(@PathVariable("code") String code) {
+	public ModelAndView viewProduct(@PathVariable("code") String code, HttpSession session) {
 		ModelAndView mav = new ModelAndView("shop/productdetail");
 		mav.addObject("menu", categoryService.buildProductMenu());
 		mav.addObject("product", productAccess.load(code));
+		
+		ShopEvent event = new ShopEvent();
+		event.setDate(new Date());
+		event.setEntityKey(code);
+		event.setSessionId(session.getId());
+		event.setType(ShopEventType.PRODUCT_VIEW);
+		eventGateway.recordShopEvent(event);
+		
 		return mav;
 	}
 	
 	
+	/**
+	 * Show the about page
+	 */
 	@RequestMapping("/about")
 	public ModelAndView showAbout() {
 		ModelAndView mav = new ModelAndView("shop/about");
@@ -79,6 +108,9 @@ public class ShopController {
 	}
 	
 	
+	/**
+	 * Show the delivery info page
+	 */
 	@RequestMapping("/deliveryinfo")
 	public ModelAndView showDeliveryInfo() {
 		ModelAndView mav = new ModelAndView("shop/deliveryinfo");
@@ -87,6 +119,9 @@ public class ShopController {
 	}
 	
 	
+	/**
+	 * Show the terms and conditions page
+	 */
 	@RequestMapping("/terms")
 	public ModelAndView showTerms() {
 		ModelAndView mav = new ModelAndView("shop/terms");
@@ -94,6 +129,10 @@ public class ShopController {
 		return mav;
 	}
 	
+	
+	/**
+	 * Show the product stock section of the product detail page
+	 */
 	@RequestMapping("/product/stock/{code}")
 	public ModelAndView getProductStock(@PathVariable("code") String code) {
 		ModelAndView view =  new ModelAndView("shop/stocklevel");

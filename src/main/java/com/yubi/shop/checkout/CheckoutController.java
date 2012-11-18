@@ -1,21 +1,22 @@
 package com.yubi.shop.checkout;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import com.yubi.core.country.CountryAccess;
 import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.BasketCreationListener;
-import com.yubi.shop.delivery.DeliveryMethod;
+import com.yubi.shop.basket.BasketService;
 import com.yubi.shop.delivery.DeliveryMethodAccess;
 import com.yubi.shop.paypal.PaypalConstants;
 import com.yubi.shop.paypal.PaypalService;
@@ -24,6 +25,8 @@ import com.yubi.shop.paypal.PaypalService;
 @RequestMapping("/shop/checkout")
 public class CheckoutController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(CheckoutController.class);
+	
 	private final DeliveryMethodAccess deliveryMethodAccess;
 	
 	private final CountryAccess countryAccess;
@@ -31,27 +34,35 @@ public class CheckoutController {
 	private final PaypalService paypalService;
 	
 	private final Environment env;
+	
+	private final BasketService basketService;
 
 	@Inject
 	public CheckoutController(
 			DeliveryMethodAccess deliveryMethodAccess,
 			CountryAccess countryAccess,
 			PaypalService paypalService,
-			Environment env) {
+			Environment env,
+			BasketService basketService) {
 		super();
 		this.deliveryMethodAccess = deliveryMethodAccess;
 		this.countryAccess = countryAccess;
 		this.paypalService = paypalService;
 		this.env = env;
+		this.basketService = basketService;
 	}
 
 	/**
 	 * Show the checkout page. This should allow a user to select a delivery method
 	 *  as well as enter any discount codes.
 	 */
-	@RequestMapping("")
-	public ModelAndView checkout() {
+	@RequestMapping("/")
+	public ModelAndView checkout(HttpSession session) {
 		ModelAndView mav = new ModelAndView("shop/checkout", "countries", countryAccess.listAll());
+		
+		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		
+		mav.addObject("total", basketService.getBasketTotal(basket));
 		return mav;
 	}
 	
@@ -61,10 +72,9 @@ public class CheckoutController {
 	 * methods for a selected country.
 	 */
 	@RequestMapping("/listdeliverymethods/{code}")
-	public @ResponseBody List<DeliveryMethod> getDeliveryMethodsForCountry(@PathVariable("code" )String code) {
-		return deliveryMethodAccess.loadForCountry(code);
+	public @ResponseBody ModelAndView getDeliveryMethodsForCountry(@PathVariable("code" )String code) {
+		return new ModelAndView(new MappingJacksonJsonView(), "deliverymethods", deliveryMethodAccess.loadForCountry(code));
 	}
-	
 	
 	/**
 	 * This is used to apply a discount code to an order. The screen should be updated to reflect
@@ -83,14 +93,12 @@ public class CheckoutController {
 	public String expressCheckout(HttpSession session) {
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
 		
-		// Setup the delivery method on the basket prior to calling Paypal
-		//basket.setDeliveryMethod(deliveryMethodAccess.get(1));
-		
 		String token;
 		try {
 			token = paypalService.setupTransaction(basket);
 			session.setAttribute("paypal-token", token);
 		} catch (RuntimeException e) {
+			logger.error("Error setting up paypal transaction", e);
 			return "shop/basket";
 	}
 		return String.format("redirect:%s?cmd=_express-checkout&useraction=commit&token=%s", env.getProperty(PaypalConstants.PAYPAL_PAYMENT_URL), token);

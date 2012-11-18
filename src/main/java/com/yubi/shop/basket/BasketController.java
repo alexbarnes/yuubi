@@ -1,6 +1,7 @@
 package com.yubi.shop.basket;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -15,7 +16,16 @@ import com.yubi.application.category.CategoryService;
 import com.yubi.application.product.Product;
 import com.yubi.application.product.ProductAccess;
 import com.yubi.application.product.ProductService;
+import com.yubi.core.statistics.EventGateway;
+import com.yubi.core.statistics.ShopEvent;
+import com.yubi.core.statistics.ShopEventType;
 
+/**
+ * Methods to handle changes to the contents of a users basket.
+ * 
+ * @author Alex Barnes
+ *
+ */
 @Controller
 @RequestMapping("/shop/basket")
 public class BasketController {
@@ -28,18 +38,22 @@ public class BasketController {
 	
 	private final ProductAccess productAccess;
 	
+	private final EventGateway eventGateway;
+	
 	
 	@Inject
 	public BasketController(
 			ProductService productService, 
 			CategoryService categoryService,
 			BasketService basketService,
-			ProductAccess productAccess) {
+			ProductAccess productAccess,
+			EventGateway eventGateway) {
 		super();
 		this.productService = productService;
 		this.categoryService = categoryService;
 		this.basketService = basketService;
 		this.productAccess = productAccess;
+		this.eventGateway = eventGateway;
 	}
 
 	@RequestMapping("/add/{code}")
@@ -77,6 +91,14 @@ public class BasketController {
 			// point that their session expires.
 			productService.reduceStockLevel(code, 1);
 			
+			// Write an event to record this
+			ShopEvent event = new ShopEvent();
+			event.setDate(new Date());
+			event.setEntityKey(code);
+			event.setSessionId(session.getId());
+			event.setType(ShopEventType.ADDED_TO_BASKET);
+			eventGateway.recordShopEvent(event);
+			
 			return true;
 		}
 	}
@@ -97,6 +119,14 @@ public class BasketController {
 		} else {
 			item.setNumber(item.getNumber() - number);
 		}
+		
+		// Write an event to record this
+		ShopEvent event = new ShopEvent();
+		event.setDate(new Date());
+		event.setEntityKey(code);
+		event.setSessionId(session.getId());
+		event.setType(ShopEventType.REMOVED_FROM_BASKET);
+		eventGateway.recordShopEvent(event);
 		
 		// Also put the stock back
 		productService.increaseStockLevel(code, number);

@@ -1,14 +1,9 @@
 package com.yubi.core.country;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import com.yubi.shop.delivery.DeliveryMethod;
 
 @Entity
 public class Country {
@@ -18,9 +13,6 @@ public class Country {
 	
 	private String description;
 	
-	@OneToMany(mappedBy = "country")
-	private List<DeliveryMethod> deliveryMethods;
-
 	public String getCode() {
 		return code;
 	}
@@ -37,15 +29,6 @@ public class Country {
 		this.description = description;
 	}
 
-	public List<DeliveryMethod> getDeliveryMethods() {
-		return deliveryMethods;
-	}
-
-	public void setDeliveryMethods(List<DeliveryMethod> deliveryMethods) {
-		this.deliveryMethods = deliveryMethods;
-	}
-	
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this) {

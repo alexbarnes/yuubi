@@ -5,6 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.web.session.HttpSessionCreatedEvent;
 
+/**
+ * Set up a users basket on session creation.
+ * 
+ * @author Alex Barnes
+ *
+ */
 public class BasketCreationListener implements
 		ApplicationListener<HttpSessionCreatedEvent> {
 	

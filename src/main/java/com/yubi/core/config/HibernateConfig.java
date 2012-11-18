@@ -33,7 +33,7 @@ public class HibernateConfig {
 	@Bean
 	public SessionFactory sessionFactory() throws Exception {
 		Properties properties = new Properties();
-		properties.put("hibernate.show_sql", "true");
+		properties.put("hibernate.show_sql", "false");
 		properties.put("hibernate.hbm2ddl.auto", "update");
 		properties.put("hibernate.search.default.directory_provider",
 				"org.hibernate.search.store.impl.RAMDirectoryProvider");
