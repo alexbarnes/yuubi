@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -118,10 +119,18 @@ public class ShopController {
 	}
 	
 	@RequestMapping(value = "/product/search", method = RequestMethod.POST)
-	public ModelAndView searchForProducts(String query, RedirectAttributes redirectAttributes) {
+	public ModelAndView searchForProducts(String query, RedirectAttributes redirectAttributes, HttpSession session) {
 		ModelAndView mav = new ModelAndView("redirect:/shop/product/searchresults");
 		redirectAttributes.addFlashAttribute("active", "Search: " + query);
 		redirectAttributes.addFlashAttribute("products", productService.search(query));
+		
+		ShopEvent event = new ShopEvent();
+		event.setDate(new Date());
+		event.setEntityKey(StringUtils.substring(query, 0, 20));
+		event.setSessionId(session.getId());
+		event.setType(ShopEventType.SEARCH);
+		eventGateway.recordShopEvent(event);
+		
 		return mav;
 	}
 	
