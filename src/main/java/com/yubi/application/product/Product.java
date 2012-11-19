@@ -8,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
@@ -53,9 +52,6 @@ public class Product {
 	@JoinColumn(name = "setCode")
 	private ProductSet set;
 	
-	@Lob
-	private byte[] thumbnail;
-
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
 	private final Set<ProductImage> images = new HashSet<ProductImage>();
 
@@ -126,14 +122,6 @@ public class Product {
 
 	public void setStockLevel(int stockLevel) {
 		this.stockLevel = stockLevel;
-	}
-
-	public byte[] getThumbnail() {
-		return thumbnail;
-	}
-
-	public void setThumbnail(byte[] thumbnail) {
-		this.thumbnail = thumbnail;
 	}
 
 	public Category getCategory() {
