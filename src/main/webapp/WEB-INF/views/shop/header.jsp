@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,6 +79,11 @@
 												</c:forEach>
 											</ul></li>
 									</c:forEach>
+									<li class="search_form">
+											<form:form action="/shop/product/search" cssClass="navbar-search pull-right">
+												<input type="text" class="input-medium search-query" placeholder="search..." name="query">
+											</form:form>
+										</li>
 								</ul>
 							</div>
 						</div>

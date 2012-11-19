@@ -1,7 +1,10 @@
 package com.yubi.shop.notification;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,5 +37,14 @@ public class OutOfStockServiceImpl implements OutOfStockService {
 		notification.setEmail(email);
 		notification.setProduct(productAccess.load(productCode));
 		sessionFactory.getCurrentSession().save(notification);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<OutOfStockNotification> loadNotificationsForProduct(String code) {
+		Query query = sessionFactory.getCurrentSession().createQuery("from OutOfStockNotification where product.code = :code");
+		query.setString("code", code);
+		
+		return query.list();
 	}
 }

@@ -17,12 +17,16 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.yubi.application.category.Category;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Indexed
 public class Product {
 
 	@Id
@@ -31,11 +35,14 @@ public class Product {
 	@Version
 	private int version;
 	
+	@Field(analyze = Analyze.YES)
 	private String title;
 
 	@NotEmpty
+	@Field(analyze = Analyze.YES)
 	private String description;
 
+	@Field
 	private BigDecimal unitPrice;
 
 	private int stockLevel;

@@ -3,6 +3,7 @@ package com.yubi.core.config;
 import javax.inject.Inject;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.search.Search;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -21,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ComponentScan(basePackages = {"com.yubi"}, includeFilters = {
 		@Filter(type = FilterType.ANNOTATION, value = Service.class),
 		@Filter(type = FilterType.ANNOTATION, value = Repository.class) })
-@Import({ HibernateConfig.class })
+@Import({ HibernateConfig.class, MailConfig.class })
 @ImportResource(value = { "/WEB-INF/spring/security.xml", "/WEB-INF/spring/integration.xml" })
 @PropertySource(name = "props", value = "classpath:application.properties")
 public class RootConfig implements ApplicationListener<ContextRefreshedEvent> {
@@ -31,7 +32,6 @@ public class RootConfig implements ApplicationListener<ContextRefreshedEvent> {
 
 	@Transactional
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-	
+		Search.getFullTextSession(sessionFactory.getCurrentSession()).createIndexer().start();
 	}
-
 }

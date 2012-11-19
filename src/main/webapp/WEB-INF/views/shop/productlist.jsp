@@ -18,7 +18,7 @@
 				<ul class="breadcrumb">
 					<li><a href="<spring:url value='/shop'/>"><i
 							class="icon-home"></i></a> <span class="divider">/</span></li>
-					<li class="active">${category.description}</li>
+					<li class="active">${active}</li>
 				</ul>
 			</div>
 		</div>
@@ -28,7 +28,7 @@
 	<div class="span12">
 		<div class="row">
 			<div class="span9">
-				<h2 class="title">${category.description}</h2>
+				<h2 class="title">${active}</h2>
 				<hr />
 			</div>
 		</div>

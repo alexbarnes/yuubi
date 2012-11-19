@@ -3,16 +3,21 @@ package com.yubi.shop;
 import java.util.Date;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.yubi.application.category.CategoryAccess;
 import com.yubi.application.category.CategoryService;
 import com.yubi.application.product.ProductAccess;
+import com.yubi.application.product.ProductService;
 import com.yubi.core.statistics.EventGateway;
 import com.yubi.core.statistics.ShopEvent;
 import com.yubi.core.statistics.ShopEventType;
@@ -29,17 +34,21 @@ public class ShopController {
 	
 	private final EventGateway eventGateway;
 	
+	private final ProductService productService;
+	
 	@Inject
 	public ShopController(
 			ProductAccess productAccess,
 			CategoryAccess categoryAccess,
 			CategoryService categoryService,
-			EventGateway eventGateway) {
+			EventGateway eventGateway,
+			ProductService productService) {
 		super();
 		this.productAccess = productAccess;
 		this.categoryAccess = categoryAccess;
 		this.categoryService = categoryService;
 		this.eventGateway = eventGateway;
+		this.productService = productService;
 	}
 
 	
@@ -64,7 +73,7 @@ public class ShopController {
 		ModelAndView mav =  new ModelAndView("shop/productlist");
 		mav.addObject("menu", categoryService.buildProductMenu());
 		mav.addObject("products", productAccess.listForCategory(id));
-		mav.addObject("category", categoryAccess.loadWithChildren(id));
+		mav.addObject("active", categoryAccess.load(id).getDescription());
 		
 		ShopEvent event = new ShopEvent();
 		event.setDate(new Date());
@@ -73,6 +82,18 @@ public class ShopController {
 		event.setType(ShopEventType.CATEGORY_VIEW);
 		eventGateway.recordShopEvent(event);
 		
+		return mav;
+	}
+	
+	
+	@RequestMapping("/product/searchresults")
+	public ModelAndView showProductList(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView("shop/productlist");
+		if (RequestContextUtils.getInputFlashMap(request) == null ) {
+			mav.addObject("active", "No search results to show");
+		}
+		
+		mav.addObject("menu", categoryService.buildProductMenu());
 		return mav;
 	}
 	
@@ -93,6 +114,14 @@ public class ShopController {
 		event.setType(ShopEventType.PRODUCT_VIEW);
 		eventGateway.recordShopEvent(event);
 		
+		return mav;
+	}
+	
+	@RequestMapping(value = "/product/search", method = RequestMethod.POST)
+	public ModelAndView searchForProducts(String query, RedirectAttributes redirectAttributes) {
+		ModelAndView mav = new ModelAndView("redirect:/shop/product/searchresults");
+		redirectAttributes.addFlashAttribute("active", "Search: " + query);
+		redirectAttributes.addFlashAttribute("products", productService.search(query));
 		return mav;
 	}
 	
