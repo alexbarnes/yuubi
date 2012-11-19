@@ -41,12 +41,6 @@ public class ImageController {
 	}
 	
 	
-	@RequestMapping(value = "/product/thumbnail/{code}", produces = "image/png")
-	public @ResponseBody byte[] loadProductThumbnail(@PathVariable("code") String code) {
-		return productAccess.load(code).getThumbnail();
-	}
-	
-	
 	@RequestMapping(value = "/category/image/{id}", produces = "image/png")
 	public @ResponseBody byte[] loadCategoryImage(@PathVariable("id") long id) {
 		return categoryAccess.loadWithChildren(id).getImage();
