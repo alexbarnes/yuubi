@@ -21,7 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Configuration
 @ComponentScan(basePackages = {"com.yubi"}, includeFilters = {
 		@Filter(type = FilterType.ANNOTATION, value = Service.class),
-		@Filter(type = FilterType.ANNOTATION, value = Repository.class) })
+		@Filter(type = FilterType.ANNOTATION, value = Repository.class)
+		}, excludeFilters = {@Filter(type =FilterType.ANNOTATION, value = Configuration.class)})
 @Import({ HibernateConfig.class, MailConfig.class })
 @ImportResource(value = { "/WEB-INF/spring/security.xml", "/WEB-INF/spring/integration.xml" })
 @PropertySource(name = "props", value = "classpath:application.properties")

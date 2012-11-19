@@ -15,7 +15,8 @@ import org.springframework.stereotype.Service;
 		basePackages = { "com.yubi.application", "com.yubi.shop" }, 
 		includeFilters = { @Filter(type = FilterType.ANNOTATION, value = Controller.class) },
 		excludeFilters = { @Filter(type = FilterType.ANNOTATION, value = Service.class), 
-						   @Filter(type =FilterType.ANNOTATION, value = Repository.class)})
+						   @Filter(type =FilterType.ANNOTATION, value = Repository.class),
+						   @Filter(type =FilterType.ANNOTATION, value = Configuration.class)})
 @Import({ DispatcherConfig.class })
 public class ApplicationConfig {
 	
