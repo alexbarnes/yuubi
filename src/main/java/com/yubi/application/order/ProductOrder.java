@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
+import com.yubi.application.product.Product;
+
 @Entity
 public class ProductOrder {
 	
@@ -21,8 +23,6 @@ public class ProductOrder {
 	
 	@Version
 	private int version;
-	
-	private String paypalToken;
 	
 	private String paypalTransactionId;
 	
@@ -48,14 +48,6 @@ public class ProductOrder {
 		this.version = version;
 	}
 
-	public String getPaypalToken() {
-		return paypalToken;
-	}
-
-	public void setPaypalToken(String paypalToken) {
-		this.paypalToken = paypalToken;
-	}
-
 	public String getPaypalTransactionId() {
 		return paypalTransactionId;
 	}
@@ -70,5 +62,13 @@ public class ProductOrder {
 
 	public Set<OrderDiscount> getDiscounts() {
 		return discounts;
+	}
+	
+	public ProductOrderItem addItem(Product product) {
+		ProductOrderItem item = new ProductOrderItem();
+		item.getId().setProduct(product);
+		item.getId().setOrder(this);
+		items.add(item);
+		return item;
 	}
 }

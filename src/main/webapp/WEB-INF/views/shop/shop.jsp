@@ -16,17 +16,49 @@
 		<div id="myCarousel" class="carousel slide home">
 			<div class="carousel-inner">
 				<div class="item active">
-
-					<img alt="" src="<spring:url value='/resources/shop/img/1.jpg'/>" />
+					<img alt="" src="<spring:url value='/resources/shop/img/home1.png'/>" />
 					<div class="carousel-caption">
-						<h4>Slide Image 1</h4>
+						<h4>Drop Earrings</h4>
 						<p></p>
 					</div>
 				</div>
+				
 				<div class="item">
-					<img alt="" src="<spring:url value='/resources/shop/img/2.jpg'/>" />
+					<img alt="" src="<spring:url value='/resources/shop/img/home2.png'/>" />
 					<div class="carousel-caption">
-						<h4>Slide Image 2</h4>
+						<h4>Drop Earrings</h4>
+						<p></p>
+					</div>
+				</div>
+				
+				<div class="item">
+					<img alt="" src="<spring:url value='/resources/shop/img/home3.png'/>" />
+					<div class="carousel-caption">
+						<h4>Drop Earrings</h4>
+						<p></p>
+					</div>
+				</div>
+				
+				<div class="item">
+					<img alt="" src="<spring:url value='/resources/shop/img/home4.png'/>" />
+					<div class="carousel-caption">
+						<h4>Drop Earrings</h4>
+						<p></p>
+					</div>
+				</div>
+				
+				<div class="item">
+					<img alt="" src="<spring:url value='/resources/shop/img/home5.png'/>" />
+					<div class="carousel-caption">
+						<h4>Drop Earrings</h4>
+						<p></p>
+					</div>
+				</div>
+				
+				<div class="item">
+					<img alt="" src="<spring:url value='/resources/shop/img/home6.png'/>" />
+					<div class="carousel-caption">
+						<h4>Drop Earrings</h4>
 						<p></p>
 					</div>
 				</div>
@@ -79,7 +111,7 @@
 <script type="text/javascript">
 		$(document).ready(function() {
 			$('.carousel').carousel({
-				interval : 2000
+				interval : 4000
 			})
 
 			$('#myTab a:first').tab('show');

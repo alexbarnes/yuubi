@@ -1,5 +1,6 @@
 package com.yubi.core.statistics;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,8 +13,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class ShopEvent {
+public class ShopEvent implements Serializable {
 	
+	private static final long serialVersionUID = -384191661397680787L;
+
 	@Id
 	@GeneratedValue
 	private long id;

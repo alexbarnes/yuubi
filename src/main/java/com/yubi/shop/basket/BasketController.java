@@ -19,6 +19,9 @@ import com.yubi.application.product.ProductService;
 import com.yubi.core.statistics.EventGateway;
 import com.yubi.core.statistics.ShopEvent;
 import com.yubi.core.statistics.ShopEventType;
+import com.yubi.shop.delivery.DeliveryMethod;
+import com.yubi.shop.delivery.DeliveryMethodAccess;
+import com.yubi.shop.delivery.DeliveryMethodUpdateResult;
 
 /**
  * Methods to handle changes to the contents of a users basket.
@@ -40,6 +43,8 @@ public class BasketController {
 	
 	private final EventGateway eventGateway;
 	
+	private final DeliveryMethodAccess deliveryMethodAccess;
+	
 	
 	@Inject
 	public BasketController(
@@ -47,13 +52,15 @@ public class BasketController {
 			CategoryService categoryService,
 			BasketService basketService,
 			ProductAccess productAccess,
-			EventGateway eventGateway) {
+			EventGateway eventGateway,
+			DeliveryMethodAccess deliveryMethodAccess) {
 		super();
 		this.productService = productService;
 		this.categoryService = categoryService;
 		this.basketService = basketService;
 		this.productAccess = productAccess;
 		this.eventGateway = eventGateway;
+		this.deliveryMethodAccess = deliveryMethodAccess;
 	}
 
 	@RequestMapping("/add/{code}")
@@ -155,5 +162,23 @@ public class BasketController {
 	public @ResponseBody BigDecimal getBasketTotal(HttpSession session) {
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
 		return basket.getTotal();
+	}
+	
+	@RequestMapping("/setdeliverymethod")
+	public @ResponseBody DeliveryMethodUpdateResult setDeliveryMethod(HttpSession session, Long id) {
+		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		DeliveryMethodUpdateResult result = new DeliveryMethodUpdateResult();
+		
+		// Set the delivery method
+		if (id != null) {
+			DeliveryMethod method = deliveryMethodAccess.get(id);
+			basket.setDeliveryMethod(method);
+			result.deliveryCost = method.getCost();
+		} else {
+			basket.setDeliveryMethod(null);
+			result.deliveryCost = BigDecimal.ZERO;
+		}
+		result.newTotal = basketService.getBasketTotal(basket);
+		return result;
 	}
 }

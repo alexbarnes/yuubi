@@ -1,5 +1,7 @@
 package com.yubi.shop.paypal;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -7,8 +9,6 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,8 +22,6 @@ import com.yubi.shop.basket.BasketService;
 
 @Service
 class PaypalServiceImpl implements PaypalService {
-	
-	private Logger logger = LoggerFactory.getLogger(PaypalServiceImpl.class);
 	
 	private String userName;
 	
@@ -41,11 +39,14 @@ class PaypalServiceImpl implements PaypalService {
 	
 	private final BasketService basketService;
 	
+	private final PaypalRequestAccess paypalRequestAccess;
+	
 	@Inject
 	public PaypalServiceImpl(
 			Environment env, 
 			ProductAccess productAccess, 
-			BasketService basketService) {
+			BasketService basketService,
+			PaypalRequestAccess paypalRequestAccess) {
 		super();
 		this.userName = env.getProperty(PaypalConstants.PAYPAL_USERNAME);
 		this.password = env.getProperty(PaypalConstants.PAYPAL_PASSWORD);
@@ -55,16 +56,21 @@ class PaypalServiceImpl implements PaypalService {
 		this.paypalURL = env.getProperty(PaypalConstants.PAYPAL_API_ENDPOINT);
 		this.productAccess = productAccess;
 		this.basketService = basketService;
+		this.paypalRequestAccess = paypalRequestAccess;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.yubi.application.shop.paypal.PaypalService#setupTransaction()
 	 */
-	public String setupTransaction(Basket basket) {
+	public String setupTransaction(Basket basket, String sessionId) {
 		
 		String request = setupRequest(basket).createRequest();
 		
-		logger.info(request);
+		PaypalRequest requestItem = new PaypalRequest();
+		requestItem.setRequest(request);
+		requestItem.setSessionId(sessionId);
+		
+		paypalRequestAccess.save(requestItem);
 		
 		ResponseEntity<String> response = new RestTemplate().postForEntity(paypalURL, request, String.class);
 		
@@ -75,19 +81,61 @@ class PaypalServiceImpl implements PaypalService {
 			resultMap.put(StringUtils.split(entry, "=")[0], StringUtils.split(entry, "=")[1]);
 		}
 		
-		logger.info("Express checkout setup request successful. With result map + [" + resultMap.toString() + "].");
+		requestItem.setResponse(response.getBody());
+		requestItem.setAck(resultMap.get("ACK"));
+		paypalRequestAccess.update(requestItem);
 		
 		if (!resultMap.get("ACK").equals("Success")) {
-			throw new RuntimeException("An error occurred creating the express checkout");
+			throw new RuntimeException("An error occurred creating the express checkout. ACK [" + resultMap.get("ACK")  + "].");
 		}
 		
-		return resultMap.get("TOKEN");
-	}
-	
-	
-
-	public void completeTransaction(String token) {
+		// Add the token once we have one
+		requestItem.setToken(resultMap.get("TOKEN"));
+		paypalRequestAccess.update(requestItem);
 		
+		String token;
+		try {
+			token = URLDecoder.decode(resultMap.get("TOKEN"), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException(e);
+		}
+		
+		return token;
+	}
+
+	public String completeTransaction(String token, String payerId, String sessionId, Basket basket) {
+		DoExpressCheckoutRequestBuilder builder = 
+				new DoExpressCheckoutRequestBuilder(userName, password, signature);
+		
+		String request = builder.withPayerId(payerId).withToken(token).withOrderTotal(basketService.getBasketTotal(basket)).buildRequest();
+		
+		PaypalRequest requestItem = new PaypalRequest();
+		requestItem.setRequest(request);
+		requestItem.setSessionId(sessionId);
+		
+		paypalRequestAccess.save(requestItem);
+		
+		ResponseEntity<String> response = new RestTemplate().postForEntity(paypalURL, request, String.class);
+		
+		Map<String, String> resultMap = new HashMap<String, String>();
+		String[] result = StringUtils.split(response.getBody(), "&");
+		
+		for (String entry : result) {
+			resultMap.put(StringUtils.split(entry, "=")[0], StringUtils.split(entry, "=")[1]);
+		}
+		
+		requestItem.setResponse(response.getBody());
+		requestItem.setAck(resultMap.get("ACK"));
+		paypalRequestAccess.update(requestItem);
+		
+		if (!resultMap.get("ACK").equals("Success")) {
+			throw new RuntimeException("An error occurred creating the express checkout. ACK [" + resultMap.get("ACK")  + "].");
+		}
+		
+		requestItem.setTransactionId(resultMap.get("PAYMENTINFO_0_TRANSACTIONID"));
+		paypalRequestAccess.update(requestItem);
+		
+		return requestItem.getTransactionId();
 	}
 	
 	
@@ -117,11 +165,19 @@ class PaypalServiceImpl implements PaypalService {
 		return request;
 	}
 
-	public void loadTransactionDetail(String token) {
+	public PaypalTransactionDetails loadTransactionDetail(String token, String sessionId) {
 		GetExpressCheckoutDetailsRequest request =
-				new GetExpressCheckoutDetailsRequest(token);
+				new GetExpressCheckoutDetailsRequest(token, userName, password, signature);
+		
+		PaypalRequest requestItem = new PaypalRequest();
+		requestItem.setRequest(request.createRequest());
+		requestItem.setSessionId(sessionId);
+		paypalRequestAccess.save(requestItem);
 		
 		ResponseEntity<String> response = new RestTemplate().postForEntity(paypalURL, request.createRequest(), String.class);
+		
+		requestItem.setResponse(response.getBody());
+		paypalRequestAccess.update(requestItem);
 		
 		Map<String, String> resultMap = new HashMap<String, String>();
 		String[] result = StringUtils.split(response.getBody(), "&");
@@ -130,10 +186,21 @@ class PaypalServiceImpl implements PaypalService {
 			resultMap.put(StringUtils.split(entry, "=")[0], StringUtils.split(entry, "=")[1]);
 		}
 		
-		logger.info("Get express checkout details request result map + [" + resultMap.toString() + "].");
+		requestItem.setAck(resultMap.get("ACK"));
+		paypalRequestAccess.update(requestItem);
 		
 		if (!resultMap.get("ACK").equals("Success")) {
 			throw new RuntimeException("An error occurred creating the express checkout");
 		}
+		
+		requestItem.setToken(resultMap.get("TOKEN"));
+		paypalRequestAccess.update(requestItem);
+		
+		return new PaypalTransactionDetails();
+	}
+
+	
+	public void loadTransaction(String transactionId) {
+		
 	}
 }

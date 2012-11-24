@@ -14,7 +14,7 @@
 		default-request-channel="shopEventChannel" />
 
 	<channel id="shopEventChannel">
-		<queue />
+		<queue message-store="mailMessageStore" />
 	</channel>
 
 	<service-activator id="shopEventService"
@@ -31,7 +31,7 @@
 	</channel>
 
 	<jdbc:message-store id="mailMessageStore"
-		data-source="dataSource" />
+		data-source="dataSource"  />
 
 	<transformer input-channel="mailTransformationChannel"
 		output-channel="mailSendingChannel" ref="mailTransformer" method="transform"/>

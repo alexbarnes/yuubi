@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ImportResource(value = { "/WEB-INF/spring/security.xml", "/WEB-INF/spring/integration.xml" })
 @PropertySource(name = "props", value = "classpath:application.properties")
 public class RootConfig implements ApplicationListener<ContextRefreshedEvent> {
-
+	
 	@Inject
 	private SessionFactory sessionFactory;
 

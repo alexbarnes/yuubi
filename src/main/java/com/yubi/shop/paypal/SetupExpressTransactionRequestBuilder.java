@@ -58,8 +58,7 @@ public class SetupExpressTransactionRequestBuilder {
 		this.orderTotal = cost;
 		return this;
 	}
-
-	
+		
 	public String createRequest() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("USER=" + username);
@@ -95,11 +94,16 @@ public class SetupExpressTransactionRequestBuilder {
 		buffer.append("PAYMENTREQUEST_0_SHIPPINGAMT=" + shippingCost.toString());
 		buffer.append("&");
 		
+		BigDecimal productTotal = new BigDecimal(0.00);
 		int i =0;
 		for (ExpressTransactionItem item : items) {
 			buffer.append(item.createRequest(i));
+			productTotal = productTotal.add(item.getTotalCost());
 			i++;
 		}
+		
+		buffer.append("PAYMENTREQUEST_0_ITEMAMT=" + productTotal.toString());
+		buffer.append("&");
 				
 		buffer.append("PAYMENTREQUEST_0_AMT=" + orderTotal.toString());
 		

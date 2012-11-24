@@ -28,7 +28,7 @@ public class BasketServiceImpl implements BasketService {
 		
 		// Add shipping if selected
 		if (basket.getDeliveryMethod() != null) {
-			total.add(basket.getDeliveryMethod().getCost());
+			total = total.add(basket.getDeliveryMethod().getCost());
 		}
 		
 		// Apply any discounts
@@ -37,23 +37,21 @@ public class BasketServiceImpl implements BasketService {
 			
 			switch (discount.getType()) {
 			case FREE_SHIPPING:
-				total.subtract(basket.getDeliveryMethod().getCost());
+				total = total.subtract(basket.getDeliveryMethod().getCost());
 				break;
 				
 			case GIFT_VOUCHER:
-				total.subtract(discount.getAmount());
+				total = total.subtract(discount.getAmount());
 				break;
 				
 			case PROMOTION:
-				total.multiply(new BigDecimal(100-discount.getPercentage())).multiply(new BigDecimal(100));
+				total = total.multiply(new BigDecimal(100-discount.getPercentage())).multiply(new BigDecimal(100));
 				break;
 
 			default:
 				throw new IllegalArgumentException("Unknown discount type [" + discount.getType() + "].");
 			}
 		}
-		
-		
 		return total;
 	}
 

@@ -9,10 +9,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
+import com.yubi.application.order.ProductOrderService;
 import com.yubi.core.country.CountryAccess;
 import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.BasketCreationListener;
@@ -36,6 +38,8 @@ public class CheckoutController {
 	private final Environment env;
 	
 	private final BasketService basketService;
+	
+	private final ProductOrderService productOrderService;
 
 	@Inject
 	public CheckoutController(
@@ -43,20 +47,22 @@ public class CheckoutController {
 			CountryAccess countryAccess,
 			PaypalService paypalService,
 			Environment env,
-			BasketService basketService) {
+			BasketService basketService,
+			ProductOrderService productOrderService) {
 		super();
 		this.deliveryMethodAccess = deliveryMethodAccess;
 		this.countryAccess = countryAccess;
 		this.paypalService = paypalService;
 		this.env = env;
 		this.basketService = basketService;
+		this.productOrderService = productOrderService;
 	}
 
 	/**
 	 * Show the checkout page. This should allow a user to select a delivery method
 	 *  as well as enter any discount codes.
 	 */
-	@RequestMapping("/")
+	@RequestMapping
 	public ModelAndView checkout(HttpSession session) {
 		ModelAndView mav = new ModelAndView("shop/checkout", "countries", countryAccess.listAll());
 		
@@ -95,24 +101,45 @@ public class CheckoutController {
 		
 		String token;
 		try {
-			token = paypalService.setupTransaction(basket);
+			token = paypalService.setupTransaction(basket, session.getId());
 			session.setAttribute("paypal-token", token);
 		} catch (RuntimeException e) {
 			logger.error("Error setting up paypal transaction", e);
 			return "shop/basket";
 	}
-		return String.format("redirect:%s?cmd=_express-checkout&useraction=commit&token=%s", env.getProperty(PaypalConstants.PAYPAL_PAYMENT_URL), token);
+		return String.format("redirect:%s?cmd=_express-checkout&token=%s", env.getProperty(PaypalConstants.PAYPAL_PAYMENT_URL), token);
 	}
 	
 	
 	/**
-	 * This page should show a summary of the order once its been setup in Paypal. There should
-	 * be a checkout button and a return to basket action. Checkout should complete the order
+	 * This page should show a summary of the order once it's been setup in Paypal. There should
+	 * be a complete order button and a return to basket action. Checkout should complete the order
 	 * with Paypal.
 	 */
 	@RequestMapping("/confirm")
-	public String confirmOrder() {
-		return "confirmation";
+	public ModelAndView confirmOrder(HttpSession session, String token, @RequestParam("PayerID") String payerId) {
+		ModelAndView result = new ModelAndView();
+		String sessionToken = (String) session.getAttribute("paypal-token");
+		
+		// If we came here without going to Paypal there will be no token. We need to go back to
+		// checkout so that the user can complete properly via paypal.
+		if (sessionToken == null || !sessionToken.equals(token)) {
+			result.setViewName("redirect:/shop/checkout");
+			return result;
+		}
+		
+		// Record the payer id for later
+		session.setAttribute("payer-id", payerId);
+		
+		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		
+		// If we get to here we have setup the transaction. We can ask Paypal about it now.
+		paypalService.loadTransactionDetail(sessionToken, session.getId());
+		result.addObject("basket", basket);
+		result.addObject("total", basketService.getBasketTotal(basket));
+		result.setViewName("shop/confirmation");
+		
+		return result;
 	}
 	
 	
@@ -122,20 +149,21 @@ public class CheckoutController {
 	 * 
 	 */
 	@RequestMapping("/complete")
-	public String completeOrder() {
-		return "complete";
+	public String completeOrder(HttpSession session) {
 		
-	}
-	
-	/**
-	 * This is the final page, at this point the order is complete and the customer
-	 * can then return to the shop.
-	 * 
-	 * @return
-	 */
-	@RequestMapping("/thankyou")
-	public String thankYou() {
-		return "thankyou";
+		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
 		
+		String token = (String) session.getAttribute("paypal-token");
+		String payerId = (String) session.getAttribute("payer-id");
+		String transactionId = 
+				paypalService.completeTransaction(token, payerId, session.getId(), basket);
+		
+		// Write the details of the order here
+		productOrderService.createNewOrder(basket, transactionId);
+		
+		// Clear the basket once the transaction is complete. Don't invalidate the session.
+		basket.reset();
+		
+		return "shop/thankyou";
 	}
 }

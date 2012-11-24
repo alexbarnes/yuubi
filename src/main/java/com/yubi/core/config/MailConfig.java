@@ -2,6 +2,8 @@ package com.yubi.core.config;
 
 import java.util.Properties;
 
+import javax.inject.Inject;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -9,8 +11,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMailMessage;
 
+import com.yubi.application.product.ProductService;
+import com.yubi.shop.basket.BasketCreationListener;
+import com.yubi.shop.basket.BasketExpiryListener;
+
 @Configuration
 public class MailConfig {
+	
+	@Inject
+	private ProductService productService;
 
 	@Bean
 	public JavaMailSender mailSender() {
@@ -38,5 +47,16 @@ public class MailConfig {
 		message.setReplyTo("");
 		return message;
 	}
+	
+	@Bean
+	public BasketCreationListener basketCreationListener() {
+		return new BasketCreationListener();
+	}
+
+	@Bean
+	public BasketExpiryListener basketExpiryListener() {
+		return new BasketExpiryListener(productService);
+	}
+
 
 }

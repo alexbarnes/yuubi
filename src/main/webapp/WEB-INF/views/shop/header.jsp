@@ -40,7 +40,7 @@
 		<!-- Start Header-->
 		<div class="row show-grid">
 			<div class="span3 logo">
-				<a href="index.html"> <img alt="" src="<spring:url value='/resources/shop/img/logo.jpg'/>" />
+				<a href="<spring:url value='/shop'/>"> <img alt="" src="<spring:url value='/resources/shop/img/logo.jpg'/>" />
 				</a>
 			</div>
 			<div class="span5 offset4">
@@ -60,7 +60,7 @@
 		<div class="row">
 			<div class="span12">
 				<div class="navbar" id="main-menu">
-					<div class="navbar-inner">
+					<div class="navbar-inner no-border">
 						<div class="container">
 							<div class="nav-collapse">
 								<ul class="nav pull-left" id="nav">

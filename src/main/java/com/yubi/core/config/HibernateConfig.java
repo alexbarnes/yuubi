@@ -76,5 +76,4 @@ public class HibernateConfig {
 	private String getDatabaseProperty(String name) {
 		return env.getProperty("database." + name);
 	}
-
 }
