@@ -53,6 +53,7 @@ public class Product {
 	private ProductSet set;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
+	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	private final Set<ProductImage> images = new HashSet<ProductImage>();
 
 	@ManyToOne(optional = true)

@@ -4,109 +4,87 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <jsp:include page="header.jsp" />
-<div class="row">
+<div class="container">
+	<jsp:include page="menu.jsp" />
 	<div class="row">
-		<div class="span12">
-			<div class="row">
-				<div class="span12">
-					<ul class="breadcrumb">
-						<li><a href="<spring:url value='/shop'/>"><i
-								class="icon-home"></i></a> <span class="divider">/</span></li>
-						<li><a
-							href="<spring:url value='/shop/category/view/${product.category.id}'/>">${product.category.description}</a><span
-							class="divider">/</span></li>
-						<li class="active">${product.title}</li>
-					</ul>
+		<div class="row">
+			<div class="span12">
+				<div class="row">
+					<div class="span12">
+						<ul class="breadcrumb">
+							<li><a href="<spring:url value='/shop'/>"><i
+									class="icon-home"></i></a> <span class="divider">/</span></li>
+							<li><a
+								href="<spring:url value='/shop/category/view/${product.category.id}'/>">${product.category.description}</a><span
+								class="divider">/</span></li>
+							<li class="active">${product.title}</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="span9">
-		<div class="row">
-			<div class="span9">
-				<h2 class="title">${product.title}</h2>
-				<hr />
-			</div>
-		</div>
-		<div class="row">
-			<div class="span4">
-				<a
-					href="<spring:url value='/shop/product/primaryimage/${product.code}'/>"
-					class="thumbnail" data-fancybox-group="group1"
-					title="Description 1"><img alt=""
-					src="<spring:url value='/shop/product/primaryimage/${product.code}'/>"></a>
-
-				<!-- Other pictures go here -->
-				<ul class="thumbnails small">
-					<c:forEach items="${product.images}" var="image">
-						<li class="span1"><a
-							href="<spring:url value='/shop/product/image/${image.id}'/>"
-							class="thumbnail" data-fancybox-group="group1"
-							title="${image.description}"> <img
-								src="<spring:url value='/shop/product/image/${image.id}'/>"
-								alt=""></a></li>
-					</c:forEach>
-				</ul>
-			</div>
-			<div id="stock"></div>
-		</div>
-	</div>
-	<c:if test="${product.set != null}">
 		<div class="span9">
 			<div class="row">
 				<div class="span9">
-					<h2 class="title">Matching products</h2>
+					<h2 class="title">${product.title}</h2>
 					<hr />
 				</div>
 			</div>
 			<div class="row">
 				<div class="span4">
-					<ul class="thumbnails listing-products">
-						<c:forEach items="${product.set.items}" var="current">
-							<c:if test="${current.code != product.code}">
-								<li class="span3">
-									<div class="product-box">
-										<a
-											href="<spring:url value='/shop/product/view/${current.code}'/>"><h4>${current.title}</h4></a>
-										<a
-											href="<spring:url value='/shop/product/view/${current.code}'/>"><img
-											src="<spring:url value='/shop/product/primaryimage/${current.code}'/>" /></a>
-										<p>${current.description}</p>
-									</div>
-								</li>
-							</c:if>
+					<a
+						href="<spring:url value='/shop/product/primaryimage/${product.code}'/>"
+						class="thumbnail" data-fancybox-group="group1"
+						title="Description 1"><img alt=""
+						src="<spring:url value='/shop/product/primaryimage/${product.code}'/>"></a>
+
+					<!-- Other pictures go here -->
+					<ul class="thumbnails small">
+						<c:forEach items="${product.images}" var="image">
+							<li class="span1"><a
+								href="<spring:url value='/shop/product/image/${image.id}'/>"
+								class="thumbnail" data-fancybox-group="group1"
+								title="${image.description}"> <img
+									src="<spring:url value='/shop/product/image/${image.id}'/>"
+									alt=""></a></li>
 						</c:forEach>
 					</ul>
 				</div>
+				<div id="stock"></div>
 			</div>
 		</div>
-	</c:if>
-</div>
-<footer>
-	<hr>
-	<div class="row">
-		<div class="span3">
-			<div class="company_info">
-				<h4 class="logo-title">
-					<span>Y&#362;bi</span>Jewellery
-				</h4>
+		<c:if test="${product.set != null}">
+			<div class="span9">
+				<div class="row">
+					<div class="span9">
+						<h2 class="title">Matching products</h2>
+						<hr />
+					</div>
+				</div>
+				<div class="row">
+					<div class="span4">
+						<ul class="thumbnails listing-products">
+							<c:forEach items="${product.set.items}" var="current">
+								<c:if test="${current.code != product.code}">
+									<li class="span3">
+										<div class="product-box">
+											<a
+												href="<spring:url value='/shop/product/view/${current.code}'/>"><h4>${current.title}</h4></a>
+											<a
+												href="<spring:url value='/shop/product/view/${current.code}'/>"><img
+												src="<spring:url value='/shop/product/primaryimage/${current.code}'/>" /></a>
+											<p>${current.description}</p>
+										</div>
+									</li>
+								</c:if>
+							</c:forEach>
+						</ul>
+					</div>
+				</div>
 			</div>
-		</div>
-		<div class="span3">
-			<h4>Information</h4>
-			<ul>
-				<li><a href="about.html">About Us</a></li>
-				<li><a href="#">Delivery Information</a></li>
-				<li><a href="#">Privacy Policy</a></li>
-				<li><a href="#">Terms &amp; Conditions</a></li>
-			</ul>
-		</div>
-		<div class="span3">
-			<h4 class="logo-title">Connect with us</h4>
-			<a href="#">Facebook</a> <br /> <a href="#">Twitter</a>
-		</div>
+		</c:if>
 	</div>
-</footer>
+	<jsp:include page="footer.jsp" />
 </div>
 <div class="modal" id="myModal" style="display: none;">
 	<div class="modal-header">
@@ -159,7 +137,7 @@
 				
 				// Setup the stock level details
 				$.get('<spring:url value='/shop/product/stock/${product.code}'/>', function(data) {
-					$('#stock').html(data)
+					$('#stock').html(data);
 				});
 			});
 			
@@ -180,7 +158,7 @@
 						// Update the basket total
 						$.get('<spring:url value='/shop/basket/total'/>', function(data) {
 							var html = '£' + data;
-							$('#basketTotal').html(html)
+							$('#basketTotal').html(html);
 						});
 						
 						$('#basket').popover('show');
@@ -188,10 +166,10 @@
 					
 					// Update the displayed stock level in either case
 					$.get('<spring:url value='/shop/product/stock/${product.code}'/>', function(data) {
-						$('#stock').html(data)
+						$('#stock').html(data);
 					});
 				});
-			}
+			};
 		</script>
 </body>
 </html>

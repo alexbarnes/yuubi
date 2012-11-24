@@ -20,8 +20,8 @@
 </div>
 <c:if test="${product.stockLevel > 0}">
 	<div class="span5">
-		<button class="btn" id="addToBasket" onclick="addItem()" rel="popover">Add
-			to basket</button>
+		<button class="btn" id="addToBasket" onclick="addItem()" rel="popover">
+		<i class="icon-shopping-cart"></i> Add to basket</button>
 	</div>
 	<br>
 </c:if>

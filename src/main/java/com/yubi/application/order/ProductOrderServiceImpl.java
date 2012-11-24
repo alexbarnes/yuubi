@@ -33,7 +33,7 @@ public class ProductOrderServiceImpl implements ProductOrderService {
 
 
 	@Transactional
-	public void createNewOrder(Basket basket, String transactionId) {
+	public long createNewOrder(Basket basket, String transactionId) {
 		ProductOrder order = new ProductOrder();
 		
 		for (Entry<String, BasketItem> item : basket.getItems().entrySet()) {
@@ -42,7 +42,7 @@ public class ProductOrderServiceImpl implements ProductOrderService {
 			orderLine.setTotalCost(item.getValue().getTotalCost());
 		}
 		order.setPaypalTransactionId(transactionId);
-		productOrderAccess.save(order);
+		return productOrderAccess.save(order);
 	}
 
 }

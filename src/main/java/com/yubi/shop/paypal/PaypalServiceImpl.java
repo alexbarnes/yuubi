@@ -132,7 +132,9 @@ class PaypalServiceImpl implements PaypalService {
 			throw new RuntimeException("An error occurred creating the express checkout. ACK [" + resultMap.get("ACK")  + "].");
 		}
 		
+		// Set the transaction id and token on the request record
 		requestItem.setTransactionId(resultMap.get("PAYMENTINFO_0_TRANSACTIONID"));
+		requestItem.setToken(resultMap.get("TOKEN"));
 		paypalRequestAccess.update(requestItem);
 		
 		return requestItem.getTransactionId();

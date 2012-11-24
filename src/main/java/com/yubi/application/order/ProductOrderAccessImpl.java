@@ -16,8 +16,10 @@ public class ProductOrderAccessImpl implements ProductOrderAccess {
 		this.sessionFactory = sessionFactory;
 	}
 
-	public void save(ProductOrder order) {
+	public long save(ProductOrder order) {
 		sessionFactory.getCurrentSession().save(order);
+		sessionFactory.getCurrentSession().flush();
+		return order.getId();
 	}
 
 }

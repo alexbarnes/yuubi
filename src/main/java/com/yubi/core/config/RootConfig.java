@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 		@Filter(type = FilterType.ANNOTATION, value = Repository.class)
 		}, excludeFilters = {@Filter(type =FilterType.ANNOTATION, value = Configuration.class)})
 @Import({ HibernateConfig.class, MailConfig.class })
-@ImportResource(value = { "/WEB-INF/spring/security.xml", "/WEB-INF/spring/integration.xml" })
+@ImportResource(value = {"/WEB-INF/spring/integration.xml" })
 @PropertySource(name = "props", value = "classpath:application.properties")
 public class RootConfig implements ApplicationListener<ContextRefreshedEvent> {
 	

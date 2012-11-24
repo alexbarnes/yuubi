@@ -56,6 +56,7 @@ public class ProductAccessImpl implements ProductAccess {
 				sessionFactory.getCurrentSession().createQuery("from ProductImage where product.code = ? and primaryImage = true");
 		
 		query.setParameter(0, code);
+		query.setCacheable(true);
 		return (ProductImage) query.uniqueResult();
 	}
 

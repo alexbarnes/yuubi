@@ -4,6 +4,6 @@ import com.yubi.shop.basket.Basket;
 
 public interface ProductOrderService {
 	
-	public void createNewOrder(Basket basket, String transactionId);
+	public long createNewOrder(Basket basket, String transactionId);
 
 }

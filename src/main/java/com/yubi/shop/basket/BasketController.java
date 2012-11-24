@@ -173,12 +173,12 @@ public class BasketController {
 		if (id != null) {
 			DeliveryMethod method = deliveryMethodAccess.get(id);
 			basket.setDeliveryMethod(method);
-			result.deliveryCost = method.getCost();
+			result.deliveryCost = method.getCost().toString();
 		} else {
 			basket.setDeliveryMethod(null);
-			result.deliveryCost = BigDecimal.ZERO;
+			result.deliveryCost = new BigDecimal(0.00).toString();
 		}
-		result.newTotal = basketService.getBasketTotal(basket);
+		result.newTotal = basketService.getBasketTotal(basket).toString();
 		return result;
 	}
 }

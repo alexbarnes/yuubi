@@ -1,7 +1,7 @@
 package com.yubi.shop;
 
 import javax.inject.Inject;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,20 +29,19 @@ public class ImageController {
 	}
 	
 	@RequestMapping(value = "/product/image/{id}", produces = "image/png")
-	public @ResponseBody byte[] loadImage(@PathVariable("id") long id) {
+	public @ResponseBody byte[] loadImage(@PathVariable("id") long id, HttpServletResponse response) {
 		return productAccess.loadImage(id).getImage();
 	}
 	
 	
 	@RequestMapping(value = "/product/primaryimage/{code}", produces = "image/png")
-	public @ResponseBody byte[] loadProductPrimaryImage(@PathVariable("code") String code, ServletResponse response) {
-		response.setContentType("");
+	public @ResponseBody byte[] loadProductPrimaryImage(@PathVariable("code") String code, HttpServletResponse response) {
 		return productAccess.loadPrimaryImage(code).getImage();
 	}
 	
 	
 	@RequestMapping(value = "/category/image/{id}", produces = "image/png")
-	public @ResponseBody byte[] loadCategoryImage(@PathVariable("id") long id) {
+	public @ResponseBody byte[] loadCategoryImage(@PathVariable("id") long id, HttpServletResponse response) {
 		return categoryAccess.loadWithChildren(id).getImage();
 	}
 }

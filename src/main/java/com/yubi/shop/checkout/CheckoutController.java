@@ -1,5 +1,7 @@
 package com.yubi.shop.checkout;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
@@ -12,10 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
+import com.yubi.application.category.CategoryService;
 import com.yubi.application.order.ProductOrderService;
 import com.yubi.core.country.CountryAccess;
+import com.yubi.core.statistics.EventGateway;
+import com.yubi.core.statistics.ShopEvent;
+import com.yubi.core.statistics.ShopEventType;
 import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.BasketCreationListener;
 import com.yubi.shop.basket.BasketService;
@@ -40,7 +47,10 @@ public class CheckoutController {
 	private final BasketService basketService;
 	
 	private final ProductOrderService productOrderService;
-
+	
+	private final EventGateway eventGateway;
+	
+	private final CategoryService categoryService;
 	@Inject
 	public CheckoutController(
 			DeliveryMethodAccess deliveryMethodAccess,
@@ -48,7 +58,9 @@ public class CheckoutController {
 			PaypalService paypalService,
 			Environment env,
 			BasketService basketService,
-			ProductOrderService productOrderService) {
+			ProductOrderService productOrderService,
+			EventGateway eventGateway,
+			CategoryService categoryService) {
 		super();
 		this.deliveryMethodAccess = deliveryMethodAccess;
 		this.countryAccess = countryAccess;
@@ -56,6 +68,8 @@ public class CheckoutController {
 		this.env = env;
 		this.basketService = basketService;
 		this.productOrderService = productOrderService;
+		this.eventGateway = eventGateway;
+		this.categoryService = categoryService;
 	}
 
 	/**
@@ -69,6 +83,7 @@ public class CheckoutController {
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
 		
 		mav.addObject("total", basketService.getBasketTotal(basket));
+		mav.addObject("menu", categoryService.buildProductMenu());
 		return mav;
 	}
 	
@@ -96,18 +111,30 @@ public class CheckoutController {
 	 * 
 	 */
 	@RequestMapping("/setuppayment")
-	public String expressCheckout(HttpSession session) {
+	public ModelAndView expressCheckout(HttpSession session, RedirectAttributes redirect) {
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		ModelAndView result = new ModelAndView();
+		
+		// First check for a valid delivery method
+		if (basket.getDeliveryMethod() == null) {
+			result.setViewName("redirect:/shop/checkout");
+			redirect.addFlashAttribute("deliveryMethod", false);
+			return result;
+		}
 		
 		String token;
 		try {
 			token = paypalService.setupTransaction(basket, session.getId());
 			session.setAttribute("paypal-token", token);
 		} catch (RuntimeException e) {
-			logger.error("Error setting up paypal transaction", e);
-			return "shop/basket";
+			logger.error("Error setting up paypal transaction.", e);
+			result.setViewName("redirect:/shop/checkout");
+			redirect.addFlashAttribute("error", true);
+			return result;
 	}
-		return String.format("redirect:%s?cmd=_express-checkout&token=%s", env.getProperty(PaypalConstants.PAYPAL_PAYMENT_URL), token);
+		// If all went to plan, send the user off to Paypal to authenticate
+		result.setViewName(String.format("redirect:%s?cmd=_express-checkout&token=%s", env.getProperty(PaypalConstants.PAYPAL_PAYMENT_URL), token));
+		return result;
 	}
 	
 	
@@ -128,7 +155,7 @@ public class CheckoutController {
 			return result;
 		}
 		
-		// Record the payer id for later
+		// Record the payer id for later.
 		session.setAttribute("payer-id", payerId);
 		
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
@@ -152,14 +179,23 @@ public class CheckoutController {
 	public String completeOrder(HttpSession session) {
 		
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
-		
 		String token = (String) session.getAttribute("paypal-token");
 		String payerId = (String) session.getAttribute("payer-id");
+		
+		// Complete the payment with paypal
 		String transactionId = 
 				paypalService.completeTransaction(token, payerId, session.getId(), basket);
 		
-		// Write the details of the order here
-		productOrderService.createNewOrder(basket, transactionId);
+		// Write the details of the order here. Link it to the paypal order
+		long orderId = productOrderService.createNewOrder(basket, transactionId);
+		
+		// Record this event async
+		ShopEvent event = new ShopEvent();
+		event.setDate(new Date());
+		event.setEntityKey(String.valueOf(orderId));
+		event.setSessionId(session.getId());
+		event.setType(ShopEventType.ORDER_COMPLETE);
+		eventGateway.recordShopEvent(event);
 		
 		// Clear the basket once the transaction is complete. Don't invalidate the session.
 		basket.reset();

@@ -3,6 +3,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <jsp:include page="header.jsp" />
 <div class="container">
+	<jsp:include page="menu.jsp" />
 	<div class="row">
 		<div class="span12">
 			<div class="row">
@@ -10,24 +11,14 @@
 					<ul class="breadcrumb">
 						<li><a href="<spring:url value='/shop'/>"><i
 								class="icon-home"></i></a> <span class="divider">/</span></li>
-						<li class="active">Your Basket</li>
+						<li class="active"><i class="icon-shopping-cart"></i> Your
+							Basket</li>
 					</ul>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="span12">
-			<h2 class="title">Your Basket</h2>
-			<hr />
-			<div id="contents"></div>
-		</div>
-	</div>
-	<div class="row pull-right">
-		<div class="span2">
-			<a href="<spring:url value='/shop/checkout'/>"><button class="btn">Checkout</button></a>
-		</div>
-	</div>
+	<div id="contents"></div>
 </div>
 
 
@@ -41,22 +32,23 @@
 		$.get('<spring:url value='/shop/basket/contents'/>', function(data) {
 			$('#contents').html(data);
 		});
-		
-		
+
 	});
-	
+
 	function changeItemCount(url) {
 		$.get(url, function(data) {
 			// Refresh basket contents
-			$.get('<spring:url value='/shop/basket/contents'/>', function(data) {
-				$('#contents').html(data);
-				
-				// Update the total of the basket
-				$.get('<spring:url value='/shop/basket/total'/>', function(data) {
-					var html = '£' + data;
-					$('#basketTotal').html(html)
-				});
-			});
+			$.get('<spring:url value='/shop/basket/contents'/>',
+					function(data) {
+						$('#contents').html(data);
+
+						// Update the total of the basket
+						$.get('<spring:url value='/shop/basket/total'/>',
+								function(data) {
+									var html = '£' + data;
+									$('#basketTotal').html(html);
+								});
+					});
 		});
 	}
 </script>
