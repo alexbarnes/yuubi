@@ -130,6 +130,9 @@ public class CheckoutController {
 			logger.error("Error setting up paypal transaction.", e);
 			result.setViewName("redirect:/shop/checkout");
 			redirect.addFlashAttribute("error", true);
+			
+			// Need to sent an e-mail to the admins if this happens. We have
+			// a problem.
 			return result;
 	}
 		// If all went to plan, send the user off to Paypal to authenticate

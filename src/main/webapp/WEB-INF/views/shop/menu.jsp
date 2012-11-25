@@ -1,13 +1,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <div class="row" id="top-bar">
 	<div class="span9">
 		<ul id="links" class="nav nav-pills pull-left">
 			<li><a href="<spring:url value='/shop'/>" title="Bitsy Shop">Home</a></li>
-			<li><a href="products.html" title="All specials">Gallery</a></li>
-			<li><a href="contact.html" title="Contact">Contact</a></li>
+			<li><a href="<spring:url value='/shop'/>" title="All specials">Gallery</a></li>
+			<li><a href="<spring:url value='/shop'/>" title="Contact">Contact</a></li>
 		</ul>
 	</div>
 </div>
@@ -28,8 +29,7 @@
 					<a id="basket" href="<spring:url value='/shop/basket/show'/>"
 						rel="popover">Basket</a><br />
 					<p id="basketTotal">
-						£
-						<c:out value="${basket.total}" />
+						£<fmt:formatNumber maxFractionDigits="2" minFractionDigits="2" value="${basket.total}"/>
 					</p>
 				</div>
 			</div>

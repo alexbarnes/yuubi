@@ -25,6 +25,8 @@ public class PaypalRequest {
 	private String sessionId;
 	
 	private String transactionId;
+	
+	private String timeStampString;
 
 	public String getRequest() {
 		return request;
@@ -72,5 +74,13 @@ public class PaypalRequest {
 
 	public void setTransactionId(String transactionId) {
 		this.transactionId = transactionId;
+	}
+
+	public String getTimeStampString() {
+		return timeStampString;
+	}
+
+	public void setTimeStampString(String timeStampString) {
+		this.timeStampString = timeStampString;
 	}	
 }

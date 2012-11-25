@@ -4,6 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <jsp:include page="header.jsp" />
+<body>
 <div class="container">
 	<jsp:include page="menu.jsp" />
 	<div class="row">
@@ -57,7 +58,7 @@
 						</c:forEach>
 						<!-- Shipping -->
 						<tr>
-							<td><strong>Shipping Total</strong></td>
+							<td><strong>Shipping</strong></td>
 							<td><select id="country">
 									<option value="">Select One</option>
 									<c:forEach items="${countries}" var="country">
@@ -150,6 +151,7 @@
 			function() {
 				var selectedCountry = $('#country').val();
 				$('#shipping').empty();
+				$('#shippingtotal').html('<strong>£0.00</strong>');
 				// Also null out the delivery method on the basket when we select a new country
 				$.ajax({
 					url : '<c:url value="/shop/checkout/listdeliverymethods/"></c:url>' + selectedCountry,
@@ -161,14 +163,14 @@
 							$('#shipping').append(
 									$('<option>').text(value.description + ' - £' + value.cost).attr('value',value.id));
 							});
-
+							
+							// Set the delivery method on the basket as well
 							$.ajax({
 								url : '<c:url value="/shop/basket/setdeliverymethod/"></c:url>',
 								type : 'GET',
 								datatype : 'JSON',
 								data : {id : ''},
 								success : function(json) {
-									$('#shippingtotal').html('<strong>£0.00</strong>');
 									$('#total').html('<strong>£'+ json.newTotal + '</strong>');
 								}
 							});
@@ -202,4 +204,5 @@
 						});
 	});
 </script>
+</body>
 </html>

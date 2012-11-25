@@ -4,6 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <jsp:include page="header.jsp" />
+<body>
 <div class="container">
 	<jsp:include page="menu.jsp" />
 	<div class="row">
@@ -35,18 +36,20 @@
 					<a
 						href="<spring:url value='/shop/product/primaryimage/${product.code}'/>"
 						class="thumbnail" data-fancybox-group="group1"
-						title="Description 1"><img alt=""
+						title="${product.title}"><img 
 						src="<spring:url value='/shop/product/primaryimage/${product.code}'/>"></a>
 
 					<!-- Other pictures go here -->
 					<ul class="thumbnails small">
 						<c:forEach items="${product.images}" var="image">
-							<li class="span1"><a
-								href="<spring:url value='/shop/product/image/${image.id}'/>"
-								class="thumbnail" data-fancybox-group="group1"
-								title="${image.description}"> <img
-									src="<spring:url value='/shop/product/image/${image.id}'/>"
-									alt=""></a></li>
+							<c:if test="${image.primaryImage == false}">
+								<li class="span1"><a
+									href="<spring:url value='/shop/product/image/${image.id}'/>"
+									class="thumbnail" data-fancybox-group="group1"
+									title="${image.description}"> <img
+										src="<spring:url value='/shop/product/image/${image.id}'/>"
+										alt=""></a></li>
+							</c:if>
 						</c:forEach>
 					</ul>
 				</div>
@@ -86,31 +89,33 @@
 	</div>
 	<jsp:include page="footer.jsp" />
 </div>
-<div class="modal" id="myModal" style="display: none;">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal"
-			aria-hidden="true">×</button>
-		<h2 class="title" id="myModalLabel">Notify me when this product
-			is back in stock</h2>
-	</div>
-	<form:form action="/shop/notification/add">
-		<div class="modal-body">
-
-			<fieldset>
-				<label>e-mail</label>
-				<div class="div_text">
-					<input name="email" type="text" value="" class="span6">
+	<div class="modal" id="myModal" style="display: none;">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"
+				aria-hidden="true">×</button>
+			<h2 class="title" id="myModalLabel">Notify me when this product
+				is back in stock</h2>
+		</div>
+		<form:form action="/shop/notification/add">
+			<div class="modal-body">
+				<div class="control-group">
+					<label class="control-label" for="inputIcon">Email address</label>
+					<div class="controls">
+						<div class="input-prepend">
+							<span class="add-on"><i class="icon-envelope"></i></span> <input
+								class="span6" id="inputIcon" type="text" value="" name="email">
+							<input type="hidden" name="productCode" value="${product.code}">
+						</div>
+					</div>
 				</div>
-				<input type="hidden" name="productCode" value="${product.code}">
-			</fieldset>
-		</div>
-		<div class="modal-footer">
-			<button type="submit" class="btn">Confirm</button>
-		</div>
-	</form:form>
-</div>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn"><i class="icon-ok-circle"></i> Confirm</button>
+			</div>
+		</form:form>
+	</div>
 
-<script
+	<script
 	src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
 <script src="<spring:url value='/resources/shop/js/bootstrap.min.js'/>"></script>
 <script

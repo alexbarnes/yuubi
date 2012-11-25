@@ -22,7 +22,7 @@
 		</div>
 		<div class="span3">
 			<h4 class="logo-title">Connect with us</h4>
-			<a href="#">Facebook</a> <br /> <a href="#">Twitter</a>
+			<a href="<spring:url value='/shop'/>">Facebook</a> <br /> <a href="<spring:url value='/shop'/>">Twitter</a>
 		</div>
 	</div>
 </footer>

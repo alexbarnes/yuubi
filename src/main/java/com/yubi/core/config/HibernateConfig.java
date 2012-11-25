@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -22,6 +23,9 @@ public class HibernateConfig {
 	
 	@Inject
 	private Environment env;
+	
+	@Inject
+	private DataSource dataSource;
 
 	/**
 	 * Configure a hibernate session factory. This reads properties from the
@@ -42,7 +46,7 @@ public class HibernateConfig {
 		properties.put("hibernate.cache.region.factory_class", 
 				"org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
 
-		return new LocalSessionFactoryBuilder(dataSource())
+		return new LocalSessionFactoryBuilder(dataSource)
 				.scanPackages("com.yubi").addProperties(properties)
 				.buildSessionFactory();
 	}
@@ -57,23 +61,53 @@ public class HibernateConfig {
 	public PlatformTransactionManager transactionManager() throws Exception {
 		return new HibernateTransactionManager(sessionFactory());
 	}
-
-	@SuppressWarnings("deprecation")
-	@Bean
-	public DataSource dataSource() {
-		DatabasePlatform platform = 
-				DatabasePlatform.valueOf(env.getProperty("database.platform"));
+	
+	@Profile(value = "AWS")
+	public static class AWSDataSource {
 		
-		return new DriverManagerDataSource(platform.getDriverName(), 
-				platform.getUrl(
-						getDatabaseProperty("host"), 
-						Integer.parseInt(getDatabaseProperty("port")), 
-						getDatabaseProperty("name")), 
-				getDatabaseProperty("username"), 
-				getDatabaseProperty("password"));
+		@SuppressWarnings("deprecation")
+		@Bean
+		public DataSource dataSource() {
+			
+			String url = System.getProperty("JDBC_CONNECTION_STRING");
+			String userName = System.getProperty("PARAM1");
+			String password = System.getProperty("PARAM2");
+			
+			return new DriverManagerDataSource(
+					"com.mysql.jdbc.Driver", 
+					url, 
+					userName, 
+					password);
+		}
 	}
 	
-	private String getDatabaseProperty(String name) {
-		return env.getProperty("database." + name);
+	@Profile(value = "LOCAL")
+	public static class LocalDataSource {
+		
+		@Inject
+		private Environment env;
+		
+		@SuppressWarnings("deprecation")
+		@Bean
+		public DataSource dataSource() {
+			DatabasePlatform platform = 
+					DatabasePlatform.valueOf(env.getProperty("database.platform"));
+			
+			return new DriverManagerDataSource(platform.getDriverName(), 
+					platform.getUrl(
+							getDatabaseProperty("host"), 
+							Integer.parseInt(getDatabaseProperty("port")), 
+							getDatabaseProperty("name")), 
+					getDatabaseProperty("username"), 
+					getDatabaseProperty("password"));
+		}
+		
+		private String getDatabaseProperty(String name) {
+			return env.getProperty("database." + name);
+		}
 	}
+
+	
+	
+	
 }

@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <div class="span5">
 	<address>
@@ -15,7 +16,7 @@
 		<br>
 	</address>
 	<h4>
-		<strong>Price: £${product.unitPrice}</strong>
+		<strong>Price: £<fmt:formatNumber maxFractionDigits="2" minFractionDigits="2" value="${product.unitPrice}"/></strong>
 	</h4>
 </div>
 <c:if test="${product.stockLevel > 0}">

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Configuration
 @ComponentScan(
-		basePackages = { "com.yubi.application", "com.yubi.shop" }, 
+		basePackages = { "com.yubi" }, 
 		includeFilters = { @Filter(type = FilterType.ANNOTATION, value = Controller.class) },
 		excludeFilters = { @Filter(type = FilterType.ANNOTATION, value = Service.class), 
 						   @Filter(type =FilterType.ANNOTATION, value = Repository.class),
