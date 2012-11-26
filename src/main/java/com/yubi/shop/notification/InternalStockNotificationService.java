@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.yubi.application.product.Product;
 import com.yubi.core.mail.MailGateway;
-import com.yubi.core.mail.OutboundMailMessage;
 
 @Service
 public class InternalStockNotificationService implements StockNotificationService {
@@ -30,9 +29,6 @@ public class InternalStockNotificationService implements StockNotificationServic
 	public void notify(Product product) {
 		for (OutOfStockNotification notification : 
 			outOfStockService.loadNotificationsForProduct(product.getCode())) {
-			OutboundMailMessage mailMessage = new OutboundMailMessage();
-			mailGateway.sendMessage(mailMessage);
-			
 			notification.setSent(true);
 		}
 	}

@@ -179,20 +179,26 @@ public class CheckoutController {
 	 * 
 	 */
 	@RequestMapping("/complete")
-	public String completeOrder(HttpSession session) {
+	public String completeOrder(HttpSession session, RedirectAttributes redirect) {
 		
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
 		String token = (String) session.getAttribute("paypal-token");
 		String payerId = (String) session.getAttribute("payer-id");
 		
-		// Complete the payment with paypal
-		String transactionId = 
+		// Complete the payment with Paypal
+		String transactionId;
+		try {
+			transactionId = 
 				paypalService.completeTransaction(token, payerId, session.getId(), basket);
+		} catch (RuntimeException e) {
+			redirect.addFlashAttribute("error", true);
+			return "redirect:/shop/checkout";
+		}
 		
 		// Write the details of the order here. Link it to the paypal order
 		long orderId = productOrderService.createNewOrder(basket, transactionId);
 		
-		// Record this event async
+		// Record the event
 		ShopEvent event = new ShopEvent();
 		event.setDate(new Date());
 		event.setEntityKey(String.valueOf(orderId));
@@ -203,6 +209,7 @@ public class CheckoutController {
 		// Clear the basket once the transaction is complete. Don't invalidate the session.
 		basket.reset();
 		
+		// Send the user off to the thank you page
 		return "shop/thankyou";
 	}
 }

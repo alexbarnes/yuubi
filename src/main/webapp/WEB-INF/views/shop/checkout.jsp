@@ -52,8 +52,14 @@
 							<tr>
 								<td>${item.value.productDescription}</td>
 								<td>${item.value.number}</td>
-								<td>£${item.value.itemCost}</td>
-								<td>£${item.value.totalCost}</td>
+								<td>£<fmt:formatNumber 
+										value="${item.value.itemCost}" 
+										maxFractionDigits="2"
+										minFractionDigits="2"/></td>
+								<td>£<fmt:formatNumber 
+										value="${item.value.totalCost}" 
+										maxFractionDigits="2"
+										minFractionDigits="2"/></td>
 							</tr>
 						</c:forEach>
 						<!-- Shipping -->
