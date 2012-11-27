@@ -10,24 +10,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.yubi.application.product.ProductAccess;
 import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.BasketItem;
-import com.yubi.shop.paypal.PaypalService;
 
 @Service
 public class ProductOrderServiceImpl implements ProductOrderService {
 	
 	private final ProductOrderAccess productOrderAccess;
 	
-	private final PaypalService paypalService;
-	
 	private final ProductAccess productAccess;
 	
 	@Inject
-	public ProductOrderServiceImpl(ProductOrderAccess productOrderAccess,
-			PaypalService paypalService,
+	public ProductOrderServiceImpl(
+			ProductOrderAccess productOrderAccess,
 			ProductAccess productAccess) {
 		super();
 		this.productOrderAccess = productOrderAccess;
-		this.paypalService = paypalService;
 		this.productAccess = productAccess;
 	}
 
