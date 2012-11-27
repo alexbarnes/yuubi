@@ -11,7 +11,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMailMessage;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.thymeleaf.spring3.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.yubi.application.product.ProductService;
 import com.yubi.shop.basket.BasketCreationListener;
@@ -52,12 +53,28 @@ public class MailConfig {
 		message.setReplyTo(environment.getProperty("mail.send.address"));
 		return message;
 	}
+
+	
+	@Bean
+	public SpringTemplateEngine templateEngine() {
+		FileTemplateResolver resolver = new FileTemplateResolver();
+		resolver.setPrefix("src/main/webapp/templates/");
+		resolver.setTemplateMode("HTML5");
+		resolver.setCharacterEncoding("UTF-8");
+		resolver.setOrder(1);
+		
+		SpringTemplateEngine engine = new
+				SpringTemplateEngine();
+		engine.setTemplateResolver(resolver);
+		return engine;
+	}
 	
 	@Bean
 	public BasketCreationListener basketCreationListener() {
 		return new BasketCreationListener();
 	}
 
+	
 	@Bean
 	public BasketExpiryListener basketExpiryListener() {
 		return new BasketExpiryListener(productService);

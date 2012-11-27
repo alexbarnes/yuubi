@@ -158,6 +158,17 @@
 				var selectedCountry = $('#country').val();
 				$('#shipping').empty();
 				$('#shippingtotal').html('<strong>£0.00</strong>');
+				// Set the delivery method on the basket as well
+				$.ajax({
+					url : '<c:url value="/shop/basket/setdeliverymethod/"></c:url>',
+					type : 'GET',
+					datatype : 'JSON',
+					data : {id : ''},
+					success : function(json) {
+						$('#total').html('<strong>£'+ json.newTotal + '</strong>');
+					}
+				});
+
 				// Also null out the delivery method on the basket when we select a new country
 				$.ajax({
 					url : '<c:url value="/shop/checkout/listdeliverymethods/"></c:url>' + selectedCountry,
@@ -168,17 +179,6 @@
 						$.each(json.deliverymethods, function(i, value) {
 							$('#shipping').append(
 									$('<option>').text(value.description + ' - £' + value.cost).attr('value',value.id));
-							});
-							
-							// Set the delivery method on the basket as well
-							$.ajax({
-								url : '<c:url value="/shop/basket/setdeliverymethod/"></c:url>',
-								type : 'GET',
-								datatype : 'JSON',
-								data : {id : ''},
-								success : function(json) {
-									$('#total').html('<strong>£'+ json.newTotal + '</strong>');
-								}
 							});
 					}
 				});

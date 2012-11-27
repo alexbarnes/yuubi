@@ -1,6 +1,10 @@
 package com.yubi.core.mail;
 
-public class OutboundMailMessage {
+import java.io.Serializable;
+
+public class OutboundMailMessage implements Serializable {
+
+	private static final long serialVersionUID = -1325571591227542819L;
 
 	private final String recipients;
 	
