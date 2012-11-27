@@ -24,6 +24,7 @@ public class Basket {
 	public void reset() {
 		this.items.clear();
 		this.deliveryMethod = null;
+		discounts.clear();
 	}
 
 	public DeliveryMethod getDeliveryMethod() {
