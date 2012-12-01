@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +24,15 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryAccess.listProductParentCategories();
 	}
 
-	
 	@Transactional
-	public List<Category> listTopLevelCategories() {
-		return categoryAccess.listProductParentCategories();
+	public Category load(long id) {
+		return categoryAccess.load(id);
+	}
+
+	@Transactional
+	public Category loadWithChildren(long id) {
+		Category category = categoryAccess.load(id);
+		Hibernate.initialize(category.getChildCategories());
+		return category;
 	}
 }

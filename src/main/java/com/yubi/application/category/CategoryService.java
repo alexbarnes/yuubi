@@ -6,5 +6,7 @@ public interface CategoryService {
 	
 	public List<Category> buildProductMenu();
 	
-	public List<Category> listTopLevelCategories();
+	public Category loadWithChildren(long id);
+	
+	public Category load(long id);
 }

@@ -1,4 +1,4 @@
-package com.yubi.shop;
+package com.yubi.shop.controller;
 
 import java.util.Date;
 
@@ -15,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import com.yubi.application.category.CategoryAccess;
 import com.yubi.application.category.CategoryService;
 import com.yubi.application.product.ProductAccess;
 import com.yubi.application.product.ProductService;
@@ -29,8 +28,6 @@ public class ShopController {
 	
 	private final ProductAccess productAccess;
 	
-	private final CategoryAccess categoryAccess;
-	
 	private final CategoryService categoryService;
 	
 	private final EventGateway eventGateway;
@@ -40,13 +37,11 @@ public class ShopController {
 	@Inject
 	public ShopController(
 			ProductAccess productAccess,
-			CategoryAccess categoryAccess,
 			CategoryService categoryService,
 			EventGateway eventGateway,
 			ProductService productService) {
 		super();
 		this.productAccess = productAccess;
-		this.categoryAccess = categoryAccess;
 		this.categoryService = categoryService;
 		this.eventGateway = eventGateway;
 		this.productService = productService;
@@ -74,7 +69,7 @@ public class ShopController {
 		ModelAndView mav =  new ModelAndView("shop/productlist");
 		mav.addObject("menu", categoryService.buildProductMenu());
 		mav.addObject("products", productAccess.listForCategory(id));
-		mav.addObject("active", categoryAccess.load(id).getDescription());
+		mav.addObject("active", categoryService.load(id).getDescription());
 		
 		ShopEvent event = new ShopEvent();
 		event.setDate(new Date());

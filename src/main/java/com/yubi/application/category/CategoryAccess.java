@@ -2,9 +2,7 @@ package com.yubi.application.category;
 
 import java.util.List;
 
-public interface CategoryAccess {
-	
-	public Category loadWithChildren(long id);
+interface CategoryAccess {
 	
 	public List<Category> listProductParentCategories();
 	

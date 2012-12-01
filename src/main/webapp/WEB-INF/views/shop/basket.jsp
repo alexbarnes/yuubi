@@ -18,8 +18,12 @@
 					</div>
 				</div>
 			</div>
+			
 		</div>
-		<div id="contents"></div>
+		<div class="row">
+		<div id="contents" class="span12"></div>
+		</div>
+		<jsp:include page="footer.jsp"/>
 	</div>
 
 	<script

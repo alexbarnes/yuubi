@@ -6,11 +6,17 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * @author Alex Barnes
+ */
 @Repository
 public class PaypalRequestAccessImpl implements PaypalRequestAccess {
 	
 	private final SessionFactory sessionFactory;
 
+	/**
+	 * @param sessionFactory
+	 */
 	@Inject
 	public PaypalRequestAccessImpl(SessionFactory sessionFactory) {
 		super();

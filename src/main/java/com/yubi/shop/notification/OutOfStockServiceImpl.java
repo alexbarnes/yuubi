@@ -27,7 +27,6 @@ public class OutOfStockServiceImpl implements OutOfStockService {
 		this.productAccess = productAccess;
 	}
 
-
 	/* (non-Javadoc)
 	 * @see com.yubi.shop.notification.OutOfStockServiceInterface#saveNewNotification(java.lang.String, java.lang.String)
 	 */

@@ -1,4 +1,4 @@
-package com.yubi.shop.checkout;
+package com.yubi.shop.controller;
 
 import java.util.Date;
 

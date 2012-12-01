@@ -21,6 +21,11 @@ import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.BasketItem;
 import com.yubi.shop.basket.BasketService;
 
+/**
+ * 
+ * 
+ * @author Alex Barnes
+ */
 @Service
 class PaypalServiceImpl implements PaypalService {
 

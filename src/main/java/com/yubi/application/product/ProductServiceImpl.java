@@ -76,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
 				.buildQueryBuilder().forEntity(Product.class).get();
 
 		org.apache.lucene.search.Query luceneQuery = b.keyword().wildcard()
-				.onField("title").andField("description").andField("code")
+				.onField("title").andField("description").andField("code").andField("category.description")
 				.matching(query).createQuery();
 
 		org.hibernate.Query fullTextQuery = fullTextSession

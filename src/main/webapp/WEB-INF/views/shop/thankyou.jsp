@@ -3,5 +3,6 @@
 <jsp:include page="header.jsp" />
 <body>
 	<div class="container">
+		
 		<jsp:include page="footer.jsp" />
 	</div>
