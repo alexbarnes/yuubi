@@ -19,7 +19,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.yubi.application.category.Category;
@@ -59,7 +58,6 @@ public class Product {
 
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "categoryId")
-	@IndexedEmbedded
 	private Category category;
 	
 	public String getCode() {

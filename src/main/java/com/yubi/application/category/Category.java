@@ -20,6 +20,7 @@ import org.hibernate.search.annotations.Field;
 @Entity
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Category {
+	
 	@Id
 	@GeneratedValue
 	private long id;

@@ -176,5 +176,17 @@
 				});
 			};
 		</script>
+		<script>
+		$(document).ready(function() {
+			$('body').on('touchstart.dropdown', '.dropdown-menu', function(e) {
+				e.stopPropagation();
+			});
+
+		});
+
+		$(document).on('click', '.dropdown-menu a', function() {
+			document.location = $(this).attr('href');
+		});
+	</script>
 </body>
 </html>

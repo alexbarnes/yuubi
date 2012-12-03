@@ -15,14 +15,18 @@
 		<div class="span3">
 			<h4>Information</h4>
 			<ul>
-				<li><a href='<spring:url value="/shop/about"></spring:url>'>About Us</a></li>
-				<li><a href="<spring:url value="/shop/deliveryinfo"/>">Delivery Information</a></li>
-				<li><a href="<spring:url value="/shop/terms"/>">Terms &amp; Conditions</a></li>
+				<li><a href='<spring:url value="/shop/about"></spring:url>'>About
+						Us</a></li>
+				<li><a href="<spring:url value="/shop/deliveryinfo"/>">Delivery
+						Information</a></li>
+				<li><a href="<spring:url value="/shop/terms"/>">Terms &amp;
+						Conditions</a></li>
 			</ul>
 		</div>
 		<div class="span3">
 			<h4 class="logo-title">Connect with us</h4>
-			<a href="<spring:url value='/shop'/>">Facebook</a> <br /> <a href="<spring:url value='/shop'/>">Twitter</a>
+			<a href="<spring:url value='/shop'/>">Facebook</a> <br /> <a
+				href="<spring:url value='/shop'/>">Twitter</a>
 		</div>
 	</div>
 </footer>

@@ -1,6 +1,9 @@
 package com.yubi.application.product;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -13,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.yubi.application.category.Category;
 import com.yubi.shop.notification.StockNotificationService;
 
 @Service
@@ -23,14 +27,18 @@ public class ProductServiceImpl implements ProductService {
 	private final SessionFactory sessionFactory;
 	
 	private final StockNotificationService stockNotificationService;
+	
+	private final ProductAccess productAccess;
 
 	@Inject
 	public ProductServiceImpl(
 			SessionFactory sessionFactory,
-			StockNotificationService stockNotificationService) {
+			StockNotificationService stockNotificationService,
+			ProductAccess productAccess) {
 		super();
 		this.sessionFactory = sessionFactory;
 		this.stockNotificationService = stockNotificationService;
+		this.productAccess = productAccess;
 	}
 
 	@Transactional
@@ -66,22 +74,24 @@ public class ProductServiceImpl implements ProductService {
 		stockNotificationService.notify(product);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Transactional
 	public List<Product> search(String query) {
-		FullTextSession fullTextSession = Search
+		
+		final FullTextSession fullTextSession = Search
 				.getFullTextSession(sessionFactory.getCurrentSession());
 
 		final QueryBuilder b = fullTextSession.getSearchFactory()
 				.buildQueryBuilder().forEntity(Product.class).get();
 
 		org.apache.lucene.search.Query luceneQuery = b.keyword().wildcard()
-				.onField("title").andField("description").andField("code").andField("category.description")
+				.onField("title").andField("description").andField("code")
 				.matching(query).createQuery();
 
 		org.hibernate.Query fullTextQuery = fullTextSession
 				.createFullTextQuery(luceneQuery);
-		return fullTextQuery.list();
+		
+		List<Product> products = fullTextQuery.list();
+		 return products;
 	}
 
 }
