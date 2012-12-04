@@ -2,12 +2,11 @@ package com.yubi.shop.basket;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import com.yubi.shop.delivery.DeliveryMethod;
+import com.yubi.shop.discount.Discount;
 
 public class Basket {
 	
@@ -15,7 +14,7 @@ public class Basket {
 	
 	private DeliveryMethod deliveryMethod;
 	
-	private final Set<String> discounts = new HashSet<String>();
+	private Discount discount;
 	
 	public Map<String, BasketItem> getItems() {
 		return items;
@@ -24,7 +23,7 @@ public class Basket {
 	public void reset() {
 		this.items.clear();
 		this.deliveryMethod = null;
-		discounts.clear();
+		this.discount = null;
 	}
 
 	public DeliveryMethod getDeliveryMethod() {
@@ -35,8 +34,12 @@ public class Basket {
 		this.deliveryMethod = deliveryMethod;
 	}
 	
-	public Set<String> getDiscounts() {
-		return discounts;
+	public Discount getDiscount() {
+		return discount;
+	}
+	
+	public void setDiscount(Discount discount) {
+		this.discount = discount;
 	}
 	
 	public BigDecimal getTotal() {

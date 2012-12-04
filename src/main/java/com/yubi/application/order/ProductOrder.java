@@ -1,18 +1,19 @@
 package com.yubi.application.order;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import com.yubi.application.product.Product;
+import com.yubi.shop.discount.Discount;
 
 @Entity
 public class ProductOrder {
@@ -29,8 +30,9 @@ public class ProductOrder {
 	@OneToMany(mappedBy = "id.order", cascade=CascadeType.ALL, orphanRemoval=true)
 	private final List<ProductOrderItem> items = new ArrayList<ProductOrderItem>();
 	
-	@OneToMany(mappedBy = "id.order")
-	private final Set<OrderDiscount> discounts = new HashSet<OrderDiscount>();
+	@ManyToOne
+	@JoinColumn(name = "discountCode")
+	private Discount discount;
 
 	public long getId() {
 		return id;
@@ -60,8 +62,12 @@ public class ProductOrder {
 		return items;
 	}
 
-	public Set<OrderDiscount> getDiscounts() {
-		return discounts;
+	public Discount getDiscount() {
+		return discount;
+	}
+	
+	public void setDiscount(Discount discount) {
+		this.discount = discount;
 	}
 	
 	public ProductOrderItem addItem(Product product) {

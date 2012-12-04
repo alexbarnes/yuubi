@@ -27,6 +27,8 @@ import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.BasketCreationListener;
 import com.yubi.shop.basket.BasketService;
 import com.yubi.shop.delivery.DeliveryMethodAccess;
+import com.yubi.shop.discount.Discount;
+import com.yubi.shop.discount.DiscountAccess;
 import com.yubi.shop.paypal.PaypalConstants;
 import com.yubi.shop.paypal.PaypalService;
 
@@ -51,6 +53,8 @@ public class CheckoutController {
 	private final EventGateway eventGateway;
 	
 	private final CategoryService categoryService;
+	
+	private final DiscountAccess discountAccess;
 	@Inject
 	public CheckoutController(
 			DeliveryMethodAccess deliveryMethodAccess,
@@ -60,7 +64,8 @@ public class CheckoutController {
 			BasketService basketService,
 			ProductOrderService productOrderService,
 			EventGateway eventGateway,
-			CategoryService categoryService) {
+			CategoryService categoryService,
+			DiscountAccess discountAccess) {
 		super();
 		this.deliveryMethodAccess = deliveryMethodAccess;
 		this.countryAccess = countryAccess;
@@ -70,6 +75,7 @@ public class CheckoutController {
 		this.productOrderService = productOrderService;
 		this.eventGateway = eventGateway;
 		this.categoryService = categoryService;
+		this.discountAccess = discountAccess;
 	}
 
 	/**
@@ -102,8 +108,18 @@ public class CheckoutController {
 	 * the discount.
 	 * 
 	 */
-	public ModelAndView applyDiscount(String code) {
-		return new ModelAndView();
+	@RequestMapping("/applydiscount/{code}")
+	public @ResponseBody boolean applyDiscount(@PathVariable("code") String code, HttpSession session) {
+		
+		Discount discount = discountAccess.get(code);
+		
+		if (discount == null) {
+			return false;
+		}
+		
+		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		basket.setDiscount(discount);
+		return true;
 	}
 	
 	/**
