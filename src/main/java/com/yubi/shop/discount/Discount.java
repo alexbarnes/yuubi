@@ -14,13 +14,14 @@ import org.joda.time.LocalDate;
 public class Discount {
 	
 	public enum DiscountType {
-		GIFT_VOUCHER,
 		FREE_SHIPPING,
 		PROMOTION;
 	}
 	
 	@Id
 	private String code;
+	
+	private String description;
 	
 	@Version
 	private int version;
@@ -33,7 +34,7 @@ public class Discount {
 	
 	private LocalDate validTo;
 	
-	private BigDecimal minimumSpend;
+	private BigDecimal minimumSpend; 
 	
 	@Enumerated(EnumType.STRING)
 	private DiscountType type;
@@ -100,5 +101,13 @@ public class Discount {
 
 	public void setType(DiscountType type) {
 		this.type = type;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

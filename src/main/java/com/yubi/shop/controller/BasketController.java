@@ -1,6 +1,7 @@
 package com.yubi.shop.controller;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -177,12 +178,12 @@ public class BasketController {
 		if (id != null) {
 			DeliveryMethod method = deliveryMethodAccess.get(id);
 			basket.setDeliveryMethod(method);
-			result.deliveryCost = method.getCost().toString();
+			result.deliveryCost = method.getCost().setScale(2, RoundingMode.HALF_UP).toString();
 		} else {
 			basket.setDeliveryMethod(null);
-			result.deliveryCost = new BigDecimal(0.00).toString();
+			result.deliveryCost = new BigDecimal(0.00).setScale(2, RoundingMode.HALF_UP).toString();
 		}
-		result.newTotal = basketService.getBasketTotal(basket).toString();
+		result.newTotal = basketService.getBasketTotal(basket).setScale(2, RoundingMode.HALF_UP).toString();
 		return result;
 	}
 }

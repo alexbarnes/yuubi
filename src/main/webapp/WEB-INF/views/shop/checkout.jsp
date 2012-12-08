@@ -72,9 +72,7 @@
 								</c:forEach>
 							</select>
 						</div>
-						<div>
-							<select id="shipping"></select>
-						</div>
+						<div><select id="shipping"></select></div>
 						<div id="shippingtotal" class="pull-right">
 							<strong> <c:choose>
 									<c:when test="${basket.deliveryMethod != null}">
@@ -86,7 +84,6 @@
 											£0.00
 										</c:otherwise>
 								</c:choose>
-
 							</strong>
 						</div>
 						<br>
@@ -94,6 +91,20 @@
 					<div class="well">
 						<h4>Discounts</h4>
 						<hr>
+						<div id="discountNotification"></div>
+						<div class="control-group" id="discountFields">
+							<div class="input-append controls" id="discountControls">
+							<c:if test="${basket.discount == null}">
+								<input class="span2" id="discountCode" type="text"
+									name="discountCode">
+								<button class="btn" id="applyDiscount" type="button">Apply</button>
+							</c:if>
+							<c:if test="${basket.discount != null}">
+								<span class="input-xlarge uneditable-input">${basket.discount.description}</span>
+								<button class="btn" id="removeDiscount"><i class="icon-remove-sign"></i></button>
+							</c:if>
+							</div>
+						</div>
 					</div>
 					<div class="well">
 						<h4>Total</h4>
@@ -126,151 +137,130 @@
 		<jsp:include page="footer.jsp" />
 	</div>
 
-
-	<script
-		src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
+	<script src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
 	<script src="<spring:url value='/resources/shop/js/bootstrap.min.js'/>"></script>
 
 	<script type="text/javascript">
-		// On page load ensure that we have set up everything if we already have a 
-		// delivery method selected.
-		$(document)
-				.ready(
-						function() {
-							$('#country').val(
-									'${basket.deliveryMethod.country.code}');
-							$
-									.ajax({
-										url : '<c:url value="/shop/checkout/listdeliverymethods/${basket.deliveryMethod.country.code}"></c:url>',
-										type : 'GET',
-										datatype : 'JSON',
-										success : function(json) {
-											$('#shipping').append(
-													$('<option>').text(
-															'Select One').attr(
-															'value', ''));
-											$
-													.each(
-															json.deliverymethods,
-															function(i, value) {
-																$('#shipping')
-																		.append(
-																				$(
-																						'<option>')
-																						.text(
-																								value.description
-																										+ ' - £'
-																										+ value.cost)
-																						.attr(
-																								'value',
-																								value.id));
-															});
-											$('#shipping')
-													.val(
-															'${basket.deliveryMethod.id}');
-										}
-									});
-						});
-
-		// Handle a change of country.
-		$(function() {
-			$('#country')
-					.change(
-							function() {
-								var selectedCountry = $('#country').val();
-								$('#shipping').empty();
-								$('#shippingtotal').html(
-										'<strong>£0.00</strong>');
-								// Set the delivery method on the basket as well
-								$
-										.ajax({
-											url : '<c:url value="/shop/basket/setdeliverymethod/"></c:url>',
-											type : 'GET',
-											datatype : 'JSON',
-											data : {
-												id : ''
-											},
-											success : function(json) {
-												$('#total').html(
-														'<strong>£'
-																+ json.newTotal
-																+ '</strong>');
-											}
-										});
-
-								// Also null out the delivery method on the basket when we select a new country
-								$
-										.ajax({
-											url : '<c:url value="/shop/checkout/listdeliverymethods/"></c:url>'
-													+ selectedCountry,
-											type : 'GET',
-											datatype : 'JSON',
-											success : function(json) {
-												$('#shipping').append(
-														$('<option>').text(
-																'Select One')
-																.attr('value',
-																		''));
-												$
-														.each(
-																json.deliverymethods,
-																function(i,
-																		value) {
-																	$(
-																			'#shipping')
-																			.append(
-																					$(
-																							'<option>')
-																							.text(
-																									value.description
-																											+ ' - £'
-																											+ value.cost)
-																							.attr(
-																									'value',
-																									value.id));
-																});
-											}
-										});
-							});
-
-			// Handle the selection of a delivery method
-			$('#shipping')
-					.change(
-							function() {
-								$
-										.ajax({
-											url : '<c:url value="/shop/basket/setdeliverymethod/"></c:url>',
-											type : 'GET',
-											datatype : 'JSON',
-											data : {
-												id : $('#shipping').val()
-											},
-											success : function(json) {
-												$('#shippingtotal')
-														.html(
-																'<strong>£'
-																		+ json.deliveryCost
-																		+ '</strong>');
-												$('#total').html(
-														'<strong>£'
-																+ json.newTotal
-																+ '</strong>');
-											}
-
-										});
-							});
-		});
-	</script>
-	<script>
 		$(document).ready(function() {
+			$('#country').val('${basket.deliveryMethod.country.code}');
+			$.ajax({
+				url : '<c:url value="/shop/checkout/listdeliverymethods/${basket.deliveryMethod.country.code}"></c:url>',
+				type : 'GET',
+				datatype : 'JSON',
+				success : function(json) {
+					$('#shipping').append(
+					$('<option>').text('Select One').attr('value', ''));
+					$.each(json.deliverymethods,function(i, value) {
+						$('#shipping').append($('<option>')
+								.text(value.description + ' - £'+ value.cost)
+								.attr('value',value.id));
+					});
+					$('#shipping').val('${basket.deliveryMethod.id}');
+				}
+			});
+			
 			$('body').on('touchstart.dropdown', '.dropdown-menu', function(e) {
 				e.stopPropagation();
 			});
-
 		});
 
+		// Handle a change of country.
+		$(function() {
+			$('#country').change(function() {
+				var selectedCountry = $('#country').val();
+				$('#shipping').empty();
+				$('#shippingtotal').html('<strong>£0.00</strong>');
+				$.ajax({
+					url : '<c:url value="/shop/basket/setdeliverymethod/"></c:url>',
+					type : 'GET',
+					datatype : 'JSON',
+					data : {
+						id : ''
+					},
+					success : function(json) {
+						$('#total').html('<strong>£'+ json.newTotal + '</strong>');
+					}
+				});
+
+				$.ajax({
+					url : '<c:url value="/shop/checkout/listdeliverymethods/"></c:url>' + selectedCountry,
+					type : 'GET',
+					datatype : 'JSON',
+					success : function(json) {
+						$('#shipping').append($('<option>').text('Select One').attr('value',''));
+						$.each(json.deliverymethods,function(i,value) {
+							$('#shipping')
+								.append($('<option>')
+										.text(value.description + ' - £'+ value.cost)
+										.attr('value',value.id));
+						});
+					}
+				});
+			});
+
+			$('#shipping').change(function() {
+				$.ajax({
+					url : '<c:url value="/shop/basket/setdeliverymethod/"></c:url>',
+					type : 'GET',
+					datatype : 'JSON',
+					data : {
+						id : $('#shipping').val()
+					},
+					success : function(json) {
+						$('#shippingtotal').html('<strong>£'+ json.deliveryCost + '</strong>');
+						$('#total').html('<strong>£'+ json.newTotal + '</strong>');
+					}
+				});
+			});
+		});
+		
 		$(document).on('click', '.dropdown-menu a', function() {
 			document.location = $(this).attr('href');
+		});
+		
+		// Handle the click of the discount button
+		$('#applyDiscount').click(function() {
+			if ($('#discountCode').val() == '') {
+				$('#discountFields').addClass('error');
+				$('#discountNotification').html('<div class="alert alert-error">Please enter a valid discount code</div>');
+			} else {
+				$.ajax({
+					url : '<c:url value="/shop/checkout/applydiscount/"></c:url>' + $('#discountCode').val(),
+					type : 'GET',
+					datatype : 'JSON',
+					success : function(json) {
+						if (json.valid == true) {
+							$('#shippingtotal').html('<strong>£'+ json.deliveryCost + '</strong>');
+							$('#total').html('<strong>£'+ json.newTotal + '</strong>');
+							
+							$('#discountNotification').empty();
+							$('#discountNotification').html('<div class="alert alert-success">Discount applied. Your total has been updated.</div>');
+							
+							$('#discountControls').empty();
+							$('#discountControls').html(
+								'<span class="input-xlarge uneditable-input">' + json.discount.description +'</span><a class="btn btn-small" href="#"><i class="icon-star"></i></a>'
+							);
+						} else {
+							$('#discountFields').addClass('error');
+							$('#errors').html('<div class="alert alert-error">Please enter a valid discount code</div>');
+						}
+					}
+				});
+			}
+		});
+		
+		
+		// Handle the removal of the discount
+		$('#removeDiscount').click(function() {
+			$.ajax({
+				url : '<c:url value="/shop/checkout/removediscount/"></c:url>',
+				type : 'GET',
+				datatype : 'JSON',
+				success : function(json) {
+						$('#shippingtotal').html('<strong>£'+ json.deliveryCost + '</strong>');
+						$('#total').html('<strong>£'+ json.newTotal + '</strong>');
+				}
+			});
 		});
 	</script>
 </body>

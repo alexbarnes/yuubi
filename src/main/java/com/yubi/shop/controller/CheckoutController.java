@@ -1,5 +1,7 @@
 package com.yubi.shop.controller;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -26,6 +28,7 @@ import com.yubi.core.statistics.ShopEventType;
 import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.BasketCreationListener;
 import com.yubi.shop.basket.BasketService;
+import com.yubi.shop.checkout.DiscountApplicationResult;
 import com.yubi.shop.delivery.DeliveryMethodAccess;
 import com.yubi.shop.discount.Discount;
 import com.yubi.shop.discount.DiscountAccess;
@@ -84,10 +87,13 @@ public class CheckoutController {
 	 */
 	@RequestMapping
 	public ModelAndView checkout(HttpSession session) {
-		ModelAndView mav = new ModelAndView("shop/checkout", "countries", countryAccess.listAll());
-		
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
 		
+		if (basket.getItems().size() == 0) {
+			return new ModelAndView("redirect:/");
+		}
+		
+		ModelAndView mav = new ModelAndView("shop/checkout", "countries", countryAccess.listAll());
 		mav.addObject("total", basketService.getBasketTotal(basket));
 		mav.addObject("menu", categoryService.buildProductMenu());
 		return mav;
@@ -109,17 +115,46 @@ public class CheckoutController {
 	 * 
 	 */
 	@RequestMapping("/applydiscount/{code}")
-	public @ResponseBody boolean applyDiscount(@PathVariable("code") String code, HttpSession session) {
+	public @ResponseBody DiscountApplicationResult applyDiscount(@PathVariable("code") String code, HttpSession session) {
 		
 		Discount discount = discountAccess.get(code);
+		DiscountApplicationResult result = new DiscountApplicationResult();
 		
 		if (discount == null) {
-			return false;
+			result.valid = false;
+			return result;
 		}
 		
+		result.valid = true;
+		result.discount = discount;
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
 		basket.setDiscount(discount);
-		return true;
+		
+		if (basket.getDeliveryMethod() != null) {
+			result.deliveryCost = basket.getDeliveryMethod().getCost().setScale(2, RoundingMode.HALF_UP).toString();
+		} else {
+			result.deliveryCost = new BigDecimal(0.00).setScale(2, RoundingMode.HALF_UP).toString();
+		}
+		
+		result.newTotal = basketService.getBasketTotal(basket).setScale(2, RoundingMode.HALF_UP).toString();
+		return result;
+	}
+	
+	@RequestMapping("/removediscount")
+	public @ResponseBody DiscountApplicationResult removeDiscount(HttpSession session) {
+		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		basket.setDiscount(null);
+		
+		DiscountApplicationResult result = new DiscountApplicationResult();
+		result.newTotal = basketService.getBasketTotal(basket).setScale(2, RoundingMode.HALF_UP).toString();
+		
+		if (basket.getDeliveryMethod() != null) {
+			result.deliveryCost = basket.getDeliveryMethod().getCost().setScale(2, RoundingMode.HALF_UP).toString();
+		} else {
+			result.deliveryCost = new BigDecimal(0.00).setScale(2, RoundingMode.HALF_UP).toString();
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -147,7 +182,7 @@ public class CheckoutController {
 			result.setViewName("redirect:/shop/checkout");
 			redirect.addFlashAttribute("error", true);
 			
-			// Need to sent an e-mail to the admins if this happens. We have
+			// Need to sent an e-mail to the admin if this happens. We have
 			// a problem.
 			return result;
 	}
