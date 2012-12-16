@@ -41,12 +41,25 @@
 				<hr />
 				<h4>Delivery Address</h4>
 				<address>
-					<strong>Twitter, Inc.</strong> <br>795 Folsom Ave, Suite 600<br>
-					San Francisco, CA 94107<br> <abbr title="Phone">P:</abbr>
-					(123) 456-7890
+					<strong>${transaction.customer.name}</strong> 
+					<br>
+					${transaction.customer.addressLine1}<c:if test="${transaction.customer.addressLine2 != null}">, ${transaction.customer.addressLine2 }</c:if>
+					<br>
+					${transaction.customer.city}, <c:if test="${transaction.customer.county != null}">${transaction.customer.county} </c:if>${transaction.customer.postCode}
+					<br>
 				</address>
-				Estimated delivery date: 20th November 2012
 				<hr />
+				<h2 class="title">Special Instructions</h2>
+				${transaction.message}
+				<hr />
+				<div class="row">
+					<div class="span2 offset7 pull-right">
+						<a href="<spring:url value='/shop/checkout/complete'/>"><button
+								class="btn btn-primary">
+								<i class="icon-ok-circle icon-white"></i> Confirm Order
+							</button></a>
+					</div>
+				</div>
 				<h4>Order Detail</h4>
 				<div class="entry">
 					<table class="table table-bordered table-striped">
@@ -67,23 +80,34 @@
 									<td>£${item.value.totalCost}</td>
 								</tr>
 							</c:forEach>
-							<!-- Shipping -->
+							<c:if test="${basket.discount != null}">
 							<tr>
-								<td><strong>Shipping Total</strong></td>
-								<td>${basket.deliveryMethod.country.description}</td>
-								<td>${basket.deliveryMethod.description}</td>
-								<td><strong>${basket.deliveryMethod.cost}</strong></td>
-							</tr>
-							<!-- Discounts -->
-							<!--  Totals -->
-							<tr>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
+								<td>Discount</td>
+								<td>${basket.discount.description}</td>
 								<td>&nbsp;</td>
 								<td id="total"><strong>£${total}</strong></td>
 							</tr>
+							</c:if>
 						</tbody>
 					</table>
+					<h4>Shipping</h4>
+					<div class="well">
+						<div id="shippingtotal" class="pull-right">
+							<strong>${basket.deliveryMethod.description}: £<fmt:formatNumber
+									value="${basket.deliveryMethod.cost}" maxFractionDigits="2"
+									minFractionDigits="2" />
+							</strong>
+						</div>
+					</div>
+					<h4>Total</h4>
+					<div class="well">
+						<div id="shippingtotal" class="pull-right">
+							<strong> £<fmt:formatNumber
+									value="${total}" maxFractionDigits="2"
+									minFractionDigits="2" />
+							</strong>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="row pull-right">
@@ -95,8 +119,8 @@
 				</div>
 				<div class="span2 offset7">
 					<a href="<spring:url value='/shop/checkout/complete'/>"><button
-							class="btn">
-							<i class="icon-ok-circle"></i> Confirm Order
+							class="btn btn-primary">
+							<i class="icon-ok-circle icon-white"></i> Confirm Order
 						</button></a>
 				</div>
 			</div>

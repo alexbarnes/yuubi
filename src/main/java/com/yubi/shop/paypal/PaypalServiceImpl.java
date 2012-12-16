@@ -22,7 +22,7 @@ import com.yubi.shop.basket.BasketItem;
 import com.yubi.shop.basket.BasketService;
 
 /**
- * 
+ * Service for calling Paypal at the various stages in the payment process.
  * 
  * @author Alex Barnes
  */
@@ -172,7 +172,7 @@ class PaypalServiceImpl implements PaypalService {
 		return request;
 	}
 
-	public PaypalTransactionDetails loadTransactionDetail(String token,
+	public ExpressCheckoutDetail loadTransactionDetail(String token,
 			String sessionId) {
 		GetExpressCheckoutDetailsRequest request = new GetExpressCheckoutDetailsRequest(
 				token, userName, password, signature);
@@ -185,8 +185,15 @@ class PaypalServiceImpl implements PaypalService {
 
 		ResponseEntity<String> response = new RestTemplate().postForEntity(
 				paypalURL, request.createRequest(), String.class);
+		
+		String decodedResponse;
+		try {
+			decodedResponse = URLDecoder.decode(response.getBody(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 
-		Map<String, String> resultMap = createResultMap(response.getBody());
+		Map<String, String> resultMap = createResultMap(decodedResponse);
 		
 		// Record the result of calling the Paypal API
 		requestItem.setResponse(response.getBody());
@@ -202,7 +209,7 @@ class PaypalServiceImpl implements PaypalService {
 		requestItem.setToken(resultMap.get("TOKEN"));
 		paypalRequestAccess.update(requestItem);
 
-		return new PaypalTransactionDetails();
+		return ExpressCheckoutDetailBuilder.build(resultMap);
 	}
 
 	public void loadTransaction(String transactionId) {

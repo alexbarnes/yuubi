@@ -1,7 +1,9 @@
 package com.yubi.shop.paypal;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URLEncoder;
 
 public class ExpressTransactionItem {
 	
@@ -24,17 +26,21 @@ public class ExpressTransactionItem {
 
 	public String createRequest(int lineNumber) {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("L_PAYMENTREQUEST_0_NAME" + lineNumber +"=" + name);
-		buffer.append("&");
-		
-		buffer.append("L_PAYMENTREQUEST_0_DESC" + lineNumber +"=" + description);
-		buffer.append("&");
-		
-		buffer.append("L_PAYMENTREQUEST_0_AMT0" + lineNumber +"=" + unitCost.setScale(2, RoundingMode.HALF_UP).toString());
-		buffer.append("&");
-		
-		buffer.append("L_PAYMENTREQUEST_0_QTY" + lineNumber +"=" + quantity);
-		buffer.append("&");
+		try {
+			buffer.append("L_PAYMENTREQUEST_0_NAME" + lineNumber +"=" + URLEncoder.encode(name, "UTF-8"));
+			buffer.append("&");
+			
+			buffer.append("L_PAYMENTREQUEST_0_DESC" + lineNumber +"=" + URLEncoder.encode(description, "UTF-8"));
+			buffer.append("&");
+			
+			buffer.append("L_PAYMENTREQUEST_0_AMT0" + lineNumber +"=" + unitCost.setScale(2, RoundingMode.HALF_UP).toString());
+			buffer.append("&");
+			
+			buffer.append("L_PAYMENTREQUEST_0_QTY" + lineNumber +"=" + quantity);
+			buffer.append("&");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 		
 		return buffer.toString();
 	}

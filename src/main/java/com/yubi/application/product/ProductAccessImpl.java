@@ -28,7 +28,9 @@ public class ProductAccessImpl implements ProductAccess {
 		
 		Hibernate.initialize(product.getImages());
 		Hibernate.initialize(product.getSet());
-		Hibernate.initialize(product.getSet().getItems());
+		if (product.getSet() != null) {
+			Hibernate.initialize(product.getSet().getItems());
+		}
 		return product;
 	}
 

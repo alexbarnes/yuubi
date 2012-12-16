@@ -186,7 +186,7 @@
 						$('#total').html('<strong>£'+ json.newTotal + '</strong>');
 					}
 				});
-				$('#shipping').append($('<option>').text('Select One').attr('value',null));
+				$('#shipping').append($('<option>').text('Select One').attr('value',''));
 				if (selectedCountry != '') {
 					$.ajax({
 						url : '<c:url value="/shop/checkout/listdeliverymethods/"></c:url>' + selectedCountry,

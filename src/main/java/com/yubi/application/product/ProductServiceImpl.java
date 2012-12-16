@@ -24,17 +24,13 @@ public class ProductServiceImpl implements ProductService {
 	
 	private final StockNotificationService stockNotificationService;
 	
-	private final ProductAccess productAccess;
-
 	@Inject
 	public ProductServiceImpl(
 			SessionFactory sessionFactory,
-			StockNotificationService stockNotificationService,
-			ProductAccess productAccess) {
+			StockNotificationService stockNotificationService) {
 		super();
 		this.sessionFactory = sessionFactory;
 		this.stockNotificationService = stockNotificationService;
-		this.productAccess = productAccess;
 	}
 
 	@Transactional
@@ -70,6 +66,7 @@ public class ProductServiceImpl implements ProductService {
 		stockNotificationService.notify(product);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Transactional
 	public List<Product> search(String query) {
 		
@@ -80,7 +77,10 @@ public class ProductServiceImpl implements ProductService {
 				.buildQueryBuilder().forEntity(Product.class).get();
 
 		org.apache.lucene.search.Query luceneQuery = b.keyword().wildcard()
-				.onField("title").andField("description").andField("code")
+				.onField("title")
+				.andField("description")
+				.andField("code")
+				.andField("category.description")
 				.matching(query).createQuery();
 
 		org.hibernate.Query fullTextQuery = fullTextSession

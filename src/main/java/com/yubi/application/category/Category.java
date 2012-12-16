@@ -14,7 +14,6 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 
 @Entity
@@ -25,7 +24,7 @@ public class Category {
 	@GeneratedValue
 	private long id;
 	
-	@Field(analyze = Analyze.YES)
+	@Field
 	private String description;
 	
 	@ManyToOne

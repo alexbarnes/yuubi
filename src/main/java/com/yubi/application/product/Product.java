@@ -6,8 +6,10 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
@@ -19,6 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.yubi.application.category.Category;
@@ -48,8 +51,8 @@ public class Product {
 	
 	private boolean isGiftVoucher;
 	
-	@ManyToOne
-	@JoinColumn(name = "setCode")
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "setCode", nullable = true)
 	private ProductSet set;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
@@ -58,7 +61,12 @@ public class Product {
 
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "categoryId")
+	@IndexedEmbedded
 	private Category category;
+	
+	@Lob
+	@Field
+	private String productDescription;
 	
 	public String getCode() {
 		return code;
@@ -159,5 +167,13 @@ public class Product {
 	
 	public String getUrlName() {
 		return title.replace(" ", "_").toLowerCase();
+	}
+	
+	public String getProductDescription() {
+		return productDescription;
+	}
+	
+	public void setProductDescription(String productDescription) {
+		this.productDescription = productDescription;
 	}
 }

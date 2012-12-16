@@ -13,7 +13,7 @@ public interface PaypalService {
 	/**
 	 * @param token
 	 */
-	public PaypalTransactionDetails loadTransactionDetail(String token, String sessionId);
+	public ExpressCheckoutDetail loadTransactionDetail(String token, String sessionId);
 	
 	
 	/**

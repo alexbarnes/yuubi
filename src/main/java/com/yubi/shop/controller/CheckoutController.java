@@ -214,10 +214,11 @@ public class CheckoutController {
 		
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
 		
-		// If we get to here we have setup the transaction. We can ask Paypal about it now.
-		paypalService.loadTransactionDetail(sessionToken, session.getId());
 		result.addObject("basket", basket);
 		result.addObject("total", basketService.getBasketTotal(basket));
+		
+		// If we get to here we have setup the transaction. We can ask Paypal about it now.
+		result.addObject("transaction", paypalService.loadTransactionDetail(sessionToken, session.getId()));
 		result.setViewName("shop/confirmation");
 		
 		return result;

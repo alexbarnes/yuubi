@@ -53,6 +53,9 @@
 						</c:forEach>
 					</ul>
 				</div>
+				<div class="span5">
+				${product.productDescription}
+				</div>
 				<div id="stock"></div>
 			</div>
 		</div>
@@ -60,7 +63,7 @@
 			<div class="span9">
 				<div class="row">
 					<div class="span9">
-						<h2 class="title">Matching products</h2>
+						<h2 class="title">Matching products: ${product.set.description}</h2>
 						<hr />
 					</div>
 				</div>
@@ -110,7 +113,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="submit" class="btn"><i class="icon-ok-circle"></i> Confirm</button>
+				<button type="submit" class="btn btn-primary"><i class="icon-ok-circle icon-white"></i> Confirm</button>
 			</div>
 		</form:form>
 	</div>

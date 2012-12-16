@@ -1,7 +1,9 @@
 package com.yubi.shop.paypal;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,7 +124,12 @@ public class SetupExpressTransactionRequestBuilder {
 			buffer.append("L_PAYMENTREQUEST_0_NAME" + i +"=" + "Discount Code");
 			buffer.append("&");
 			
-			buffer.append("L_PAYMENTREQUEST_0_DESC" + i +"=" + discountString);
+			try {
+				buffer.append("L_PAYMENTREQUEST_0_DESC" + i +"=" + URLEncoder.encode(discountString, "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(e);
+			}
+			
 			buffer.append("&");
 			
 			buffer.append("L_PAYMENTREQUEST_0_AMT0" + i +"=-" + discountAmount.setScale(2, RoundingMode.HALF_UP).toString());

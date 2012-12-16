@@ -56,8 +56,8 @@
 		</div>
 		<div class="row pull-right">
 			<a href="<spring:url value='/shop/checkout'/>"><button
-					class="btn">
-					<i class="icon-gift"></i> Checkout
+					class="btn btn-primary">
+					<i class="icon-gift icon-white"></i> Checkout
 				</button></a>
 		</div>
 	</c:when>

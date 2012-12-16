@@ -26,7 +26,7 @@
 		<div class="span3">
 			<h4 class="logo-title">Connect with us</h4>
 			<a href="<spring:url value='/shop'/>">Facebook</a> <br /> <a
-				href="<spring:url value='/shop'/>">Twitter</a>
+				href="https://www.facebook.com/yuubijewellery'/>">Twitter</a>
 		</div>
 	</div>
 </footer>
