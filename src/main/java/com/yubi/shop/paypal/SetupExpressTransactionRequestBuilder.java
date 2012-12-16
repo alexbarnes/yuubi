@@ -1,6 +1,7 @@
 package com.yubi.shop.paypal;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,10 @@ public class SetupExpressTransactionRequestBuilder {
 	private BigDecimal shippingCost;
 	
 	private BigDecimal orderTotal;
+	
+	private String discountString;
+	
+	private BigDecimal discountAmount;
 	
 	private final List<ExpressTransactionItem> items = new ArrayList<ExpressTransactionItem>();
 	
@@ -56,6 +61,16 @@ public class SetupExpressTransactionRequestBuilder {
 	
 	public SetupExpressTransactionRequestBuilder withTotalCost(BigDecimal cost) {
 		this.orderTotal = cost;
+		return this;
+	}
+	
+	public SetupExpressTransactionRequestBuilder withDiscountType(String description) {
+		this.discountString = description;
+		return this;
+	}
+	
+	public SetupExpressTransactionRequestBuilder withDiscountAmount(BigDecimal discount) {
+		this.discountAmount = discount;
 		return this;
 	}
 		
@@ -102,10 +117,27 @@ public class SetupExpressTransactionRequestBuilder {
 			i++;
 		}
 		
-		buffer.append("PAYMENTREQUEST_0_ITEMAMT=" + productTotal.toString());
+		// Add an extra line item for a discount
+		if (discountString != null) {
+			buffer.append("L_PAYMENTREQUEST_0_NAME" + i +"=" + "Discount Code");
+			buffer.append("&");
+			
+			buffer.append("L_PAYMENTREQUEST_0_DESC" + i +"=" + discountString);
+			buffer.append("&");
+			
+			buffer.append("L_PAYMENTREQUEST_0_AMT0" + i +"=-" + discountAmount.setScale(2, RoundingMode.HALF_UP).toString());
+			buffer.append("&");
+			
+			buffer.append("L_PAYMENTREQUEST_0_QTY" + i +"=" + 1);
+			buffer.append("&");
+			
+			productTotal = productTotal.subtract(discountAmount);
+		}
+		
+		buffer.append("PAYMENTREQUEST_0_ITEMAMT=" + productTotal.setScale(2, RoundingMode.HALF_UP).toString());
 		buffer.append("&");
 				
-		buffer.append("PAYMENTREQUEST_0_AMT=" + orderTotal.toString());
+		buffer.append("PAYMENTREQUEST_0_AMT=" + orderTotal.setScale(2, RoundingMode.HALF_UP).toString());
 		
 		return buffer.toString();
 	}

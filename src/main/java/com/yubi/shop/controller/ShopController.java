@@ -64,7 +64,7 @@ public class ShopController {
 	/**
 	 * List the products for a certain category.
 	 */
-	@RequestMapping("/category/view/{id}")
+	@RequestMapping("/category/view/{id}/*")
 	public ModelAndView showCategory(@PathVariable("id") long id, HttpSession session) {
 		ModelAndView mav =  new ModelAndView("shop/productlist");
 		mav.addObject("menu", categoryService.buildProductMenu());
@@ -97,7 +97,7 @@ public class ShopController {
 	/**
 	 * View a specific product detail.
 	 */
-	@RequestMapping("/product/view/{code}")
+	@RequestMapping("/product/view/{code}/*")
 	public ModelAndView viewProduct(@PathVariable("code") String code, HttpSession session) {
 		ModelAndView mav = new ModelAndView("shop/productdetail");
 		mav.addObject("menu", categoryService.buildProductMenu());

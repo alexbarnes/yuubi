@@ -156,4 +156,8 @@ public class Product {
 	public ProductSet getSet() {
 		return set;
 	}
+	
+	public String getUrlName() {
+		return title.replace(" ", "_").toLowerCase();
+	}
 }

@@ -1,9 +1,6 @@
 package com.yubi.application.product;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -16,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yubi.application.category.Category;
 import com.yubi.shop.notification.StockNotificationService;
 
 @Service

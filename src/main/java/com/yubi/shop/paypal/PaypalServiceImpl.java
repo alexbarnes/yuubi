@@ -153,6 +153,10 @@ class PaypalServiceImpl implements PaypalService {
 		request.withCancelURL(cancelURL).withReturnURL(successURL)
 				.withShippingCost(basket.getDeliveryMethod().getCost())
 				.withTotalCost(basketService.getBasketTotal(basket));
+		
+		if (basket.getDiscount() != null) {
+			request.withDiscountType(basket.getDiscount().getDescription()).withDiscountAmount(basketService.getDiscountAmount(basket));
+		}
 
 		// Add all of the basket items to the Paypal request
 		for (Entry<String, BasketItem> item : basket.getItems().entrySet()) {

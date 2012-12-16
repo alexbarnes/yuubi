@@ -53,7 +53,7 @@
 										<c:forEach items="${current.childCategories}" var="child"
 											varStatus="status">
 											<li><a
-												href="<spring:url value='/shop/category/view/${child.id}'/>">${child.description}</a></li>
+												href="<spring:url value='/shop/category/view/${child.id}/${child.urlName}'/>">${child.description}</a></li>
 											<c:if test="${status.last == false}">
 												<li class="divider"></li>
 											</c:if>

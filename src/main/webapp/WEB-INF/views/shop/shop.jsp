@@ -73,9 +73,9 @@
 											<li class="span3">
 												<div class="product-box">
 													<a
-														href="<spring:url value='/shop/category/view/${child.id}'/>"><h4>${child.description}</h4></a>
+														href="<spring:url value='/shop/category/view/${child.id}/${child.urlName}'/>"><h4>${child.description}</h4></a>
 													<a
-														href="<spring:url value='/shop/category/view/${child.id}'/>"><img
+														href="<spring:url value='/shop/category/view/${child.id}/${child.urlName}'/>"><img
 														src="<spring:url value='/shop/category/image/${child.id}'/>" /></a>
 												</div>
 											</li>

@@ -33,9 +33,9 @@
 								<li class="span3">
 									<div class="product-box">
 										<a
-											href="<spring:url value='/shop/product/view/${product.code}'/>"><h4>${product.title}</h4></a>
+											href="<spring:url value='/shop/product/view/${product.code}/${product.urlName}'/>"><h4>${product.title}</h4></a>
 										<a
-											href="<spring:url value='/shop/product/view/${product.code}'/>"><img
+											href="<spring:url value='/shop/product/view/${product.code}/${product.urlName}'/>"><img
 											src="<spring:url value='/shop/product/primaryimage/${product.code}'/>" /></a>
 										<p>${product.description}</p>
 									</div>

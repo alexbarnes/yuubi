@@ -1,6 +1,7 @@
 package com.yubi.shop.paypal;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class ExpressTransactionItem {
 	
@@ -29,7 +30,7 @@ public class ExpressTransactionItem {
 		buffer.append("L_PAYMENTREQUEST_0_DESC" + lineNumber +"=" + description);
 		buffer.append("&");
 		
-		buffer.append("L_PAYMENTREQUEST_0_AMT0" + lineNumber +"=" + unitCost.toString());
+		buffer.append("L_PAYMENTREQUEST_0_AMT0" + lineNumber +"=" + unitCost.setScale(2, RoundingMode.HALF_UP).toString());
 		buffer.append("&");
 		
 		buffer.append("L_PAYMENTREQUEST_0_QTY" + lineNumber +"=" + quantity);

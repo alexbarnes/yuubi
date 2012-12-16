@@ -77,4 +77,8 @@ public class Category {
 	public void setImage(byte[] image) {
 		this.image = image;
 	}
+	
+	public String getUrlName() {
+		return description.replace(" ", "_").toLowerCase();
+	}
 }

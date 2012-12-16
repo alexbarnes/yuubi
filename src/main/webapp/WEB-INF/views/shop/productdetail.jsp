@@ -16,7 +16,7 @@
 							<li><a href="<spring:url value='/shop'/>"><i
 									class="icon-home"></i></a> <span class="divider">/</span></li>
 							<li><a
-								href="<spring:url value='/shop/category/view/${product.category.id}'/>">${product.category.description}</a><span
+								href="<spring:url value='/shop/category/view/${product.category.id}/${product.category.urlName}'/>">${product.category.description}</a><span
 								class="divider">/</span></li>
 							<li class="active">${product.title}</li>
 						</ul>
@@ -72,9 +72,9 @@
 									<li class="span3">
 										<div class="product-box">
 											<a
-												href="<spring:url value='/shop/product/view/${current.code}'/>"><h4>${current.title}</h4></a>
+												href="<spring:url value='/shop/product/view/${current.code}/${current.urlName}'/>"><h4>${current.title}</h4></a>
 											<a
-												href="<spring:url value='/shop/product/view/${current.code}'/>"><img
+												href="<spring:url value='/shop/product/view/${current.code}/${current.urlName}'/>"><img
 												src="<spring:url value='/shop/product/primaryimage/${current.code}'/>" /></a>
 											<p>${current.description}</p>
 										</div>
