@@ -5,18 +5,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.yubi.shop.delivery.DeliveryMethod;
 import com.yubi.shop.discount.Discount;
 
 public class Basket {
 	
-	private final Map<String, BasketItem> items = new HashMap<String, BasketItem>();
+	private final Map<BasketKey, BasketItem> items = new HashMap<BasketKey, BasketItem>();
 	
 	private DeliveryMethod deliveryMethod;
 	
 	private Discount discount;
 	
-	public Map<String, BasketItem> getItems() {
+	public Map<BasketKey, BasketItem> getItems() {
 		return items;
 	}
 	
@@ -44,9 +47,32 @@ public class Basket {
 	
 	public BigDecimal getTotal() {
 		BigDecimal total = new BigDecimal(0.00);
-		for (Entry<String, BasketItem> item : items.entrySet()) {
+		for (Entry<BasketKey, BasketItem> item : items.entrySet()) {
 			total = total.add(item.getValue().getTotalCost());
 		}
 		return total;
 	}
+	
+	public static class BasketKey {
+		public String code;
+		public boolean upgradeWire;
+		
+		public BasketKey() {}
+		
+		public BasketKey(String code, boolean upgradeWire){
+			this.code = code;
+			this.upgradeWire = upgradeWire;
+		}
+		
+		@Override
+		public int hashCode() {
+			return new HashCodeBuilder().append(code).append(upgradeWire).toHashCode();
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			return new EqualsBuilder().append(code, ((BasketKey)obj).code).append(upgradeWire, ((BasketKey)obj).upgradeWire).isEquals();
+		}
+	}
+	
 }

@@ -22,9 +22,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class HibernateConfig {
 	
 	@Inject
-	private Environment env;
-	
-	@Inject
 	private DataSource dataSource;
 
 	/**

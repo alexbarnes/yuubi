@@ -9,7 +9,11 @@ import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
+
 @Entity(name = "INT_MESSAGE")
+@Table(indexes = {@Index(name="INT_MESSAGE_IX1", columnNames = {"CREATED_DATE"})}, appliesTo="INT_MESSAGE")
 public class Message {
 
 	@Id
@@ -27,6 +31,11 @@ public class Message {
 	@Column(name = "MESSAGE_BYTES")
 	private byte[] messageBytes;
 
+	
+	
+	
+	
+	// -- Getters and setters
 	public String getMessageId() {
 		return this.messageId;
 	}

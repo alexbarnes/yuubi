@@ -14,7 +14,6 @@ import org.springframework.mail.javamail.MimeMailMessage;
 import org.thymeleaf.spring3.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
-import com.yubi.application.product.ProductService;
 import com.yubi.shop.basket.BasketCreationListener;
 import com.yubi.shop.basket.BasketExpiryListener;
 
@@ -24,9 +23,6 @@ public class MailConfig {
 	@Inject
 	private Environment environment;
 	
-	@Inject
-	private ProductService productService;
-
 	@Bean
 	public JavaMailSender mailSender() {
 		JavaMailSenderImpl sender = new JavaMailSenderImpl();
@@ -77,6 +73,6 @@ public class MailConfig {
 	
 	@Bean
 	public BasketExpiryListener basketExpiryListener() {
-		return new BasketExpiryListener(productService);
+		return new BasketExpiryListener();
 	}
 }

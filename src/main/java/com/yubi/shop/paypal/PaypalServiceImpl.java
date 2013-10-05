@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import com.yubi.application.product.Product;
 import com.yubi.application.product.ProductAccess;
 import com.yubi.shop.basket.Basket;
+import com.yubi.shop.basket.Basket.BasketKey;
 import com.yubi.shop.basket.BasketItem;
 import com.yubi.shop.basket.BasketService;
 
@@ -159,7 +160,7 @@ class PaypalServiceImpl implements PaypalService {
 		}
 
 		// Add all of the basket items to the Paypal request
-		for (Entry<String, BasketItem> item : basket.getItems().entrySet()) {
+		for (Entry<BasketKey, BasketItem> item : basket.getItems().entrySet()) {
 
 			Product product = productAccess.load(item.getValue()
 					.getProductCode());
@@ -220,14 +221,19 @@ class PaypalServiceImpl implements PaypalService {
 		Map<String, String> resultMap = new HashMap<String, String>();
 
 		Scanner scanner = new Scanner(response);
-		scanner.useDelimiter("&");
+		try {
+			scanner.useDelimiter("&");
 
-		while (scanner.hasNext()) {
-			String item = scanner.next();
-			resultMap.put(StringUtils.split(item, "=")[0],
-					StringUtils.split(item, "=")[1]);
+			while (scanner.hasNext()) {
+				String item = scanner.next();
+				resultMap.put(StringUtils.split(item, "=")[0],
+						StringUtils.split(item, "=")[1]);
+			}
+			
+			return resultMap;
+		} finally {
+			scanner.close();
 		}
-		return resultMap;
 	}
 	
 	private String decode(String toDecode) {

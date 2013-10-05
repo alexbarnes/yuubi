@@ -21,6 +21,7 @@ import com.yubi.core.statistics.EventGateway;
 import com.yubi.core.statistics.ShopEvent;
 import com.yubi.core.statistics.ShopEventType;
 import com.yubi.shop.basket.Basket;
+import com.yubi.shop.basket.Basket.BasketKey;
 import com.yubi.shop.basket.BasketCreationListener;
 import com.yubi.shop.basket.BasketItem;
 import com.yubi.shop.basket.BasketService;
@@ -69,50 +70,42 @@ public class BasketController {
 	}
 
 	@RequestMapping("/add/{code}")
-	public @ResponseBody boolean addToBasket(
-			@PathVariable("code") String code, 
-			HttpSession session) {
+	public @ResponseBody boolean addToBasket(@PathVariable("code") String code, boolean upgradeWires, HttpSession session) {
 		
 		// Check the product is still available - someone else might have 
 		// taken it in the meantime. Ensure that there are still enough of them.
-		if (!productService.checkStockExists(code, 1)) {
-			return false;
+		
+		// Add the item to the basket. If we already have one in there just increase the number
+		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		
+		// Check for the presence of this item in the basket
+		BasketKey key = new BasketKey(code, upgradeWires);
+		BasketItem item = basket.getItems().get(key);
+		
+		if (item == null) {
+			Product toAdd = productAccess.load(code);
+			
+			BasketItem newItem = new BasketItem();
+			newItem.setItemCost(toAdd.getUnitPrice());
+			newItem.setNumber(1);
+			newItem.setProductCode(code);
+			newItem.setProductDescription(toAdd.getTitle());
+			
+			basket.getItems().put(key, newItem);
 		} else {
-			
-			// Add the item to the basket. If we already have one in there just increase the number
-			Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
-			
-			// Check for the presence of this item in the basket
-			BasketItem item = basket.getItems().get(code);
-			if (item == null) {
-				Product toAdd = productAccess.load(code);
-				
-				BasketItem newItem = new BasketItem();
-				newItem.setItemCost(toAdd.getUnitPrice());
-				newItem.setNumber(1);
-				newItem.setProductCode(code);
-				newItem.setProductDescription(toAdd.getTitle());
-				
-				basket.getItems().put(code, newItem);
-			} else {
-				item.setNumber(item.getNumber() + 1);
-			}
-			
-			// Update the stock level. This will
-			// be undone if the user doesn't actually buy it at the
-			// point that their session expires.
-			productService.reduceStockLevel(code, 1);
-			
-			// Write an event to record this
-			ShopEvent event = new ShopEvent();
-			event.setDate(new Date());
-			event.setEntityKey(code);
-			event.setSessionId(session.getId());
-			event.setType(ShopEventType.ADDED_TO_BASKET);
-			eventGateway.recordShopEvent(event);
-			
-			return true;
+			item.setNumber(item.getNumber() + 1);
 		}
+		
+		// Write an event to record the addition of this item to the basket
+		ShopEvent event = new ShopEvent();
+		event.setDate(new Date());
+		event.setEntityKey(code);
+		event.setSessionId(session.getId());
+		event.setType(ShopEventType.ADDED_TO_BASKET);
+		eventGateway.recordShopEvent(event);
+		
+		return true;
+		
 	}
 	
 	

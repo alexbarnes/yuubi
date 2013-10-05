@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.yubi.application.product.ProductAccess;
 import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.BasketItem;
+import com.yubi.shop.basket.Basket.BasketKey;
 
 @Service
 public class ProductOrderServiceImpl implements ProductOrderService {
@@ -32,13 +33,12 @@ public class ProductOrderServiceImpl implements ProductOrderService {
 	public long createNewOrder(Basket basket, String transactionId) {
 		ProductOrder order = new ProductOrder();
 		
-		for (Entry<String, BasketItem> item : basket.getItems().entrySet()) {
-			ProductOrderItem orderLine = order.addItem(productAccess.load(item.getKey()));
+		for (Entry<BasketKey, BasketItem> item : basket.getItems().entrySet()) {
+			ProductOrderItem orderLine = order.addItem(productAccess.load(item.getKey().code));
 			orderLine.setQuantity(item.getValue().getNumber());
 			orderLine.setTotalCost(item.getValue().getTotalCost());
 		}
 		order.setPaypalTransactionId(transactionId);
 		return productOrderAccess.save(order);
 	}
-
 }

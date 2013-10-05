@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -14,10 +13,6 @@ import javax.persistence.TemporalType;
 public class MessageGroup implements Serializable {
 
 	private static final long serialVersionUID = -6046579557342395101L;
-
-	@Id
-	@Column(name = "MESSAGE_ID", unique = true, nullable = false, length = 36)
-	private String messageId;
 
 	@Id
 	@Column(length = 36, nullable = false, name = "GROUP_KEY")
@@ -42,10 +37,6 @@ public class MessageGroup implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATED_DATE", length = 19)
 	private Date updatedDate;
-
-	@Lob
-	@Column(name = "MESSAGE_BYTES")
-	private byte[] messageBytes;
 
 	public String getRegion() {
 		return this.region;
@@ -93,22 +84,6 @@ public class MessageGroup implements Serializable {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
-	}
-
-	public byte[] getMessageBytes() {
-		return this.messageBytes;
-	}
-
-	public void setMessageBytes(byte[] messageBytes) {
-		this.messageBytes = messageBytes;
-	}
-
-	public String getMessageId() {
-		return messageId;
-	}
-
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
 	}
 
 	public String getGroupKey() {

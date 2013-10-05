@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -49,8 +48,6 @@ public class Product {
 
 	private int stockLevel;
 	
-	private boolean isGiftVoucher;
-	
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "setCode", nullable = true)
 	private ProductSet set;
@@ -67,6 +64,8 @@ public class Product {
 	@Lob
 	@Field
 	private String productDescription;
+	
+	private boolean allowUpgradedWires; 
 	
 	public String getCode() {
 		return code;
@@ -145,14 +144,6 @@ public class Product {
 		return images;
 	}
 
-	public boolean isGiftVoucher() {
-		return isGiftVoucher;
-	}
-
-	public void setGiftVoucher(boolean isGiftVoucher) {
-		this.isGiftVoucher = isGiftVoucher;
-	}
-
 	public String getTitle() {
 		return title;
 	}
@@ -175,5 +166,13 @@ public class Product {
 	
 	public void setProductDescription(String productDescription) {
 		this.productDescription = productDescription;
+	}
+	
+	public boolean isAllowUpgradedWires() {
+		return allowUpgradedWires;
+	}
+	
+	public void setAllowUpgradedWires(boolean allowUpgradedWires) {
+		this.allowUpgradedWires = allowUpgradedWires;
 	}
 }
