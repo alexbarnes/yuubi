@@ -4,6 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <jsp:include page="header.jsp" />
+<c:set var="currency" value="${sessionScope.currency}"/>
 <body>
 	<div class="container">
 		<jsp:include page="menu.jsp" />
@@ -34,8 +35,7 @@
 				<c:if test="${error}">
 					<div class="alert alert-error">
 						<button type="button" class="close" data-dismiss="alert">×</button>
-						An un-expected error occurred. Please try checking out again
-						later.
+						An unexpected error occurred. Please try checking out again later.
 					</div>
 				</c:if>
 				<div class="entry">
@@ -53,12 +53,14 @@
 								<tr>
 									<td>${item.value.productDescription}</td>
 									<td>${item.value.number}</td>
-									<td>£<fmt:formatNumber value="${item.value.itemCost}"
-											maxFractionDigits="2" minFractionDigits="2" /></td>
-									<td>£<fmt:formatNumber value="${item.value.totalCost}"
-											maxFractionDigits="2" minFractionDigits="2" /></td>
+									<td><c:out value="${sessionScope.currency.symbol}"/> <fmt:formatNumber value="${item.value.product.getPriceInCurrency(currency)}"/></td>
+									<td><c:out value="${sessionScope.currency.symbol}"/> <fmt:formatNumber value="${item.value.getLineCost(currency)}"/></td>
 								</tr>
 							</c:forEach>
+							<tr>
+								<td colspan="3">Product Total</td>
+								<td><c:out value="${sessionScope.currency.symbol}"/> <fmt:formatNumber value="${basket.getTotal(currency)}"/></td>
+							</tr>
 						</tbody>
 					</table>
 					<div class="well">
@@ -76,12 +78,10 @@
 						<div id="shippingtotal" class="pull-right">
 							<strong> <c:choose>
 									<c:when test="${basket.deliveryMethod != null}">
-										£
-											<fmt:formatNumber value="${basket.deliveryMethod.cost}"
-											maxFractionDigits="2" minFractionDigits="2" />
+										<c:out value="${sessionScope.currency.symbol}"/>  <fmt:formatNumber value="${basket.deliveryMethod.cost}" />
 									</c:when>
 									<c:otherwise>
-											£0.00
+											<c:out value="${sessionScope.currency.symbol}"/> 0
 										</c:otherwise>
 								</c:choose>
 							</strong>
@@ -110,8 +110,7 @@
 						<h4>Total</h4>
 						<hr>
 						<div id="total" class="pull-right">
-							<strong> £<fmt:formatNumber value="${total}"
-									maxFractionDigits="2" minFractionDigits="2" />
+							<strong> <c:out value="${sessionScope.currency.symbol}"/> <fmt:formatNumber value="${total}" />
 							</strong>
 						</div>
 						<br>
@@ -155,7 +154,7 @@
 						$('<option>').text('Select One').attr('value', ''));
 						$.each(json.deliverymethods,function(i, value) {
 							$('#shipping').append($('<option>')
-									.text(value.description + ' - £'+ value.cost)
+									.text(value.description + ' - ' + '<c:out value="${sessionScope.currency.symbol}"/> ' + value.cost)
 									.attr('value',value.id));
 						});
 						$('#shipping').val('${basket.deliveryMethod.id}');
@@ -174,7 +173,7 @@
 			$('#country').change(function() {
 				var selectedCountry = $('#country').val();
 				$('#shipping').empty();
-				$('#shippingtotal').html('<strong>£0.00</strong>');
+				$('#shippingtotal').html('<strong>' + '<c:out value="${sessionScope.currency.symbol}"/> ' + '0.00' + '</strong>');
 				$.ajax({
 					url : '<c:url value="/shop/basket/setdeliverymethod/"></c:url>',
 					type : 'GET',
@@ -183,7 +182,7 @@
 						id : ''
 					},
 					success : function(json) {
-						$('#total').html('<strong>£'+ json.newTotal + '</strong>');
+						$('#total').html('<strong>' + '<c:out value="${sessionScope.currency.symbol}"/> ' + json.newTotal + '</strong>');
 					}
 				});
 				$('#shipping').append($('<option>').text('Select One').attr('value',''));
@@ -196,7 +195,7 @@
 							$.each(json.deliverymethods,function(i,value) {
 								$('#shipping')
 									.append($('<option>')
-											.text(value.description + ' - £'+ value.cost)
+											.text(value.description + ' - ' + '<c:out value="${sessionScope.currency.symbol}"/> ' + value.cost)
 											.attr('value',value.id));
 							});
 						}
@@ -213,8 +212,8 @@
 						id : $('#shipping').val()
 					},
 					success : function(json) {
-						$('#shippingtotal').html('<strong>£'+ json.deliveryCost + '</strong>');
-						$('#total').html('<strong>£'+ json.newTotal + '</strong>');
+						$('#shippingtotal').html('<strong>' + '<c:out value="${sessionScope.currency.symbol}"/> ' + json.deliveryCost + '</strong>');
+						$('#total').html('<strong>' + '<c:out value="${sessionScope.currency.symbol}"/> ' + json.newTotal + '</strong>');
 					}
 				});
 			});
@@ -236,8 +235,8 @@
 					datatype : 'JSON',
 					success : function(json) {
 						if (json.valid == true) {
-							$('#shippingtotal').html('<strong>£'+ json.deliveryCost + '</strong>');
-							$('#total').html('<strong>£'+ json.newTotal + '</strong>');
+							$('#shippingtotal').html('<strong>'+ '<c:out value="${sessionScope.currency.symbol}"/> ' + json.deliveryCost + '</strong>');
+							$('#total').html('<strong>' + '<c:out value="${sessionScope.currency.symbol}"/> '+ json.newTotal + '</strong>');
 							
 							$('#discountNotification').empty();
 							$('#discountNotification').html('<div class="alert alert-success">Discount applied. Your total has been updated.</div>');
@@ -265,8 +264,8 @@
 				type : 'GET',
 				datatype : 'JSON',
 				success : function(json) {
-						$('#shippingtotal').html('<strong>£'+ json.deliveryCost + '</strong>');
-						$('#total').html('<strong>£'+ json.newTotal + '</strong>');
+						$('#shippingtotal').html('<strong><c:out value="${sessionScope.currency.symbol}"/> '+ json.deliveryCost + '</strong>');
+						$('#total').html('<strong><c:out value="${sessionScope.currency.symbol}"/> '+ json.newTotal + '</strong>');
 						$('#discountControls').empty();
 						$('#discountControls').html(
 								'<input class="span4" id="discountCode" type="text" name="discountCode">' + 

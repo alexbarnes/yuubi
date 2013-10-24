@@ -15,13 +15,16 @@ public class ExpressTransactionItem {
 	
 	private final BigDecimal unitCost;
 	
+	private final String currency;
+	
 	public ExpressTransactionItem(String name, String description, int quantity,
-			BigDecimal unitCost) {
+			BigDecimal unitCost, String currency) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.quantity = quantity;
 		this.unitCost = unitCost;
+		this.currency = currency;
 	}
 
 	public String createRequest(int lineNumber) {
@@ -37,6 +40,9 @@ public class ExpressTransactionItem {
 			buffer.append("&");
 			
 			buffer.append("L_PAYMENTREQUEST_0_QTY" + lineNumber +"=" + quantity);
+			buffer.append("&");
+			
+			buffer.append("L_PAYMENTREQUEST_0_CURRENCYCODE" + lineNumber + "=" + currency);
 			buffer.append("&");
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);

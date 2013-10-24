@@ -24,7 +24,7 @@
 			</ul>
 		</div>
 		<div class="span3">
-			<h4 class="logo-title">Connect with us</h4>
+			<h4>Connect with Y&#362;bi</h4>
 			<a href="<spring:url value='/shop'/>">Facebook</a> <br /> <a
 				href="https://www.facebook.com/yuubijewellery'/>">Twitter</a>
 		</div>

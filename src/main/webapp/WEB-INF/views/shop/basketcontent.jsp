@@ -10,6 +10,7 @@
 		<hr />
 	</div>
 </div>
+<c:set var="currency" value="${sessionScope.currency}"/>
 <c:choose>
 	<c:when test="${fn:length(basket.items) > 0}">
 		<div class="entry">
@@ -28,19 +29,19 @@
 						<tr>
 
 							<td><a id="remove"
-								onclick="changeItemCount('<spring:url value='/shop/basket/remove/${item.key}/${item.value.number}'/>')"><i
+								onclick="changeItemCount('<spring:url value='/shop/basket/remove/${item.key.code}/${item.value.number}'/>')"><i
 									class="icon-remove"></i></a></td>
 							<td><a
-								href="<spring:url value="/shop/product/view/${item.key}" />">${item.value.productDescription}</a></td>
+								href="<spring:url value="/shop/product/view/${item.key.code}/${item.value.productUrlDescription}" />">${item.value.productDescription}</a></td>
 							<td>${item.value.number} <a><i class="icon-plus-sign"
-									onclick="changeItemCount('<spring:url value='/shop/basket/add/${item.key}'/>')"></i></a>
+									onclick="changeItemCount('<spring:url value='/shop/basket/add/${item.key.code}'/>')"></i></a>
 								<c:if test="${item.value.number > 1}">
 									<a><i class="icon-minus-sign"
-										onclick="changeItemCount('<spring:url value='/shop/basket/remove/${item.key}/1'/>')"></i></a>
+										onclick="changeItemCount('<spring:url value='/shop/basket/remove/${item.key.code}/1'/>')"></i></a>
 								</c:if>
 							</td>
-							<td>£<fmt:formatNumber maxFractionDigits="2" minFractionDigits="2" value="${item.value.itemCost}"/></td>
-							<td>£<fmt:formatNumber maxFractionDigits="2" minFractionDigits="2" value="${item.value.totalCost}"/></td>
+							<td><c:out value="${sessionScope.currency.symbol}"/> <fmt:formatNumber value="${item.value.product.getPriceInCurrency(currency)}"/></td>
+							<td><c:out value="${sessionScope.currency.symbol}"/> <fmt:formatNumber value="${item.value.getLineCost(currency)}"/></td>
 						</tr>
 					</c:forEach>
 					<!--  Totals -->
@@ -49,7 +50,7 @@
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
-						<td><strong>£<fmt:formatNumber maxFractionDigits="2" minFractionDigits="2" value="${total}"/></strong></td>
+						<td><strong><c:out value="${sessionScope.currency.symbol}"/> <fmt:formatNumber value="${basket.getTotal(currency)}"/></strong></td>
 					</tr>
 				</tbody>
 			</table>
@@ -57,7 +58,7 @@
 		<div class="row pull-right">
 			<a href="<spring:url value='/shop/checkout'/>"><button
 					class="btn btn-primary">
-					<i class="icon-gift icon-white"></i> Checkout
+					 Checkout
 				</button></a>
 		</div>
 	</c:when>

@@ -15,7 +15,7 @@ a:hover{
 	text-transform: uppercase;
 	font-size:11px;
 	width:980px;
-	border-bottom:1px solid #EEE;
+
 }
 #top-bar .active a{
 	background-color:transparent;
@@ -26,7 +26,7 @@ a:hover{
 	text-transform: uppercase;
 	font-weight:bold;
 	font-size: 14px;
-	height:20px;	
+	height:20px;
 }
 #nav li.open a{
 	text-shadow: 0 1px 0 #fff;
@@ -44,11 +44,9 @@ a:hover{
 	color:#8B8B8B;
 }
 .logo-title span{
-	color:#000;
+	color:#fff;
 }
-.logo img{
-	margin:25px 0
-}
+
 #myTab.home a,h2.title{	
 	font-size:16px;
 }
@@ -72,21 +70,23 @@ a:hover{
 	text-align:right;
 	padding-right:20px;
 }
-.account,.cart{
-	margin-top:20px;
+.account .cart{
+	
 }
 .account a,.cart a{
 	font-weight:bold;
+	font-size: 14px;
 }
 footer{
-	background:url(../img/bg_page.jpg);
+	background-color: black;
+	/*!background:url(../img/bg_page.jpg);*/
 }
 footer h4 {	
 	font-family: 'Marcellus SC', serif;
 	font-size: 14px;
 	font-weight:bold;
 	text-transform: uppercase;
-	color: #8B8B8B;	
+	color: #fff;	
 	margin: 0 0 5px 0;
 }
 footer ul{
@@ -98,11 +98,14 @@ footer ul{
 footer div.company_info{
 	padding-left:10px;
 }
-.navbar-inner {
+.navbar-inner-other {
   background-color: #000; /* background color will be black for all browsers */
   background-image: none;
   background-repeat: no-repeat;
   filter: none;
+  min-height: 40px;
+  padding-right: 20px;
+  padding-left: 20px;
 }
 .navbar .nav > li > a{color:#fff;text-shadow: 0 1px 0 #000;}
 .navbar .nav > li > a:hover{color:#ddd;text-shadow: 0 1px 0 #000;}

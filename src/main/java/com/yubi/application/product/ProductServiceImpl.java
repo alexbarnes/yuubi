@@ -78,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
 
 		org.apache.lucene.search.Query luceneQuery = b.keyword().wildcard()
 				.onField("title")
-				.andField("description")
+				.andField("productDescription")
 				.andField("code")
 				.andField("category.description")
 				.matching(query).createQuery();

@@ -22,30 +22,37 @@
 							<img alt=""
 								src="<spring:url value='/resources/shop/img/home1.png'/>" />
 						</div>
-
 						<div class="item">
 							<img alt=""
 								src="<spring:url value='/resources/shop/img/home2.png'/>" />
 						</div>
-
 						<div class="item">
 							<img alt=""
 								src="<spring:url value='/resources/shop/img/home3.png'/>" />
 						</div>
-
 						<div class="item">
 							<img alt=""
 								src="<spring:url value='/resources/shop/img/home4.png'/>" />
 						</div>
-
 						<div class="item">
 							<img alt=""
 								src="<spring:url value='/resources/shop/img/home5.png'/>" />
 						</div>
-
 						<div class="item">
 							<img alt=""
 								src="<spring:url value='/resources/shop/img/home6.png'/>" />
+						</div>
+						<div class="item">
+							<img alt=""
+								src="<spring:url value='/resources/shop/img/home7.png'/>" />
+						</div>
+						<div class="item">
+							<img alt=""
+								src="<spring:url value='/resources/shop/img/home8.png'/>" />
+						</div>
+						<div class="item">
+							<img alt=""
+								src="<spring:url value='/resources/shop/img/home9.png'/>" />
 						</div>
 					</div>
 					<a class="left carousel-control" href="#myCarousel"
@@ -91,8 +98,7 @@
 		</div>
 		<jsp:include page="footer.jsp" />
 	</div>
-	<script
-		src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
+	<script src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
 	<script src="<spring:url value='/resources/shop/js/bootstrap.min.js'/>"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {

@@ -3,6 +3,31 @@
 <jsp:include page="header.jsp" />
 <body>
 	<div class="container">
+		<div class="row" id="top-bar">
+			<div class="span9">
+				<ul id="links" class="nav nav-pills pull-left">
+					<li><a href="<spring:url value='/shop'/>" title="Shop">Home</a></li>
+					<li><a href="<spring:url value='/shop'/>" title="Contact">Contact</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- Logo -->
+		<div class="row show-grid">
+			<div class="span8 logo">
+				<a href="<spring:url value='/shop'/>"> <img alt=""
+					src="<spring:url value='/resources/shop/img/logo.jpg'/>" />
+				</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span12">
+				<h2 class="title">Order completed</h2>
+				<hr />
+				<p>Thank you for placing your order with Y&#36;bi. A
+					confirmation e-mail has been sent to the e-mail address provided and
+					we are now working to ship your order as quickly as possible.</p>
+			</div>
+		</div>
 
 		<jsp:include page="footer.jsp" />
 	</div>

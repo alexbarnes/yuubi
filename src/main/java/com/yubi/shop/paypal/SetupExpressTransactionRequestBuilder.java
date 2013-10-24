@@ -23,6 +23,8 @@ public class SetupExpressTransactionRequestBuilder {
 	
 	private BigDecimal orderTotal;
 	
+	private String currencyCode;
+	
 	private String discountString;
 	
 	private BigDecimal discountAmount;
@@ -66,6 +68,12 @@ public class SetupExpressTransactionRequestBuilder {
 		return this;
 	}
 	
+	
+	public SetupExpressTransactionRequestBuilder inCurrency(String currency) {
+		this.currencyCode = currency;
+		return this;
+	}
+	
 	public SetupExpressTransactionRequestBuilder withDiscountType(String description) {
 		this.discountString = description;
 		return this;
@@ -77,6 +85,7 @@ public class SetupExpressTransactionRequestBuilder {
 	}
 		
 	public String createRequest() {
+		
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("USER=" + username);
 		buffer.append("&");
@@ -105,7 +114,7 @@ public class SetupExpressTransactionRequestBuilder {
 		buffer.append("RETURNURL=" + returnURL);
 		buffer.append("&");
 		
-		buffer.append("PAYMENTREQUEST_0_CURRENCYCODE=GBP");
+		buffer.append("PAYMENTREQUEST_0_CURRENCYCODE=" + currencyCode);
 		buffer.append("&");
 		
 		buffer.append("PAYMENTREQUEST_0_SHIPPINGAMT=" + shippingCost.toString());

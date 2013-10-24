@@ -18,12 +18,12 @@
 					</div>
 				</div>
 			</div>
-			
+
 		</div>
 		<div class="row">
-		<div id="contents" class="span12"></div>
+			<div id="contents" class="span12"></div>
 		</div>
-		<jsp:include page="footer.jsp"/>
+		<jsp:include page="footer.jsp" />
 	</div>
 
 	<script
@@ -49,9 +49,8 @@
 					$('#contents').html(data);
 
 					// Update the total of the basket
-					$.get('<spring:url value='/shop/basket/total'/>', function(
-							data) {
-						var html = '£' + data;
+					$.get('<spring:url value='/shop/basket/total'/>', function(data) {
+						var html = "<c:out value="${sessionScope.currency.symbol}"/>" + " " + data;
 						$('#basketTotal').html(html);
 					});
 				});
@@ -63,7 +62,6 @@
 			$('body').on('touchstart.dropdown', '.dropdown-menu', function(e) {
 				e.stopPropagation();
 			});
-
 		});
 
 		$(document).on('click', '.dropdown-menu a', function() {

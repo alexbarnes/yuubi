@@ -42,6 +42,5 @@
 
 	<mail:outbound-channel-adapter id="outboundMailChannelAdaptor"
 		channel="mailSendingChannel" mail-sender="mailSender">
-
 	</mail:outbound-channel-adapter>
 </beans:beans>

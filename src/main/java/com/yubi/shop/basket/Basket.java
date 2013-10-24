@@ -1,6 +1,7 @@
 package com.yubi.shop.basket;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,34 +46,40 @@ public class Basket {
 		this.discount = discount;
 	}
 	
-	public BigDecimal getTotal() {
+	public BigDecimal getTotal(Currency currency) {
 		BigDecimal total = new BigDecimal(0.00);
+		
 		for (Entry<BasketKey, BasketItem> item : items.entrySet()) {
-			total = total.add(item.getValue().getTotalCost());
+			total = total.add(item.getValue().getLineCost(currency));
 		}
 		return total;
 	}
 	
 	public static class BasketKey {
-		public String code;
-		public boolean upgradeWire;
+		private String code;
 		
 		public BasketKey() {}
 		
-		public BasketKey(String code, boolean upgradeWire){
+		public BasketKey(String code){
 			this.code = code;
-			this.upgradeWire = upgradeWire;
 		}
 		
 		@Override
 		public int hashCode() {
-			return new HashCodeBuilder().append(code).append(upgradeWire).toHashCode();
+			return new HashCodeBuilder().append(code).toHashCode();
 		}
 		
 		@Override
 		public boolean equals(Object obj) {
-			return new EqualsBuilder().append(code, ((BasketKey)obj).code).append(upgradeWire, ((BasketKey)obj).upgradeWire).isEquals();
+			return new EqualsBuilder().append(code, ((BasketKey)obj).code).isEquals();
+		}
+		
+		public String getCode() {
+			return code;
+		}
+		
+		public void setCode(String code) {
+			this.code = code;
 		}
 	}
-	
 }

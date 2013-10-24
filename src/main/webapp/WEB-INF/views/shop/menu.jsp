@@ -2,38 +2,87 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <div class="row" id="top-bar">
 	<div class="span9">
 		<ul id="links" class="nav nav-pills pull-left">
-			<li><a href="<spring:url value='/shop'/>" title="Bitsy Shop">Home</a></li>
-			<li><a href="<spring:url value='/shop'/>" title="All specials">Gallery</a></li>
+			<li><a href="<spring:url value='/shop'/>" title="Shop">Home</a></li>
 			<li><a href="<spring:url value='/shop'/>" title="Contact">Contact</a></li>
 		</ul>
 	</div>
 </div>
+<div class="row">
+	<div class="span2">
+		<div class="btn-group" data-toggle="buttons-radio">
+			<c:choose>
+				<c:when test="${sessionScope.currency.currencyCode == 'USD'}">
+					<button type="button" class="btn active disabled">
+						<i class="icon-flag bfh-flag-US"></i>
+					</button>
+				</c:when>
+				<c:otherwise>
+				<!--  button type="button" class="btn" id="currUS"-->
+					<a class="btn"
+						href="<spring:url value='/shop/currency/change?currencyCode=USD&url=${sessionScope.current_url}'/>"><i
+						class="icon-flag bfh-flag-US"></i></a>
+
+				</c:otherwise>
+			</c:choose>
+			
+			<c:choose>
+				<c:when test="${sessionScope.currency.currencyCode == 'GBP'}">
+					<button type="button" class="btn active disabled">
+						<i class="icon-flag bfh-flag-GB"></i>
+					</button>
+				</c:when>
+				<c:otherwise>
+					<!-- button type="button" class="btn" id="currGB"-->
+					<a class="btn"
+						href="<spring:url value='/shop/currency/change?currencyCode=GBP&url=${sessionScope.current_url}'/>"><i class="icon-flag bfh-flag-GB"></i></a>
+				</c:otherwise>
+			</c:choose>
+			
+			<c:choose>
+			<c:when test="${sessionScope.currency.currencyCode == 'EUR'}">
+				<button type="button" class="btn active disabled">
+						<i class="icon-flag bfh-flag-EUR"></i>
+					</button>
+			</c:when>
+			<c:otherwise>
+			<!--button type="button" class="btn" id="currEUR"-->
+			<a class="btn"
+						href="<spring:url value='/shop/currency/change?currencyCode=EUR&url=${sessionScope.current_url}'/>"><i class="icon-flag bfh-flag-EUR"></i></a>
+			</c:otherwise>
+			</c:choose>
+		</div>
+	</div>
+	<div class="span1 offset9">
+		<div class="cart">
+			<a id="basket" href="<spring:url value='/shop/basket/show'/>"
+				rel="popover">Basket</a><br />
+			<p id="basketTotal">
+				<c:choose>
+					<c:when test="${empty basket.items}">
+						
+					</c:when>
+					<c:otherwise>
+					<c:set var="currency" value="${sessionScope.currency}"/>
+					<c:out value="${sessionScope.currency.symbol}"/>
+				 		<fmt:formatNumber value="${basket.getTotal(currency)}" />
+					</c:otherwise>
+				</c:choose>
+			</p>
+		</div>
+	</div>
+</div>
+
 <!-- Logo -->
 <div class="row show-grid">
-	<div class="span3 logo">
+	<div class="span12 logo">
 		<a href="<spring:url value='/shop'/>"> <img alt=""
-			src="<spring:url value='/resources/shop/img/logo.jpg'/>" />
+			src="<spring:url value='/resources/shop/img/logo3.jpg'/>" />
 		</a>
-	</div>
-	
-	<!-- Basket -->
-	<div class="span5 offset4">
-		<div class="row">
-			<div class="span3"></div>
-			<div class="span2">
-				<div class="cart pull-right">
-					<a id="basket" href="<spring:url value='/shop/basket/show'/>"
-						rel="popover">Basket</a><br />
-					<p id="basketTotal">
-						£<fmt:formatNumber maxFractionDigits="2" minFractionDigits="2" value="${basket.total}"/>
-					</p>
-				</div>
-			</div>
-		</div>
 	</div>
 </div>
 <!-- End Header-->
@@ -41,7 +90,7 @@
 <div class="row">
 	<div class="span12">
 		<div class="navbar" id="main-menu">
-			<div class="navbar-inner no-border">
+			<div class="navbar-inner-other no-border">
 				<div class="container">
 					<div class="nav-collapse">
 						<ul class="nav pull-left" id="nav">
@@ -61,8 +110,7 @@
 									</ul></li>
 							</c:forEach>
 							<li class="search_form"><form:form
-									action="/shop/product/search"
-									cssClass="navbar-search pull-right">
+									action="/shop/product/search" cssClass="navbar-search">
 									<input type="text" class="input-medium search-query"
 										placeholder="search..." name="query">
 								</form:form></li>

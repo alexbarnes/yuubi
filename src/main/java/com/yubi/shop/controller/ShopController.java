@@ -1,5 +1,6 @@
 package com.yubi.shop.controller;
 
+import java.util.Currency;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,8 @@ import com.yubi.application.product.ProductService;
 import com.yubi.core.statistics.EventGateway;
 import com.yubi.core.statistics.ShopEvent;
 import com.yubi.core.statistics.ShopEventType;
+import com.yubi.shop.basket.Basket;
+import com.yubi.shop.basket.BasketCreationListener;
 
 @Controller
 @RequestMapping("/shop")
@@ -52,7 +56,8 @@ public class ShopController {
 	 * Show the shop home page. 
 	 */
 	@RequestMapping
-	public ModelAndView showShopHome() {
+	public ModelAndView showShopHome(HttpSession session, HttpServletRequest request) {
+		session.setAttribute("current_url", request.getRequestURI());
 		ModelAndView modelAndView =  new ModelAndView("shop/shop");
 		
 		modelAndView.addObject("menu", categoryService.buildProductMenu());
@@ -61,15 +66,23 @@ public class ShopController {
 		return modelAndView;
 	}
 	
+	
+	@RequestMapping("/currency/change")
+	public String changeCurrency(String currencyCode, String url, HttpSession session, HttpServletRequest request) {
+		session.setAttribute("currency", Currency.getInstance(currencyCode));
+		return "redirect:" + url;
+	}
+	
 	/**
 	 * List the products for a certain category.
 	 */
 	@RequestMapping("/category/view/{id}/*")
-	public ModelAndView showCategory(@PathVariable("id") long id, HttpSession session) {
+	public ModelAndView showCategory(@PathVariable("id") long id, HttpSession session, HttpServletRequest request) {
 		ModelAndView mav =  new ModelAndView("shop/productlist");
 		mav.addObject("menu", categoryService.buildProductMenu());
 		mav.addObject("products", productAccess.listForCategory(id));
 		mav.addObject("active", categoryService.load(id).getDescription());
+		session.setAttribute("current_url", request.getRequestURI());
 		
 		ShopEvent event = new ShopEvent();
 		event.setDate(new Date());
@@ -83,11 +96,12 @@ public class ShopController {
 	
 	
 	@RequestMapping("/product/searchresults")
-	public ModelAndView showProductList(HttpServletRequest request) {
+	public ModelAndView showProductList(HttpServletRequest request, HttpSession session) {
 		ModelAndView mav = new ModelAndView("shop/productlist");
 		if (RequestContextUtils.getInputFlashMap(request) == null ) {
 			mav.addObject("active", "No search results to show");
 		}
+		session.setAttribute("current_url", request.getRequestURI());
 		
 		mav.addObject("menu", categoryService.buildProductMenu());
 		return mav;
@@ -98,10 +112,11 @@ public class ShopController {
 	 * View a specific product detail.
 	 */
 	@RequestMapping("/product/view/{code}/*")
-	public ModelAndView viewProduct(@PathVariable("code") String code, HttpSession session) {
+	public ModelAndView viewProduct(@PathVariable("code") String code, HttpSession session, HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView("shop/productdetail");
 		mav.addObject("menu", categoryService.buildProductMenu());
 		mav.addObject("product", productAccess.load(code));
+		session.setAttribute("current_url", request.getRequestURI());
 		
 		ShopEvent event = new ShopEvent();
 		event.setDate(new Date());
@@ -112,6 +127,7 @@ public class ShopController {
 		
 		return mav;
 	}
+	
 	
 	@RequestMapping(value = "/product/search", method = RequestMethod.POST)
 	public ModelAndView searchForProducts(String query, RedirectAttributes redirectAttributes, HttpSession session) {
@@ -134,9 +150,10 @@ public class ShopController {
 	 * Show the about page
 	 */
 	@RequestMapping("/about")
-	public ModelAndView showAbout() {
+	public ModelAndView showAbout(HttpSession session, HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView("shop/about");
 		mav.addObject("menu", categoryService.buildProductMenu());
+		session.setAttribute("current_url", request.getRequestURI());
 		return mav;
 	}
 	
@@ -145,9 +162,10 @@ public class ShopController {
 	 * Show the delivery info page
 	 */
 	@RequestMapping("/deliveryinfo")
-	public ModelAndView showDeliveryInfo() {
+	public ModelAndView showDeliveryInfo(HttpSession session, HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView("shop/deliveryinfo");
 		mav.addObject("menu", categoryService.buildProductMenu());
+		session.setAttribute("current_url", request.getRequestURI());
 		return mav;
 	}
 	
@@ -156,20 +174,10 @@ public class ShopController {
 	 * Show the terms and conditions page
 	 */
 	@RequestMapping("/terms")
-	public ModelAndView showTerms() {
+	public ModelAndView showTerms(HttpSession session, HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView("shop/terms");
 		mav.addObject("menu", categoryService.buildProductMenu());
+		session.setAttribute("current_url", request.getRequestURI());
 		return mav;
-	}
-	
-	
-	/**
-	 * Show the product stock section of the product detail page
-	 */
-	@RequestMapping("/product/stock/{code}")
-	public ModelAndView getProductStock(@PathVariable("code") String code) {
-		ModelAndView view =  new ModelAndView("shop/stocklevel");
-		view.addObject("product", productAccess.load(code));
-		return view;
 	}
 }

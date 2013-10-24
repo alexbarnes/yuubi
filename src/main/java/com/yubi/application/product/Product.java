@@ -1,6 +1,7 @@
 package com.yubi.application.product;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +22,6 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.yubi.application.category.Category;
 
@@ -39,13 +39,12 @@ public class Product {
 	@Field(analyze = Analyze.YES)
 	private String title;
 
-	@NotEmpty
-	@Field(analyze = Analyze.YES)
-	private String description;
-
-	@Field
 	private BigDecimal unitPrice;
-
+	
+	private BigDecimal unitPriceUsd;
+	
+	private BigDecimal unitPriceEur;
+	
 	private int stockLevel;
 	
 	@ManyToOne(optional = true)
@@ -81,14 +80,6 @@ public class Product {
 
 	public void setVersion(int version) {
 		this.version = version;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public BigDecimal getUnitPrice() {
@@ -174,5 +165,34 @@ public class Product {
 	
 	public void setAllowUpgradedWires(boolean allowUpgradedWires) {
 		this.allowUpgradedWires = allowUpgradedWires;
+	}
+
+	public BigDecimal getUnitPriceUsd() {
+		return unitPriceUsd;
+	}
+
+	public void setUnitPriceUsd(BigDecimal unitPriceUsd) {
+		this.unitPriceUsd = unitPriceUsd;
+	}
+
+	public BigDecimal getUnitPriceEur() {
+		return unitPriceEur;
+	}
+
+	public void setUnitPriceEur(BigDecimal unitPriceEur) {
+		this.unitPriceEur = unitPriceEur;
+	}
+	
+	
+	public BigDecimal getPriceInCurrency(Currency currency) {
+		if (currency == Currency.getInstance("USD")) {
+			return unitPriceUsd;
+		} else if (currency == Currency.getInstance("GBP")) {
+			return unitPrice;
+		} else if (currency == Currency.getInstance("EUR")) {
+			return unitPriceEur;
+		} else {
+			throw new IllegalArgumentException("Unsupported product currency [" + currency.getCurrencyCode() + "]."); 
+		}
 	}
 }

@@ -18,15 +18,16 @@ public class ClearCachesController {
 			.getLogger(ClearCachesController.class);
 
 	private final SessionFactory sessionFactory;
-
 	private final Environment environment;
+	private final InitialIndexService initialIndexService;
 
 	@Inject
 	public ClearCachesController(SessionFactory sessionFactory,
-			Environment environment) {
+			Environment environment, InitialIndexService initialIndexService) {
 		super();
 		this.sessionFactory = sessionFactory;
 		this.environment = environment;
+		this.initialIndexService = initialIndexService;
 	}
 
 	@RequestMapping("/clear/{key}")
@@ -37,6 +38,8 @@ public class ClearCachesController {
 			sessionFactory.getCache().evictCollectionRegions();
 			sessionFactory.getCache().evictDefaultQueryRegion();
 			sessionFactory.getCache().evictQueryRegions();
+			
+			initialIndexService.onApplicationEvent(null);
 			
 			logger.warn("Application caches succesfully reset on receipt of key [" + key + "].");
 		}

@@ -2,6 +2,7 @@ package com.yubi.shop.paypal;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.yubi.application.product.Product;
-import com.yubi.application.product.ProductAccess;
 import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.Basket.BasketKey;
 import com.yubi.shop.basket.BasketItem;
@@ -42,15 +41,12 @@ class PaypalServiceImpl implements PaypalService {
 
 	private String paypalURL;
 
-	private final ProductAccess productAccess;
-
 	private final BasketService basketService;
 
 	private final PaypalRequestAccess paypalRequestAccess;
 
 	@Inject
-	public PaypalServiceImpl(Environment env, ProductAccess productAccess,
-			BasketService basketService, PaypalRequestAccess paypalRequestAccess) {
+	public PaypalServiceImpl(Environment env, BasketService basketService, PaypalRequestAccess paypalRequestAccess) {
 		super();
 		this.userName = env.getProperty(PaypalConstants.PAYPAL_USERNAME);
 		this.password = env.getProperty(PaypalConstants.PAYPAL_PASSWORD);
@@ -58,7 +54,6 @@ class PaypalServiceImpl implements PaypalService {
 		this.successURL = env.getProperty(PaypalConstants.PAYPAL_SUCCESS_URL);
 		this.cancelURL = env.getProperty(PaypalConstants.PAYPAL_CANCEL_URL);
 		this.paypalURL = env.getProperty(PaypalConstants.PAYPAL_API_ENDPOINT);
-		this.productAccess = productAccess;
 		this.basketService = basketService;
 		this.paypalRequestAccess = paypalRequestAccess;
 	}
@@ -68,9 +63,9 @@ class PaypalServiceImpl implements PaypalService {
 	 * 
 	 * @see com.yubi.application.shop.paypal.PaypalService#setupTransaction()
 	 */
-	public String setupTransaction(Basket basket, String sessionId) {
+	public String setupTransaction(Basket basket, String sessionId, Currency currency) {
 
-		String request = setupRequest(basket).createRequest();
+		String request = setupRequest(basket, currency).createRequest();
 
 		PaypalRequest requestItem = new PaypalRequest();
 		requestItem.setRequest(request);
@@ -109,12 +104,12 @@ class PaypalServiceImpl implements PaypalService {
 	}
 
 	public String completeTransaction(String token, String payerId,
-			String sessionId, Basket basket) {
+			String sessionId, Basket basket, Currency currency) {
 		DoExpressCheckoutRequestBuilder builder = new DoExpressCheckoutRequestBuilder(
 				userName, password, signature);
 
 		String request = builder.withPayerId(payerId).withToken(token)
-				.withOrderTotal(basketService.getBasketTotal(basket))
+				.withOrderTotal(basketService.getBasketTotal(basket, currency))
 				.buildRequest();
 
 		PaypalRequest requestItem = new PaypalRequest();
@@ -147,26 +142,26 @@ class PaypalServiceImpl implements PaypalService {
 		return requestItem.getTransactionId();
 	}
 
-	private SetupExpressTransactionRequestBuilder setupRequest(Basket basket) {
+	private SetupExpressTransactionRequestBuilder setupRequest(Basket basket, Currency currency) {
 		SetupExpressTransactionRequestBuilder request = new SetupExpressTransactionRequestBuilder(
 				userName, password, signature);
 
 		request.withCancelURL(cancelURL).withReturnURL(successURL)
 				.withShippingCost(basket.getDeliveryMethod().getCost())
-				.withTotalCost(basketService.getBasketTotal(basket));
+				.withTotalCost(basketService.getBasketTotal(basket, currency)).inCurrency(currency.getCurrencyCode());
 		
 		if (basket.getDiscount() != null) {
-			request.withDiscountType(basket.getDiscount().getDescription()).withDiscountAmount(basketService.getDiscountAmount(basket));
+			request.withDiscountType(basket.getDiscount().getDescription()).withDiscountAmount(basketService.getDiscountAmount(basket, currency));
 		}
 
 		// Add all of the basket items to the Paypal request
 		for (Entry<BasketKey, BasketItem> item : basket.getItems().entrySet()) {
 
-			Product product = productAccess.load(item.getValue()
-					.getProductCode());
-			ExpressTransactionItem checkoutItem = new ExpressTransactionItem(
-					product.getDescription(), StringUtils.EMPTY, item
-							.getValue().getNumber(), product.getUnitPrice());
+			ExpressTransactionItem checkoutItem;
+				checkoutItem = new ExpressTransactionItem(
+						item.getValue().getProductDescription(), StringUtils.EMPTY, item
+								.getValue().getNumber(), item.getValue().getItemCost(currency), currency.getCurrencyCode());
+			
 			request.addItem(checkoutItem);
 		}
 

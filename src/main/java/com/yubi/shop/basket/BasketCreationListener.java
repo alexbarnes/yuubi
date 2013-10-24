@@ -19,11 +19,11 @@ public class BasketCreationListener implements
 	private static final Logger log = LoggerFactory.getLogger(BasketCreationListener.class);
 
 	public void onApplicationEvent(HttpSessionCreatedEvent event) {
-		event.getSession().setMaxInactiveInterval(60*10);
+	/*	event.getSession().setMaxInactiveInterval(60*10);
 		if (event.getSession() != null && event.getSession().getAttribute("basket") == null) {
 			log.info("Creating basket for session with id [" + event.getSession().getId() + "].");
 			Basket basket = new Basket();
 			event.getSession().setAttribute(BASKET_KEY, basket);
-		}
+		}*/
 	}
 }

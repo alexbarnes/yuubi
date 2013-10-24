@@ -1,5 +1,6 @@
 package com.yubi.application.order;
 
+import java.util.Currency;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
@@ -30,15 +31,16 @@ public class ProductOrderServiceImpl implements ProductOrderService {
 
 
 	@Transactional
-	public long createNewOrder(Basket basket, String transactionId) {
+	public long createNewOrder(Basket basket, String transactionId, Currency currency) {
 		ProductOrder order = new ProductOrder();
 		
 		for (Entry<BasketKey, BasketItem> item : basket.getItems().entrySet()) {
-			ProductOrderItem orderLine = order.addItem(productAccess.load(item.getKey().code));
+			ProductOrderItem orderLine = order.addItem(productAccess.load(item.getKey().getCode()));
 			orderLine.setQuantity(item.getValue().getNumber());
-			orderLine.setTotalCost(item.getValue().getTotalCost());
+			orderLine.setTotalCost(item.getValue().getLineCost(currency));
 		}
 		order.setPaypalTransactionId(transactionId);
+		order.setCurrencyCode(currency.getCurrencyCode());
 		return productOrderAccess.save(order);
 	}
 }

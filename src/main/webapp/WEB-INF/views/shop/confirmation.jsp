@@ -9,7 +9,7 @@
 		<div class="row" id="top-bar">
 			<div class="span9">
 				<ul id="links" class="nav nav-pills pull-left">
-					<li><a href="<spring:url value='/shop'/>" title="Bitsy Shop">Home</a></li>
+					<li><a href="<spring:url value='/shop'/>">Home</a></li>
 					<li><a href="products.html" title="All specials">Gallery</a></li>
 					<li><a href="contact.html" title="Contact">Contact</a></li>
 				</ul>
@@ -94,17 +94,14 @@
 					<div class="well">
 						<div id="shippingtotal" class="pull-right">
 							<strong>${basket.deliveryMethod.description}: £<fmt:formatNumber
-									value="${basket.deliveryMethod.cost}" maxFractionDigits="2"
-									minFractionDigits="2" />
+									value="${basket.deliveryMethod.cost}"  />
 							</strong>
 						</div>
 					</div>
 					<h4>Total</h4>
 					<div class="well">
 						<div id="shippingtotal" class="pull-right">
-							<strong> £<fmt:formatNumber
-									value="${total}" maxFractionDigits="2"
-									minFractionDigits="2" />
+							<strong> £<fmt:formatNumber value="${total}"  />
 							</strong>
 						</div>
 					</div>

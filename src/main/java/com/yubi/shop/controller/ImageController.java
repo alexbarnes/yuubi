@@ -30,18 +30,21 @@ public class ImageController {
 	
 	@RequestMapping(value = "/product/image/{id}", produces = "image/png")
 	public @ResponseBody byte[] loadImage(@PathVariable("id") long id, HttpServletResponse response) {
+		response.setHeader("Expires", "31536000");
 		return productAccess.loadImage(id).getImage();
 	}
 	
 	
 	@RequestMapping(value = "/product/primaryimage/{code}", produces = "image/png")
 	public @ResponseBody byte[] loadProductPrimaryImage(@PathVariable("code") String code, HttpServletResponse response) {
+		response.setHeader("Expires", "31536000");
 		return productAccess.loadPrimaryImage(code).getImage();
 	}
 	
 	
 	@RequestMapping(value = "/category/image/{id}", produces = "image/png")
 	public @ResponseBody byte[] loadCategoryImage(@PathVariable("id") long id, HttpServletResponse response) {
+		response.setHeader("Expires", "31536000");
 		return categoryService.loadWithChildren(id).getImage();
 	}
 }

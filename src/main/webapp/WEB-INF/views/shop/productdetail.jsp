@@ -5,93 +5,112 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <jsp:include page="header.jsp" />
 <body>
-<div class="container">
-	<jsp:include page="menu.jsp" />
-	<div class="row">
+	<div class="container">
+		<jsp:include page="menu.jsp" />
 		<div class="row">
-			<div class="span12">
-				<div class="row">
-					<div class="span12">
-						<ul class="breadcrumb">
-							<li><a href="<spring:url value='/shop'/>"><i
-									class="icon-home"></i></a> <span class="divider">/</span></li>
-							<li><a
-								href="<spring:url value='/shop/category/view/${product.category.id}/${product.category.urlName}'/>">${product.category.description}</a><span
-								class="divider">/</span></li>
-							<li class="active">${product.title}</li>
-						</ul>
+			<div class="row">
+				<div class="span12">
+					<div class="row">
+						<div class="span12">
+							<ul class="breadcrumb">
+								<li><a href="<spring:url value='/shop'/>"><i
+										class="icon-home"></i></a> <span class="divider">/</span></li>
+								<li><a
+									href="<spring:url value='/shop/category/view/${product.category.id}/${product.category.urlName}'/>">${product.category.description}</a><span
+									class="divider">/</span></li>
+								<li class="active">${product.title}</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="span9">
-			<div class="row">
-				<div class="span9">
-					<h2 class="title">${product.title}</h2>
-					<hr />
-				</div>
-			</div>
-			<div class="row">
-				<div class="span4">
-					<a
-						href="<spring:url value='/shop/product/primaryimage/${product.code}'/>"
-						class="thumbnail" data-fancybox-group="group1"
-						title="${product.title}"><img 
-						src="<spring:url value='/shop/product/primaryimage/${product.code}'/>"></a>
-
-					<!-- Other pictures go here -->
-					<ul class="thumbnails small">
-						<c:forEach items="${product.images}" var="image">
-							<c:if test="${image.primaryImage == false}">
-								<li class="span1"><a
-									href="<spring:url value='/shop/product/image/${image.id}'/>"
-									class="thumbnail" data-fancybox-group="group1"
-									title="${image.description}"> <img
-										src="<spring:url value='/shop/product/image/${image.id}'/>"
-										alt=""></a></li>
-							</c:if>
-						</c:forEach>
-					</ul>
-				</div>
-				<div class="span5">
-				${product.productDescription}
-				</div>
-				<div id="stock"></div>
-			</div>
-		</div>
-		<c:if test="${product.set != null}">
 			<div class="span9">
 				<div class="row">
 					<div class="span9">
-						<h2 class="title">Matching products: ${product.set.description}</h2>
+						<h2 class="title">${product.title}</h2>
 						<hr />
 					</div>
 				</div>
 				<div class="row">
 					<div class="span4">
-						<ul class="thumbnails listing-products">
-							<c:forEach items="${product.set.items}" var="current">
-								<c:if test="${current.code != product.code}">
-									<li class="span3">
-										<div class="product-box">
-											<a
-												href="<spring:url value='/shop/product/view/${current.code}/${current.urlName}'/>"><h4>${current.title}</h4></a>
-											<a
-												href="<spring:url value='/shop/product/view/${current.code}/${current.urlName}'/>"><img
-												src="<spring:url value='/shop/product/primaryimage/${current.code}'/>" /></a>
-											<p>${current.description}</p>
-										</div>
-									</li>
+						<a
+							href="<spring:url value='/shop/product/primaryimage/${product.code}'/>"
+							class="thumbnail" data-fancybox-group="group1"
+							title="${product.title}"><img
+							src="<spring:url value='/shop/product/primaryimage/${product.code}'/>"></a>
+
+						<!-- Other pictures go here -->
+						<ul class="thumbnails small">
+							<c:forEach items="${product.images}" var="image">
+								<c:if test="${image.primaryImage == false}">
+									<li class="span1"><a
+										href="<spring:url value='/shop/product/image/${image.id}'/>"
+										class="thumbnail" data-fancybox-group="group1"
+										title="${image.description}"> <img
+											src="<spring:url value='/shop/product/image/${image.id}'/>"
+											alt=""></a></li>
 								</c:if>
 							</c:forEach>
 						</ul>
 					</div>
+					<div class="span5">${product.productDescription}</div>
+					<div class="span5">
+						<c:if test="${product.stockLevel  == 0}">
+							<strong>Availability:</strong>
+							<span>Out Of Stock - <a href="#myModal" role="button"
+								data-toggle="modal">Notify Me</a></span>
+						</c:if>
+						<br>
+						<h5>
+							<c:set var="currency" value="${sessionScope.currency}"/>
+							<strong><c:out value="${sessionScope.currency.symbol}"></c:out> <fmt:formatNumber value="${product.getPriceInCurrency(currency)}" /></strong>
+						</h5>
+					</div>
+					<c:if test="${product.stockLevel > 0}">
+						<div class="span5">
+							<button class="btn" id="addToBasket" onclick="addItem()"
+								rel="popover">
+								<i class="icon-shopping-cart"></i> Buy
+							</button>
+						</div>
+						<br>
+					</c:if>
 				</div>
 			</div>
-		</c:if>
+			<c:if test="${product.set != null}">
+				<div class="span9">
+					<div class="row">
+						<div class="span9">
+							<h2 class="title">Matching products:
+								${product.set.description}</h2>
+							<hr />
+						</div>
+					</div>
+					<div class="row">
+						<div class="span12">
+							<ul class="thumbnails listing-products">
+								<c:forEach items="${product.set.items}" var="current">
+									<c:if test="${current.code != product.code}">
+										<li class="span3">
+											<div class="product-box">
+												<a
+													href="<spring:url value='/shop/product/view/${current.code}/${current.urlName}'/>"><h4>${current.title}</h4></a>
+												<a
+													href="<spring:url value='/shop/product/view/${current.code}/${current.urlName}'/>"><img
+													src="<spring:url value='/shop/product/primaryimage/${current.code}'/>" /></a>
+												<p>${current.title}</p>
+											</div>
+										</li>
+									</c:if>
+								</c:forEach>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</c:if>
+		</div>
+		<jsp:include page="footer.jsp" />
 	</div>
-	<jsp:include page="footer.jsp" />
-</div>
 	<div class="modal" id="myModal" style="display: none;">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal"
@@ -113,17 +132,19 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary"><i class="icon-ok-circle icon-white"></i> Confirm</button>
+				<button type="submit" class="btn btn-primary">
+					<i class="icon-ok-circle icon-white"></i> Confirm
+				</button>
 			</div>
 		</form:form>
 	</div>
 
 	<script
-	src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
-<script src="<spring:url value='/resources/shop/js/bootstrap.min.js'/>"></script>
-<script
-	src="<spring:url value='/resources/shop/js/jquery.fancybox.js'/>">"></script>
-<script>
+		src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
+	<script src="<spring:url value='/resources/shop/js/bootstrap.min.js'/>"></script>
+	<script
+		src="<spring:url value='/resources/shop/js/jquery.fancybox.js'/>">"></script>
+	<script>
 			$(function () {
 				$('#myTab a:first').tab('show');
 				$('#myTab a').click(function (e) {
@@ -142,11 +163,6 @@
 				$('.carousel').carousel({
                     interval: false
                 });
-				
-				// Setup the stock level details
-				$.get('<spring:url value='/shop/product/stock/${product.code}'/>', function(data) {
-					$('#stock').html(data);
-				});
 			});
 			
 			$(function () { 
@@ -159,27 +175,22 @@
 			    $("#basket").popover({placement: 'bottom', content: 'Basket updated', trigger: 'manual'});
 			});
 			
-			// Handle the addition of a product to the basket. Update the summary and the stock level
+			// Handle the addition of a product to the basket.
 			function addItem() {
 				$.get('<spring:url value='/shop/basket/add/${product.code}'/>', function(data) {
 					if (data == true) {
 						// Update the basket total
 						$.get('<spring:url value='/shop/basket/total'/>', function(data) {
-							var html = '£' + data;
+							var html = '<c:out value="${sessionScope.currency.symbol}"/>' + data;
 							$('#basketTotal').html(html);
 						});
 						
 						$('#basket').popover('show');
 					} 
-					
-					// Update the displayed stock level in either case
-					$.get('<spring:url value='/shop/product/stock/${product.code}'/>', function(data) {
-						$('#stock').html(data);
-					});
 				});
 			};
 		</script>
-		<script>
+	<script>
 		$(document).ready(function() {
 			$('body').on('touchstart.dropdown', '.dropdown-menu', function(e) {
 				e.stopPropagation();

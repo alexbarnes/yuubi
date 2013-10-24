@@ -37,7 +37,6 @@
 										<a
 											href="<spring:url value='/shop/product/view/${product.code}/${product.urlName}'/>"><img
 											src="<spring:url value='/shop/product/primaryimage/${product.code}'/>" /></a>
-										<p>${product.description}</p>
 									</div>
 								</li>
 							</c:forEach>

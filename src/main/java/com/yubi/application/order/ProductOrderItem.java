@@ -70,6 +70,7 @@ public class ProductOrderItem {
 				.append(id.getProduct().getCode(), product.getCode())
 				.isEquals();
 		}
+
 	}
 	
 	@EmbeddedId
@@ -78,7 +79,7 @@ public class ProductOrderItem {
 	private int quantity;
 	
 	private BigDecimal totalCost;
-
+	
 	public Id getId() {
 		return id;
 	}

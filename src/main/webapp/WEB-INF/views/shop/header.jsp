@@ -14,6 +14,8 @@
 	rel="stylesheet" />
 <link href="<spring:url value='/resources/shop/css/jquery.fancybox.css'/>"
 	rel="stylesheet" />
+<link href="<spring:url value='/resources/shop/css/bootstrap-formhelpers.min.css'/>"
+	rel="stylesheet" />
 <link rel="icon" 
       type="image/png" 
       href="<spring:url value='/resources/shop/img/favicon.ico'/>">

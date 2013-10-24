@@ -2,9 +2,11 @@ package com.yubi.shop.controller;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Currency;
 import java.util.Date;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -16,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.yubi.application.category.CategoryService;
 import com.yubi.application.product.Product;
 import com.yubi.application.product.ProductAccess;
-import com.yubi.application.product.ProductService;
 import com.yubi.core.statistics.EventGateway;
 import com.yubi.core.statistics.ShopEvent;
 import com.yubi.core.statistics.ShopEventType;
@@ -39,8 +40,6 @@ import com.yubi.shop.delivery.DeliveryMethodUpdateResult;
 @RequestMapping("/shop/basket")
 public class BasketController {
 	
-	private final ProductService productService;
-	
 	private final CategoryService categoryService;
 	
 	private final BasketService basketService;
@@ -54,14 +53,12 @@ public class BasketController {
 	
 	@Inject
 	public BasketController(
-			ProductService productService, 
 			CategoryService categoryService,
 			BasketService basketService,
 			ProductAccess productAccess,
 			EventGateway eventGateway,
 			DeliveryMethodAccess deliveryMethodAccess) {
 		super();
-		this.productService = productService;
 		this.categoryService = categoryService;
 		this.basketService = basketService;
 		this.productAccess = productAccess;
@@ -70,7 +67,7 @@ public class BasketController {
 	}
 
 	@RequestMapping("/add/{code}")
-	public @ResponseBody boolean addToBasket(@PathVariable("code") String code, boolean upgradeWires, HttpSession session) {
+	public @ResponseBody boolean addToBasket(@PathVariable("code") String code, HttpSession session) {
 		
 		// Check the product is still available - someone else might have 
 		// taken it in the meantime. Ensure that there are still enough of them.
@@ -79,19 +76,12 @@ public class BasketController {
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
 		
 		// Check for the presence of this item in the basket
-		BasketKey key = new BasketKey(code, upgradeWires);
+		BasketKey key = new BasketKey(code);
 		BasketItem item = basket.getItems().get(key);
 		
 		if (item == null) {
 			Product toAdd = productAccess.load(code);
-			
-			BasketItem newItem = new BasketItem();
-			newItem.setItemCost(toAdd.getUnitPrice());
-			newItem.setNumber(1);
-			newItem.setProductCode(code);
-			newItem.setProductDescription(toAdd.getTitle());
-			
-			basket.getItems().put(key, newItem);
+			basket.getItems().put(key, new BasketItem(toAdd, 1));
 		} else {
 			item.setNumber(item.getNumber() + 1);
 		}
@@ -115,12 +105,13 @@ public class BasketController {
 			@PathVariable("number") int number,
 			HttpSession session) {
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		BasketKey key = new BasketKey(code);
 		
-		BasketItem item = basket.getItems().get(code);
+		BasketItem item = basket.getItems().get(key);
 		
 		// If we're removing all the items then remove the basket entry
 		if (item.getNumber() == number) {
-			basket.getItems().remove(code);
+			basket.getItems().remove(key);
 		} else {
 			item.setNumber(item.getNumber() - number);
 		}
@@ -133,14 +124,13 @@ public class BasketController {
 		event.setType(ShopEventType.REMOVED_FROM_BASKET);
 		eventGateway.recordShopEvent(event);
 		
-		// Also put the stock back
-		productService.increaseStockLevel(code, number);
 		return "shop/shop";
 	}
 	
 	
 	@RequestMapping("/show")
-	public ModelAndView showBasket() {
+	public ModelAndView showBasket(HttpSession session, HttpServletRequest request) {
+		session.setAttribute("current_url", request.getRequestURI());
 		ModelAndView model = new ModelAndView("shop/basket");
 		model.addObject("menu", categoryService.buildProductMenu());
 		return model;
@@ -152,14 +142,13 @@ public class BasketController {
 		ModelAndView model = new ModelAndView("shop/basketcontent");
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
 		model.addObject("basket", basket);
-		model.addObject("total", basketService.getBasketTotal(basket));
 		return model;
 	}
 	
 	@RequestMapping("/total")
 	public @ResponseBody BigDecimal getBasketTotal(HttpSession session) {
 		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
-		return basket.getTotal();
+		return basket.getTotal((Currency) session.getAttribute("currency")).setScale(0);
 	}
 	
 	@RequestMapping("/setdeliverymethod")
@@ -176,7 +165,7 @@ public class BasketController {
 			basket.setDeliveryMethod(null);
 			result.deliveryCost = new BigDecimal(0.00).setScale(2, RoundingMode.HALF_UP).toString();
 		}
-		result.newTotal = basketService.getBasketTotal(basket).setScale(2, RoundingMode.HALF_UP).toString();
+		result.newTotal = basketService.getBasketTotal(basket, (Currency) session.getAttribute("currency")).setScale(2, RoundingMode.HALF_UP).toString();
 		return result;
 	}
 }

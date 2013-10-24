@@ -55,9 +55,9 @@ public class ProductAccessImpl implements ProductAccess {
 	@Transactional
 	public ProductImage loadPrimaryImage(String code) {
 		Query query = 
-				sessionFactory.getCurrentSession().createQuery("from ProductImage where product.code = ? and primaryImage = true");
+				sessionFactory.getCurrentSession().createQuery("from ProductImage where product.code = :code and primaryImage = true");
 		
-		query.setParameter(0, code);
+		query.setString("code", code);
 		query.setCacheable(true);
 		return (ProductImage) query.uniqueResult();
 	}
@@ -66,10 +66,10 @@ public class ProductAccessImpl implements ProductAccess {
 	@Transactional
 	public List<Product> listForCategory(long id) {
 		Query query = 
-				sessionFactory.getCurrentSession().createQuery("from Product where category.id = ?");
+				sessionFactory.getCurrentSession().createQuery("from Product where category.id = :categoryId");
 		
 		
-		query.setLong(0, id);
+		query.setLong("categoryId", id);
 		query.setCacheable(true);
 		return query.list();
 	}
@@ -83,8 +83,8 @@ public class ProductAccessImpl implements ProductAccess {
 
 	@Transactional
 	public int getStockCount(String code) {
-		Query query =  sessionFactory.getCurrentSession().createQuery("select stockLevel from Product where code = ?");
-		query.setString(0, code);
+		Query query =  sessionFactory.getCurrentSession().createQuery("select stockLevel from Product where code = :code");
+		query.setString("code", code);
 		return (Integer) query.uniqueResult();
 	}
 }

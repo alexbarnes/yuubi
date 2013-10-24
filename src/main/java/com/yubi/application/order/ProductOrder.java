@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -33,6 +34,9 @@ public class ProductOrder {
 	@ManyToOne
 	@JoinColumn(name = "discountCode")
 	private Discount discount;
+	
+	@Column(length=3)
+	private String currencyCode;
 
 	public long getId() {
 		return id;
@@ -76,5 +80,13 @@ public class ProductOrder {
 		item.getId().setOrder(this);
 		items.add(item);
 		return item;
+	}
+
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
 	}
 }
