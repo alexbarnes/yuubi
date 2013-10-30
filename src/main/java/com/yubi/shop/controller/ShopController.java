@@ -1,18 +1,19 @@
 package com.yubi.shop.controller;
 
 import java.util.Currency;
-import java.util.Date;
 
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -20,35 +21,29 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import com.yubi.application.category.CategoryService;
 import com.yubi.application.product.ProductAccess;
 import com.yubi.application.product.ProductService;
-import com.yubi.core.statistics.EventGateway;
-import com.yubi.core.statistics.ShopEvent;
-import com.yubi.core.statistics.ShopEventType;
-import com.yubi.shop.basket.Basket;
-import com.yubi.shop.basket.BasketCreationListener;
+import com.yubi.core.mail.EmailService;
+import com.yubi.core.mail.OutboundMailMessage;
 
 @Controller
 @RequestMapping("/shop")
 public class ShopController {
 	
 	private final ProductAccess productAccess;
-	
 	private final CategoryService categoryService;
-	
-	private final EventGateway eventGateway;
-	
 	private final ProductService productService;
+	private final EmailService emailService;
 	
 	@Inject
 	public ShopController(
 			ProductAccess productAccess,
 			CategoryService categoryService,
-			EventGateway eventGateway,
-			ProductService productService) {
+			ProductService productService,
+			EmailService emailService) {
 		super();
 		this.productAccess = productAccess;
 		this.categoryService = categoryService;
-		this.eventGateway = eventGateway;
 		this.productService = productService;
+		this.emailService = emailService;
 	}
 
 	
@@ -68,10 +63,26 @@ public class ShopController {
 	
 	
 	@RequestMapping("/currency/change")
-	public String changeCurrency(String currencyCode, String url, HttpSession session, HttpServletRequest request) {
+	public String changeCurrency(String currencyCode, String url, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 		session.setAttribute("currency", Currency.getInstance(currencyCode));
+		Cookie cookie = new Cookie("currency", currencyCode);
+		cookie.setMaxAge(18144000);
+		response.addCookie(cookie);
 		return "redirect:" + url;
 	}
+	
+	
+	@RequestMapping("/showerror")
+	public String errorHandle() {
+		return "redirect:/shop/error";
+	}
+	
+	
+	@RequestMapping("/error")
+	public String displayError() {
+		return "/shop/error";
+	}
+	
 	
 	/**
 	 * List the products for a certain category.
@@ -83,14 +94,6 @@ public class ShopController {
 		mav.addObject("products", productAccess.listForCategory(id));
 		mav.addObject("active", categoryService.load(id).getDescription());
 		session.setAttribute("current_url", request.getRequestURI());
-		
-		ShopEvent event = new ShopEvent();
-		event.setDate(new Date());
-		event.setEntityKey(String.valueOf(id));
-		event.setSessionId(session.getId());
-		event.setType(ShopEventType.CATEGORY_VIEW);
-		eventGateway.recordShopEvent(event);
-		
 		return mav;
 	}
 	
@@ -98,7 +101,7 @@ public class ShopController {
 	@RequestMapping("/product/searchresults")
 	public ModelAndView showProductList(HttpServletRequest request, HttpSession session) {
 		ModelAndView mav = new ModelAndView("shop/productlist");
-		if (RequestContextUtils.getInputFlashMap(request) == null ) {
+		if (RequestContextUtils.getInputFlashMap(request) == null) {
 			mav.addObject("active", "No search results to show");
 		}
 		session.setAttribute("current_url", request.getRequestURI());
@@ -117,14 +120,6 @@ public class ShopController {
 		mav.addObject("menu", categoryService.buildProductMenu());
 		mav.addObject("product", productAccess.load(code));
 		session.setAttribute("current_url", request.getRequestURI());
-		
-		ShopEvent event = new ShopEvent();
-		event.setDate(new Date());
-		event.setEntityKey(code);
-		event.setSessionId(session.getId());
-		event.setType(ShopEventType.PRODUCT_VIEW);
-		eventGateway.recordShopEvent(event);
-		
 		return mav;
 	}
 	
@@ -134,14 +129,6 @@ public class ShopController {
 		ModelAndView mav = new ModelAndView("redirect:/shop/product/searchresults");
 		redirectAttributes.addFlashAttribute("active", "Search: " + query);
 		redirectAttributes.addFlashAttribute("products", productService.search(query));
-		
-		ShopEvent event = new ShopEvent();
-		event.setDate(new Date());
-		event.setEntityKey(StringUtils.substring(query, 0, 20));
-		event.setSessionId(session.getId());
-		event.setType(ShopEventType.SEARCH);
-		eventGateway.recordShopEvent(event);
-		
 		return mav;
 	}
 	
@@ -178,6 +165,41 @@ public class ShopController {
 		ModelAndView mav = new ModelAndView("shop/terms");
 		mav.addObject("menu", categoryService.buildProductMenu());
 		session.setAttribute("current_url", request.getRequestURI());
+		return mav;
+	}
+	
+	
+	@RequestMapping("/contact")
+	public ModelAndView showContact(HttpSession session, HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView("shop/contact");
+		mav.addObject("menu", categoryService.buildProductMenu());
+		mav.addObject("message", new OutboundMailMessage());
+		session.setAttribute("current_url", request.getRequestURI());
+		return mav;
+	}
+	
+	
+	@RequestMapping(value = "/contact/send", method = RequestMethod.POST)
+	public ModelAndView sendContactForm(OutboundMailMessage message, RedirectAttributes redirectAttributes) {
+		ModelAndView mav = new ModelAndView("shop/contact");
+		if (StringUtils.isEmpty(message.getFrom())) {
+			mav.addObject("error-from", "true");
+			return mav;
+		}
+		
+		if (StringUtils.isEmpty(message.getText())) {
+			mav.addObject("error-text", "true");
+			return mav;
+		}
+		
+		if (StringUtils.isEmpty(message.getFromName())) {
+			mav.addObject("error-from-name", "true");
+			return mav;
+		}
+		message.setSubject("Contact Form Submission [" + message.getFromName() + "]");
+		emailService.sendMailToAdmins(message);
+		mav.setViewName("redirect:/shop/contact");
+		redirectAttributes.addFlashAttribute("success", "true");
 		return mav;
 	}
 }

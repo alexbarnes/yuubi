@@ -22,6 +22,6 @@ public class NotificationController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String addNotification(String productCode, String email) {
 		outOfStockService.saveNewNotification(productCode, email);
-		return "redirect:/shop/product/view/" + productCode;
+		return "redirect:/shop/product/view/" + productCode + "/";
 	}
 }

@@ -24,9 +24,9 @@
 					</div>
 				</div>
 			</div>
-			<div class="span9">
+			<div class="span12">
 				<div class="row">
-					<div class="span9">
+					<div class="span12">
 						<h2 class="title">${product.title}</h2>
 						<hr />
 					</div>
@@ -53,21 +53,28 @@
 							</c:forEach>
 						</ul>
 					</div>
-					<div class="span5">${product.productDescription}</div>
-					<div class="span5">
-						<c:if test="${product.stockLevel  == 0}">
-							<strong>Availability:</strong>
-							<span>Out Of Stock - <a href="#myModal" role="button"
-								data-toggle="modal">Notify Me</a></span>
-						</c:if>
-						<br>
+					<div class="span8"><p>${product.productDescription}</p></div>
+					<c:if test="${product.goldFilledWires}">
+					<div class="span8">
+					<p>*Gold-filled earwires contain 1/20 gold content equating to an approximately x100 thicker coating of gold than gold-plated. 
+					The difference can be seen visually but also results in substantially greater durability, and are recommended for those with metal allergies.</p>
+					</div>
+					</c:if>
+					<div class="span8"><hr></div>
+					<c:if test="${product.stockLevel  == 0}">
+					<div class="span8">
+						<h5>Out Of Stock</h5>
+						<a href="#myModal" role="button"
+							data-toggle="modal"><button class="btn" id="addToBasket" rel="popover"><i class="icon-envelope"></i> Notify Me</button></a>
+							</div>
+					</c:if>
+					
+					<c:if test="${product.stockLevel > 0}">
+						<div class="span8">
 						<h5>
 							<c:set var="currency" value="${sessionScope.currency}"/>
 							<strong><c:out value="${sessionScope.currency.symbol}"></c:out> <fmt:formatNumber value="${product.getPriceInCurrency(currency)}" /></strong>
 						</h5>
-					</div>
-					<c:if test="${product.stockLevel > 0}">
-						<div class="span5">
 							<button class="btn" id="addToBasket" onclick="addItem()"
 								rel="popover">
 								<i class="icon-shopping-cart"></i> Buy
@@ -117,6 +124,9 @@
 				aria-hidden="true">×</button>
 			<h2 class="title" id="myModalLabel">Notify me when this product
 				is back in stock</h2>
+				<hr>
+				<p>Your email address will only be used for this one time notification. You will not be subscribed
+				 to any additional mailing lists.</p>
 		</div>
 		<form:form action="/shop/notification/add">
 			<div class="modal-body">

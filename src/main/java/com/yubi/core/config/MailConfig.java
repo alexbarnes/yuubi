@@ -14,42 +14,11 @@ import org.springframework.mail.javamail.MimeMailMessage;
 import org.thymeleaf.spring3.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
-import com.yubi.shop.basket.BasketCreationListener;
-import com.yubi.shop.basket.BasketExpiryListener;
-
 @Configuration
 public class MailConfig {
 	
 	@Inject
-	private Environment environment;
-	
-	@Bean
-	public JavaMailSender mailSender() {
-		JavaMailSenderImpl sender = new JavaMailSenderImpl();
-		sender.setHost(environment.getProperty("smtp.host"));
-		sender.setPort(Integer.valueOf(environment.getProperty("smtp.port")));
-		sender.setUsername(environment.getProperty("smtp.username"));
-		sender.setPassword(environment.getProperty("smtp.password"));
-
-		Properties mailProperties = new Properties();
-		mailProperties.put("mail.smtp.starttls.enable", "true");
-		mailProperties.put("mail.smtp.auth", "true");
-		sender.setJavaMailProperties(mailProperties);
-
-		return sender;
-	}
-
-	@Bean
-	@Scope(value = "prototype")
-	public MimeMailMessage mailMessage() {
-		JavaMailSender sender = mailSender();
-		MimeMailMessage message = new MimeMailMessage(
-				sender.createMimeMessage());
-		message.setFrom(environment.getProperty("mail.send.address"));
-		message.setReplyTo(environment.getProperty("mail.send.address"));
-		return message;
-	}
-
+	Environment environment;
 	
 	@Bean
 	public SpringTemplateEngine templateEngine() {
@@ -65,14 +34,31 @@ public class MailConfig {
 		return engine;
 	}
 	
-	@Bean
-	public BasketCreationListener basketCreationListener() {
-		return new BasketCreationListener();
-	}
-
 	
 	@Bean
-	public BasketExpiryListener basketExpiryListener() {
-		return new BasketExpiryListener();
-	}
+    public JavaMailSender mailSender() {
+            JavaMailSenderImpl sender = new JavaMailSenderImpl();
+            sender.setHost(environment.getProperty("smtp.host"));
+            sender.setPort(Integer.valueOf(environment.getProperty("smtp.port")));
+            sender.setUsername(environment.getProperty("smtp.username"));
+            sender.setPassword(environment.getProperty("smtp.password"));
+
+            Properties mailProperties = new Properties();
+            mailProperties.put("mail.smtp.starttls.enable", "true");
+            mailProperties.put("mail.smtp.auth", "true");
+            sender.setJavaMailProperties(mailProperties);
+
+            return sender;
+    }
+
+    @Bean
+    @Scope(value = "prototype")
+    public MimeMailMessage mailMessage() {
+            JavaMailSender sender = mailSender();
+            MimeMailMessage message = new MimeMailMessage(
+                            sender.createMimeMessage());
+            message.setFrom(environment.getProperty("mail.send.address"));
+            message.setReplyTo(environment.getProperty("mail.send.address"));
+            return message;
+    }
 }

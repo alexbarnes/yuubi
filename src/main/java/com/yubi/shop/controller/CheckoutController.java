@@ -3,7 +3,6 @@ package com.yubi.shop.controller;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
-import java.util.Date;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +23,10 @@ import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 import com.yubi.application.category.CategoryService;
 import com.yubi.application.order.ProductOrderService;
 import com.yubi.core.country.CountryAccess;
-import com.yubi.core.mail.MailGateway;
-import com.yubi.core.statistics.EventGateway;
-import com.yubi.core.statistics.ShopEvent;
-import com.yubi.core.statistics.ShopEventType;
+import com.yubi.core.mail.EmailService;
+import com.yubi.core.mail.OutboundMailMessage;
+import com.yubi.core.view.UrlRecordingInterceptor;
 import com.yubi.shop.basket.Basket;
-import com.yubi.shop.basket.BasketCreationListener;
 import com.yubi.shop.basket.BasketService;
 import com.yubi.shop.checkout.DiscountApplicationResult;
 import com.yubi.shop.delivery.DeliveryMethodAccess;
@@ -50,10 +47,9 @@ public class CheckoutController {
 	private final Environment env;
 	private final BasketService basketService;
 	private final ProductOrderService productOrderService;
-	private final EventGateway eventGateway;
 	private final CategoryService categoryService;
 	private final DiscountAccess discountAccess;
-	private final MailGateway mailGateway;
+	private final EmailService emailService;
 	@Inject
 	public CheckoutController(
 			DeliveryMethodAccess deliveryMethodAccess,
@@ -62,10 +58,9 @@ public class CheckoutController {
 			Environment env,
 			BasketService basketService,
 			ProductOrderService productOrderService,
-			EventGateway eventGateway,
 			CategoryService categoryService,
 			DiscountAccess discountAccess,
-			MailGateway mailGateway) {
+			EmailService emailService) {
 		super();
 		this.deliveryMethodAccess = deliveryMethodAccess;
 		this.countryAccess = countryAccess;
@@ -73,10 +68,9 @@ public class CheckoutController {
 		this.env = env;
 		this.basketService = basketService;
 		this.productOrderService = productOrderService;
-		this.eventGateway = eventGateway;
 		this.categoryService = categoryService;
 		this.discountAccess = discountAccess;
-		this.mailGateway = mailGateway;
+		this.emailService = emailService;
 	}
 
 	/**
@@ -85,7 +79,7 @@ public class CheckoutController {
 	 */
 	@RequestMapping
 	public ModelAndView checkout(HttpSession session, HttpServletRequest request) {
-		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		Basket basket = (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
 		session.setAttribute("current_url", request.getRequestURI());
 		if (basket.getItems().size() == 0) {
 			return new ModelAndView("redirect:/");
@@ -126,7 +120,7 @@ public class CheckoutController {
 		
 		result.valid = true;
 		result.discount = discount;
-		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		Basket basket = (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
 		basket.setDiscount(discount);
 		
 		if (basket.getDeliveryMethod() != null) {
@@ -142,7 +136,7 @@ public class CheckoutController {
 	
 	@RequestMapping("/removediscount")
 	public @ResponseBody DiscountApplicationResult removeDiscount(HttpSession session) {
-		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		Basket basket = (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
 		basket.setDiscount(null);
 		
 		DiscountApplicationResult result = new DiscountApplicationResult();
@@ -164,7 +158,7 @@ public class CheckoutController {
 	 */
 	@RequestMapping("/setuppayment")
 	public ModelAndView expressCheckout(HttpSession session, RedirectAttributes redirect) {
-		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		Basket basket = (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
 		ModelAndView result = new ModelAndView();
 		
 		// First check for a valid delivery method
@@ -183,8 +177,13 @@ public class CheckoutController {
 			result.setViewName("redirect:/shop/checkout");
 			redirect.addFlashAttribute("error", true);
 			
-			// Need to sent an e-mail to the admin if this happens. We have
+			// Need to sent an e-mail to the admins if this happens. We have
 			// a problem.
+			OutboundMailMessage mailMessage = new OutboundMailMessage();
+			mailMessage.setFrom("Yuubi");
+			mailMessage.setSubject("Paypal Payment Error");
+			mailMessage.setText("Important: An error occurred when setting up a Paypal transaction. Please look into this immediately.");
+			emailService.sendMailToAdmins(mailMessage);
 			return result;
 	}
 		// If all went to plan, send the user off to Paypal to authenticate
@@ -204,7 +203,7 @@ public class CheckoutController {
 		String sessionToken = (String) session.getAttribute("paypal-token");
 		
 		// If we came here without going to Paypal there will be no token. We need to go back to
-		// checkout so that the user can complete properly via paypal.
+		// checkout so that the user can complete properly via Paypal.
 		if (sessionToken == null || !sessionToken.equals(token)) {
 			result.setViewName("redirect:/shop/checkout");
 			return result;
@@ -213,7 +212,7 @@ public class CheckoutController {
 		// Record the payer id for later.
 		session.setAttribute("payer-id", payerId);
 		
-		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		Basket basket = (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
 		
 		result.addObject("basket", basket);
 		result.addObject("total", basketService.getBasketTotal(basket, (Currency) session.getAttribute("currency")));
@@ -234,7 +233,7 @@ public class CheckoutController {
 	@RequestMapping("/complete")
 	public String completeOrder(HttpSession session, RedirectAttributes redirect) {
 		
-		Basket basket = (Basket) session.getAttribute(BasketCreationListener.BASKET_KEY);
+		Basket basket = (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
 		String token = (String) session.getAttribute("paypal-token");
 		String payerId = (String) session.getAttribute("payer-id");
 		
@@ -249,15 +248,7 @@ public class CheckoutController {
 		}
 		
 		// Write the details of the order here. Link it to the Paypal order
-		long orderId = productOrderService.createNewOrder(basket, transactionId, (Currency) session.getAttribute("currency"));
-		
-		// Record the event
-		ShopEvent event = new ShopEvent();
-		event.setDate(new Date());
-		event.setEntityKey(String.valueOf(orderId));
-		event.setSessionId(session.getId());
-		event.setType(ShopEventType.ORDER_COMPLETE);
-		eventGateway.recordShopEvent(event);
+		productOrderService.createNewOrder(basket, transactionId, (Currency) session.getAttribute("currency"));
 		
 		// Clear the basket once the transaction is complete. Don't invalidate the session. Retain users defaults.
 		basket.reset();

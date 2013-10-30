@@ -9,11 +9,13 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.util.WebUtils;
 
 import com.yubi.shop.basket.Basket;
-import com.yubi.shop.basket.BasketCreationListener;
 
 public class UrlRecordingInterceptor extends HandlerInterceptorAdapter {
+	
+	public static final String BASKET_KEY = "basket";
 	
 	private static final Logger log = LoggerFactory.getLogger(UrlRecordingInterceptor.class);
 	
@@ -22,12 +24,21 @@ public class UrlRecordingInterceptor extends HandlerInterceptorAdapter {
 			HttpServletResponse response, Object handler) throws Exception {
 		HttpSession session = request.getSession();
 		
-		if (session.getAttribute(BasketCreationListener.BASKET_KEY) == null) {
+		if (session.getAttribute(BASKET_KEY) == null) {
 			log.info("Creating basket for session with id [" + session.getId() + "].");
 			Basket basket = new Basket();
-			session.setAttribute(BasketCreationListener.BASKET_KEY, basket);
+			session.setAttribute(BASKET_KEY, basket);
 			session.setMaxInactiveInterval(60*10);
-			session.setAttribute("currency", Currency.getInstance(request.getLocale()));
+			if (WebUtils.getCookie(request, "currency") != null) {
+				try {
+					session.setAttribute("currency", WebUtils.getCookie(request, "currency"));
+				} catch (RuntimeException e) {
+					session.setAttribute("currency", Currency.getInstance(request.getLocale()));
+				}
+			} else {
+				session.setAttribute("currency", Currency.getInstance(request.getLocale()));
+			}
+			
 		}
 		return super.preHandle(request, response, handler);
 	}

@@ -23,6 +23,7 @@
 		<div class="row">
 			<div id="contents" class="span12"></div>
 		</div>
+		<hr>
 		<jsp:include page="footer.jsp" />
 	</div>
 

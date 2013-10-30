@@ -10,5 +10,7 @@ public interface ProductService {
 	
 	public void increaseStockLevel(String code, int quantity);
 	
+	public void setStockLevel(String  code, int quantity);
+	
 	public List<Product> search(String query);
 }

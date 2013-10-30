@@ -8,7 +8,7 @@
 	<div class="span9">
 		<ul id="links" class="nav nav-pills pull-left">
 			<li><a href="<spring:url value='/shop'/>" title="Shop">Home</a></li>
-			<li><a href="<spring:url value='/shop'/>" title="Contact">Contact</a></li>
+			<li><a href="<spring:url value='/shop/contact'/>" title="Contact">Contact</a></li>
 		</ul>
 	</div>
 </div>
@@ -17,13 +17,13 @@
 		<div class="btn-group" data-toggle="buttons-radio">
 			<c:choose>
 				<c:when test="${sessionScope.currency.currencyCode == 'USD'}">
-					<button type="button" class="btn active disabled">
+					<button type="button" class="btn btn-small active disabled">
 						<i class="icon-flag bfh-flag-US"></i>
 					</button>
 				</c:when>
 				<c:otherwise>
 				<!--  button type="button" class="btn" id="currUS"-->
-					<a class="btn"
+					<a class="btn btn-small"
 						href="<spring:url value='/shop/currency/change?currencyCode=USD&url=${sessionScope.current_url}'/>"><i
 						class="icon-flag bfh-flag-US"></i></a>
 
@@ -32,26 +32,26 @@
 			
 			<c:choose>
 				<c:when test="${sessionScope.currency.currencyCode == 'GBP'}">
-					<button type="button" class="btn active disabled">
+					<button type="button" class="btn btn-small active disabled">
 						<i class="icon-flag bfh-flag-GB"></i>
 					</button>
 				</c:when>
 				<c:otherwise>
 					<!-- button type="button" class="btn" id="currGB"-->
-					<a class="btn"
+					<a class="btn btn-small"
 						href="<spring:url value='/shop/currency/change?currencyCode=GBP&url=${sessionScope.current_url}'/>"><i class="icon-flag bfh-flag-GB"></i></a>
 				</c:otherwise>
 			</c:choose>
 			
 			<c:choose>
 			<c:when test="${sessionScope.currency.currencyCode == 'EUR'}">
-				<button type="button" class="btn active disabled">
+				<button type="button" class="btn active disabled btn-small">
 						<i class="icon-flag bfh-flag-EUR"></i>
 					</button>
 			</c:when>
 			<c:otherwise>
 			<!--button type="button" class="btn" id="currEUR"-->
-			<a class="btn"
+			<a class="btn btn-small"
 						href="<spring:url value='/shop/currency/change?currencyCode=EUR&url=${sessionScope.current_url}'/>"><i class="icon-flag bfh-flag-EUR"></i></a>
 			</c:otherwise>
 			</c:choose>
@@ -64,7 +64,7 @@
 			<p id="basketTotal">
 				<c:choose>
 					<c:when test="${empty basket.items}">
-						
+						Empty
 					</c:when>
 					<c:otherwise>
 					<c:set var="currency" value="${sessionScope.currency}"/>
@@ -75,6 +75,13 @@
 			</p>
 		</div>
 	</div>
+</div>
+<div class="row">
+<div class="span10">
+<div class="alert alert-error">
+<strong>The shop is not yet open. Please check back soon.</strong>
+</div>
+</div>
 </div>
 
 <!-- Logo -->

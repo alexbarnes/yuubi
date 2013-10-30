@@ -64,7 +64,7 @@ public class Product {
 	@Field
 	private String productDescription;
 	
-	private boolean allowUpgradedWires; 
+	private boolean goldFilledWires; 
 	
 	public String getCode() {
 		return code;
@@ -159,12 +159,12 @@ public class Product {
 		this.productDescription = productDescription;
 	}
 	
-	public boolean isAllowUpgradedWires() {
-		return allowUpgradedWires;
+	public boolean isGoldFilledWires() {
+		return goldFilledWires;
 	}
 	
-	public void setAllowUpgradedWires(boolean allowUpgradedWires) {
-		this.allowUpgradedWires = allowUpgradedWires;
+	public void setGoldFilledWires(boolean allowUpgradedWires) {
+		this.goldFilledWires = allowUpgradedWires;
 	}
 
 	public BigDecimal getUnitPriceUsd() {

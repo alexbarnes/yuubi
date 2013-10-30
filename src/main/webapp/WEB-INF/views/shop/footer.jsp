@@ -3,7 +3,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <footer>
-	<hr>
 	<div class="row">
 		<div class="span3">
 			<div class="company_info">
@@ -25,8 +24,8 @@
 		</div>
 		<div class="span3">
 			<h4>Connect with Y&#362;bi</h4>
-			<a href="<spring:url value='/shop'/>">Facebook</a> <br /> <a
-				href="https://www.facebook.com/yuubijewellery'/>">Twitter</a>
+			<a href="https://www.facebook.com/yuubijewellery"> <img alt="Facebook" src="<spring:url value='/resources/shop/img/facebook_active.png'/>" /></a>
+			<a href="https://www.twitter.com"><img alt="Facebook" src="<spring:url value='/resources/shop/img/twitter_active.png'/>" /></a> 
 		</div>
 	</div>
 </footer>

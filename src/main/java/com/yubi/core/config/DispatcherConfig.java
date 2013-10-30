@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import com.yubi.core.view.HttpsInterceptor;
 import com.yubi.core.view.UrlRecordingInterceptor;
 
 @Configuration
@@ -41,12 +42,12 @@ public class DispatcherConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new UrlRecordingInterceptor()).addPathPatterns("/shop/**").excludePathPatterns("/resources/**");
+		registry.addInterceptor(new HttpsInterceptor()).addPathPatterns("/shop/**").excludePathPatterns("/resources/**");
 	}
 	
 	
 	@Override
-	public void configureDefaultServletHandling(
-			DefaultServletHandlerConfigurer configurer) {
-		configurer.enable("appServlet");
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
 	}
 }

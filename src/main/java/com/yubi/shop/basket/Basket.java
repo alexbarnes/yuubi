@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import com.yubi.core.view.UrlRecordingInterceptor;
 import com.yubi.shop.delivery.DeliveryMethod;
 import com.yubi.shop.discount.Discount;
 
@@ -53,6 +56,10 @@ public class Basket {
 			total = total.add(item.getValue().getLineCost(currency));
 		}
 		return total;
+	}
+	
+	public static Basket getBasketFromSession(HttpSession session) {
+		return (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
 	}
 	
 	public static class BasketKey {

@@ -57,7 +57,7 @@
 		</div>
 		<div class="row pull-right">
 			<a href="<spring:url value='/shop/checkout'/>"><button
-					class="btn btn-primary">
+					class="btn">
 					 Checkout
 				</button></a>
 		</div>

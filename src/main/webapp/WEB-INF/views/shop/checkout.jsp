@@ -35,7 +35,7 @@
 				<c:if test="${error}">
 					<div class="alert alert-error">
 						<button type="button" class="close" data-dismiss="alert">×</button>
-						An unexpected error occurred. Please try checking out again later.
+						We're very sorry but an unexpected error occurred. We have been notified and will look into it immediately. Please try ordering again later.
 					</div>
 				</c:if>
 				<div class="entry">

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.yubi.core.mail.EmailService;
 import com.yubi.shop.notification.StockNotificationService;
 
 @Service
@@ -27,7 +28,8 @@ public class ProductServiceImpl implements ProductService {
 	@Inject
 	public ProductServiceImpl(
 			SessionFactory sessionFactory,
-			StockNotificationService stockNotificationService) {
+			StockNotificationService stockNotificationService,
+			EmailService emailService) {
 		super();
 		this.sessionFactory = sessionFactory;
 		this.stockNotificationService = stockNotificationService;
@@ -56,15 +58,6 @@ public class ProductServiceImpl implements ProductService {
 		log.info("Increased stock level for product with code [" + code + "] by [" + quantity + "].");
 		product.setStockLevel(product.getStockLevel() + quantity);
 	}
-	
-	
-	@Transactional
-	public void addNewStockAndSendNotifications(String code, int numberToAdd) {
-		Product product = (Product) sessionFactory.getCurrentSession().get(Product.class, code);
-		product.setStockLevel(product.getStockLevel() + numberToAdd);
-		
-		stockNotificationService.notify(product);
-	}
 
 	@SuppressWarnings("unchecked")
 	@Transactional
@@ -88,6 +81,15 @@ public class ProductServiceImpl implements ProductService {
 		
 		List<Product> products = fullTextQuery.list();
 		 return products;
+	}
+
+	@Transactional
+	public void setStockLevel(String code, int quantity) {
+		Product product = (Product) sessionFactory.getCurrentSession().get(
+				Product.class, code);
+		log.info("Set stock level for product with code [" + code + "] to [" + quantity + "].");
+		product.setStockLevel(quantity);
+		stockNotificationService.notify(product);
 	}
 
 }
