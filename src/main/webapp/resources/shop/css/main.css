@@ -1,8 +1,7 @@
-body{
-	font-size: 14px;
-	font-family: 'Marcellus SC', serif;
-	background:url(../img/bg-container.png) center repeat-y;
+.body_error {
+	background: white;
 }
+
 a:link,a:visited{
 	color:#666;
 }
@@ -56,6 +55,11 @@ a:hover{
 #nav li.search_form{
 	padding-left:20px;
 }
+.navbar-error {
+	margin-bottom: 0px;
+	margin-top: 20px;
+}
+
 #top-bar .nav{
 	margin:0;
 	padding:0;

@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import com.yubi.application.category.CategoryService;
+import com.yubi.application.order.ProductOrder;
 import com.yubi.application.order.ProductOrderService;
 import com.yubi.core.country.CountryAccess;
 import com.yubi.core.mail.EmailService;
@@ -86,8 +88,12 @@ public class CheckoutController {
 		}
 		
 		ModelAndView mav = new ModelAndView("shop/checkout", "countries", countryAccess.listAll());
-		mav.addObject("total", basketService.getBasketTotal(basket, (Currency) session.getAttribute("currency")));
+		mav.addObject("total", basketService.getBasketTotal(basket, (Currency) session.getAttribute("currency")).setScale(2, RoundingMode.HALF_UP).toString());
 		mav.addObject("menu", categoryService.buildProductMenu());
+		if (basket.getDeliveryMethod() != null) {
+			mav.addObject("shippingAmount", basket.getDeliveryMethod().getCost().setScale(2, RoundingMode.HALF_UP).toString());
+		} 
+		mav.addObject("discountAmount", basketService.getDiscountAmount(basket, (Currency) session.getAttribute("currency")).toString());
 		return mav;
 	}
 	
@@ -120,7 +126,7 @@ public class CheckoutController {
 		
 		result.valid = true;
 		result.discount = discount;
-		Basket basket = (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
+		Basket basket = Basket.getBasketFromSession(session);
 		basket.setDiscount(discount);
 		
 		if (basket.getDeliveryMethod() != null) {
@@ -130,6 +136,7 @@ public class CheckoutController {
 		}
 		
 		result.newTotal = basketService.getBasketTotal(basket, (Currency) session.getAttribute("currency")).setScale(2, RoundingMode.HALF_UP).toString();
+		result.amount = basketService.getDiscountAmount(basket, (Currency) session.getAttribute("currency")).setScale(2, RoundingMode.HALF_UP).toString();;
 		return result;
 	}
 	
@@ -209,12 +216,21 @@ public class CheckoutController {
 			return result;
 		}
 		
+		Basket basket = (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
+		
+		// -- Need to check that we have enough stock still.
+		boolean notEnoughStock = basketService.checkStockLevels(basket);
+		
+		if (notEnoughStock) {
+			result.addObject("stockIssue", true);
+		}
+		
 		// Record the payer id for later.
 		session.setAttribute("payer-id", payerId);
 		
-		Basket basket = (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
 		
 		result.addObject("basket", basket);
+		result.addObject("discountAmount", basketService.getDiscountAmount(basket, (Currency) session.getAttribute("currency")).toString());
 		result.addObject("total", basketService.getBasketTotal(basket, (Currency) session.getAttribute("currency")));
 		
 		// If we get to here we have setup the transaction. We can ask Paypal about it now.
@@ -231,29 +247,50 @@ public class CheckoutController {
 	 * 
 	 */
 	@RequestMapping("/complete")
-	public String completeOrder(HttpSession session, RedirectAttributes redirect) {
-		
+	public ModelAndView completeOrder(HttpSession session, RedirectAttributes redirect) {
+		ModelAndView mav = new ModelAndView();
 		Basket basket = (Basket) session.getAttribute(UrlRecordingInterceptor.BASKET_KEY);
 		String token = (String) session.getAttribute("paypal-token");
 		String payerId = (String) session.getAttribute("payer-id");
 		
-		// Complete the payment with Paypal
+		// Write the details of the order here. Link it to the Paypal order
+		ProductOrder order = productOrderService.createNewOrder(basket, (Currency) session.getAttribute("currency"));
+		
+		// Complete the payment with Paypal. Email the admins if it goes wrong.
 		String transactionId;
 		try {
 			transactionId = 
-				paypalService.completeTransaction(token, payerId, session.getId(), basket, (Currency) session.getAttribute("currency"));
+				paypalService.completeTransaction(
+						token, 
+						payerId, 
+						session.getId(), 
+						basket, (Currency) session.getAttribute("currency"), 
+						order.getOrderReference());
+			
 		} catch (RuntimeException e) {
+			OutboundMailMessage mailMessage = new OutboundMailMessage();
+			mailMessage.setFrom("Yuubi");
+			mailMessage.setSubject("Paypal Payment Error");
+			mailMessage.setText("Important: An error occurred when completing a Paypal transaction. Please look into this immediately.");
+			emailService.sendMailToAdmins(mailMessage);
+			
 			redirect.addFlashAttribute("error", true);
-			return "redirect:/shop/checkout";
+			RedirectView redirectView = new RedirectView("redirect:/shop/checkout");
+			redirectView.setExposeModelAttributes(false);
+			mav.setView(redirectView);
+			return mav;
 		}
 		
-		// Write the details of the order here. Link it to the Paypal order
-		productOrderService.createNewOrder(basket, transactionId, (Currency) session.getAttribute("currency"));
+		// -- Write the transaction id afterwards.
+		productOrderService.updateTransactionId(order.getId(), transactionId);
+		
 		
 		// Clear the basket once the transaction is complete. Don't invalidate the session. Retain users defaults.
 		basket.reset();
 		
-		// Send the user off to the thank you page
-		return "shop/thankyou";
+		// Send the user to the thank you page
+		mav.addObject("orderNumber", order.getOrderReference());
+		mav.setViewName("shop/thankyou");
+		return mav;
 	}
 }

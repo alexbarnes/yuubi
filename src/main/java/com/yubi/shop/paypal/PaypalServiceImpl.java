@@ -104,12 +104,15 @@ class PaypalServiceImpl implements PaypalService {
 	}
 
 	public String completeTransaction(String token, String payerId,
-			String sessionId, Basket basket, Currency currency) {
+			String sessionId, Basket basket, Currency currency, String orderReference) {
+		
 		DoExpressCheckoutRequestBuilder builder = new DoExpressCheckoutRequestBuilder(
 				userName, password, signature);
 
 		String request = builder.withPayerId(payerId).withToken(token)
 				.withOrderTotal(basketService.getBasketTotal(basket, currency))
+				.inCurrency(currency.getCurrencyCode())
+				.withOrderReference(orderReference)
 				.buildRequest();
 
 		PaypalRequest requestItem = new PaypalRequest();

@@ -4,14 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<div class="row" id="top-bar">
-	<div class="span9">
-		<ul id="links" class="nav nav-pills pull-left">
-			<li><a href="<spring:url value='/shop'/>" title="Shop">Home</a></li>
-			<li><a href="<spring:url value='/shop/contact'/>" title="Contact">Contact</a></li>
-		</ul>
-	</div>
-</div>
+<br>
 <div class="row">
 	<div class="span2">
 		<div class="btn-group" data-toggle="buttons-radio">
@@ -26,7 +19,6 @@
 					<a class="btn btn-small"
 						href="<spring:url value='/shop/currency/change?currencyCode=USD&url=${sessionScope.current_url}'/>"><i
 						class="icon-flag bfh-flag-US"></i></a>
-
 				</c:otherwise>
 			</c:choose>
 			
@@ -57,32 +49,37 @@
 			</c:choose>
 		</div>
 	</div>
-	<div class="span1 offset9">
-		<div class="cart">
-			<a id="basket" href="<spring:url value='/shop/basket/show'/>"
-				rel="popover">Basket</a><br />
-			<p id="basketTotal">
-				<c:choose>
-					<c:when test="${empty basket.items}">
-						Empty
-					</c:when>
-					<c:otherwise>
-					<c:set var="currency" value="${sessionScope.currency}"/>
-					<c:out value="${sessionScope.currency.symbol}"/>
-				 		<fmt:formatNumber value="${basket.getTotal(currency)}" />
-					</c:otherwise>
-				</c:choose>
-			</p>
+	<c:if test="${open}">
+		<div class="span1 offset9">
+			<div class="cart">
+				<a id="basket" href="<spring:url value='/shop/basket/show'/>"
+					rel="popover">Basket</a><br />
+				<p id="basketTotal">
+					<c:choose>
+						<c:when test="${empty basket.items}">
+							Empty
+						</c:when>
+						<c:otherwise>
+						<c:set var="currency" value="${sessionScope.currency}"/>
+						<c:out value="${sessionScope.currency.symbol}"/>
+					 		<fmt:formatNumber value="${basket.getTotal(currency)}" />
+						</c:otherwise>
+					</c:choose>
+				</p>
+			</div>
+		</div>
+	</c:if>
+</div>
+<c:if test="${!open}">
+<br>
+	<div class="row">
+		<div class="span12">
+			<div class="alert alert-error">
+				<strong>${closedmessage}</strong>
+			</div>
 		</div>
 	</div>
-</div>
-<div class="row">
-<div class="span10">
-<div class="alert alert-error">
-<strong>The shop is not yet open. Please check back soon.</strong>
-</div>
-</div>
-</div>
+</c:if>
 
 <!-- Logo -->
 <div class="row show-grid">
@@ -94,7 +91,7 @@
 </div>
 <!-- End Header-->
 <!-- Start Navigation -->
-<div class="row">
+<div class="row hidden-phone">
 	<div class="span12">
 		<div class="navbar" id="main-menu">
 			<div class="navbar-inner-other no-border">

@@ -15,7 +15,6 @@ import com.yubi.application.product.ProductAccess;
 public class OutOfStockServiceImpl implements OutOfStockService {
 	
 	private final SessionFactory sessionFactory;
-	
 	private ProductAccess productAccess;
 	
 	@Inject
@@ -27,6 +26,7 @@ public class OutOfStockServiceImpl implements OutOfStockService {
 		this.productAccess = productAccess;
 	}
 
+	
 	/* (non-Javadoc)
 	 * @see com.yubi.shop.notification.OutOfStockServiceInterface#saveNewNotification(java.lang.String, java.lang.String)
 	 */
@@ -38,12 +38,15 @@ public class OutOfStockServiceImpl implements OutOfStockService {
 		sessionFactory.getCurrentSession().save(notification);
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see com.yubi.shop.notification.OutOfStockService#loadNotificationsForProduct(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public List<OutOfStockNotification> loadNotificationsForProduct(String code) {
-		Query query = sessionFactory.getCurrentSession().createQuery("from OutOfStockNotification where product.code = :code");
+		Query query = sessionFactory.getCurrentSession().createQuery("from OutOfStockNotification where product.code = :code and sent = false");
 		query.setString("code", code);
-		
 		return query.list();
 	}
 }

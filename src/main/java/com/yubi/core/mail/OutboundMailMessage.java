@@ -2,6 +2,9 @@ package com.yubi.core.mail;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
 public class OutboundMailMessage implements Serializable {
 
 	private static final long serialVersionUID = -1325571591227542819L;
@@ -10,10 +13,14 @@ public class OutboundMailMessage implements Serializable {
 	
 	private String subject;
 	
+	@NotBlank(message="A message must be provided")
 	private String text;
 	
+	@Email(message = "Must be a valid e-mail address")
+	@NotBlank(message="An email address must be provided")
 	private String from;
 	
+	@NotBlank(message="A name must be provided")
 	private String fromName;
 	
 	public OutboundMailMessage(){}

@@ -8,4 +8,6 @@ public class DiscountApplicationResult extends DeliveryMethodUpdateResult {
 	public boolean valid;
 	
 	public Discount discount;
+	
+	public String amount;
 }

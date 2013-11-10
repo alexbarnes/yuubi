@@ -25,7 +25,8 @@
 		<div class="span3">
 			<h4>Connect with Y&#362;bi</h4>
 			<a href="https://www.facebook.com/yuubijewellery"> <img alt="Facebook" src="<spring:url value='/resources/shop/img/facebook_active.png'/>" /></a>
-			<a href="https://www.twitter.com"><img alt="Facebook" src="<spring:url value='/resources/shop/img/twitter_active.png'/>" /></a> 
+			<a href="https://www.twitter.com"><img alt="Twitter" src="<spring:url value='/resources/shop/img/twitter_active.png'/>" /></a>
+			<a href="<spring:url value="/shop/contact"/>"><img alt="Email" src="<spring:url value='/resources/shop/img/email.png'/>" /></a> 
 		</div>
 	</div>
 </footer>

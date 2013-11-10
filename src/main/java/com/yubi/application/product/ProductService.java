@@ -12,5 +12,11 @@ public interface ProductService {
 	
 	public void setStockLevel(String  code, int quantity);
 	
+	public Product load(String code);
+	
 	public List<Product> search(String query);
+	
+	public void save(Product toSave);
+	
+	public List<Product> listAll();
 }

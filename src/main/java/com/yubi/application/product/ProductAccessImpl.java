@@ -64,9 +64,9 @@ public class ProductAccessImpl implements ProductAccess {
 
 	@SuppressWarnings("unchecked")
 	@Transactional
-	public List<Product> listForCategory(long id) {
+	public List<Product> listInUseForCategory(long id) {
 		Query query = 
-				sessionFactory.getCurrentSession().createQuery("from Product where category.id = :categoryId");
+				sessionFactory.getCurrentSession().createQuery("from Product where category.id = :categoryId and onDisplay = true");
 		
 		
 		query.setLong("categoryId", id);

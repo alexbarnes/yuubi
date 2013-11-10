@@ -20,6 +20,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FullTextFilterDef;
+import org.hibernate.search.annotations.FullTextFilterDefs;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -28,6 +30,9 @@ import com.yubi.application.category.Category;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Indexed
+@FullTextFilterDefs( {
+    @FullTextFilterDef(name = "inUseProduct", impl = InUseProductFilter.class), 
+})
 public class Product {
 
 	@Id
@@ -65,6 +70,9 @@ public class Product {
 	private String productDescription;
 	
 	private boolean goldFilledWires; 
+	
+	@Field
+	private boolean onDisplay;
 	
 	public String getCode() {
 		return code;
@@ -148,7 +156,7 @@ public class Product {
 	}
 	
 	public String getUrlName() {
-		return title.replace(" ", "_").toLowerCase();
+		return title.replace(" ", "-").toLowerCase();
 	}
 	
 	public String getProductDescription() {
@@ -183,7 +191,14 @@ public class Product {
 		this.unitPriceEur = unitPriceEur;
 	}
 	
-	
+	public boolean isOnDisplay() {
+		return onDisplay;
+	}
+
+	public void setOnDisplay(boolean onDisplay) {
+		this.onDisplay = onDisplay;
+	}
+
 	public BigDecimal getPriceInCurrency(Currency currency) {
 		if (currency == Currency.getInstance("USD")) {
 			return unitPriceUsd;

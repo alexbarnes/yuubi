@@ -3,6 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<c:set var="title" scope="request" value="Y&#362;BI - ${product.title}"></c:set>
 <jsp:include page="header.jsp" />
 <body>
 	<div class="container">
@@ -15,8 +16,7 @@
 							<ul class="breadcrumb">
 								<li><a href="<spring:url value='/shop'/>"><i
 										class="icon-home"></i></a> <span class="divider">/</span></li>
-								<li><a
-									href="<spring:url value='/shop/category/view/${product.category.id}/${product.category.urlName}'/>">${product.category.description}</a><span
+								<li><a href="<spring:url value='/shop/category/view/${product.category.id}/${product.category.urlName}'/>">${product.category.description}</a><span
 									class="divider">/</span></li>
 								<li class="active">${product.title}</li>
 							</ul>
@@ -34,20 +34,20 @@
 				<div class="row">
 					<div class="span4">
 						<a
-							href="<spring:url value='/shop/product/primaryimage/${product.code}'/>"
+							href="<spring:url value='/image/product/primary/${product.code}'/>"
 							class="thumbnail" data-fancybox-group="group1"
 							title="${product.title}"><img
-							src="<spring:url value='/shop/product/primaryimage/${product.code}'/>"></a>
+							src="<spring:url value='/image/product/primary/${product.code}'/>"></a>
 
 						<!-- Other pictures go here -->
 						<ul class="thumbnails small">
 							<c:forEach items="${product.images}" var="image">
 								<c:if test="${image.primaryImage == false}">
 									<li class="span1"><a
-										href="<spring:url value='/shop/product/image/${image.id}'/>"
+										href="<spring:url value='/image/product/${image.id}'/>"
 										class="thumbnail" data-fancybox-group="group1"
 										title="${image.description}"> <img
-											src="<spring:url value='/shop/product/image/${image.id}'/>"
+											src="<spring:url value='/image/product/${image.id}'/>"
 											alt=""></a></li>
 								</c:if>
 							</c:forEach>
@@ -68,17 +68,18 @@
 							data-toggle="modal"><button class="btn" id="addToBasket" rel="popover"><i class="icon-envelope"></i> Notify Me</button></a>
 							</div>
 					</c:if>
-					
 					<c:if test="${product.stockLevel > 0}">
 						<div class="span8">
 						<h5>
 							<c:set var="currency" value="${sessionScope.currency}"/>
 							<strong><c:out value="${sessionScope.currency.symbol}"></c:out> <fmt:formatNumber value="${product.getPriceInCurrency(currency)}" /></strong>
 						</h5>
+						<c:if test="${open}">
 							<button class="btn" id="addToBasket" onclick="addItem()"
 								rel="popover">
 								<i class="icon-shopping-cart"></i> Buy
 							</button>
+						</c:if>
 						</div>
 						<br>
 					</c:if>
@@ -97,14 +98,14 @@
 						<div class="span12">
 							<ul class="thumbnails listing-products">
 								<c:forEach items="${product.set.items}" var="current">
-									<c:if test="${current.code != product.code}">
+									<c:if test="${current.code != product.code and current.onDisplay}">
 										<li class="span3">
 											<div class="product-box">
 												<a
 													href="<spring:url value='/shop/product/view/${current.code}/${current.urlName}'/>"><h4>${current.title}</h4></a>
 												<a
 													href="<spring:url value='/shop/product/view/${current.code}/${current.urlName}'/>"><img
-													src="<spring:url value='/shop/product/primaryimage/${current.code}'/>" /></a>
+													src="<spring:url value='/image/product/primary/${current.code}'/>" /></a>
 												<p>${current.title}</p>
 											</div>
 										</li>

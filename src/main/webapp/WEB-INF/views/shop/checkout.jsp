@@ -3,8 +3,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<jsp:include page="header.jsp" />
+<c:set var="title" scope="request" value=" Y&#362;BI - Checkout"></c:set>
 <c:set var="currency" value="${sessionScope.currency}"/>
+<jsp:include page="header.jsp" />
 <body>
 	<div class="container">
 		<jsp:include page="menu.jsp" />
@@ -74,15 +75,14 @@
 								</c:forEach>
 							</select>
 						</div>
-						<div><select id="shipping"></select></div>
+						<div>
+						<select id="shipping"></select>
+						</div>
 						<div id="shippingtotal" class="pull-right">
 							<strong> <c:choose>
 									<c:when test="${basket.deliveryMethod != null}">
-										<c:out value="${sessionScope.currency.symbol}"/>  <fmt:formatNumber value="${basket.deliveryMethod.cost}" />
+										<c:out value="${sessionScope.currency.symbol}"/>  <fmt:formatNumber value="${shippingAmount}" />
 									</c:when>
-									<c:otherwise>
-											<c:out value="${sessionScope.currency.symbol}"/> 0
-										</c:otherwise>
 								</c:choose>
 							</strong>
 						</div>
@@ -105,6 +105,15 @@
 							</c:if>
 							</div>
 						</div>
+						<div id="discountAmount" class="pull-right">
+								<strong> <c:choose>
+									<c:when test="${basket.discount != null}">
+										<c:out value="${sessionScope.currency.symbol}"/> ${discountAmount}
+									</c:when>
+								</c:choose>
+							</strong>
+						</div>
+						<br>
 					</div>
 					<div class="well">
 						<h4>Total</h4>
@@ -133,7 +142,7 @@
 				</a>
 			</div>
 		</div>
-		<jsp:include page="footer.jsp" />
+		<hr>
 	</div>
 
 	<script src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
@@ -240,6 +249,9 @@
 							
 							$('#discountNotification').empty();
 							$('#discountNotification').html('<div class="alert alert-success">Discount applied. Your total has been updated.</div>');
+							
+							$('#discountAmount').empty();
+							$('#discountAmount').html('<strong>' + '<c:out value="${sessionScope.currency.symbol}"/> ' + json.amount + '</strong>');
 							
 							$('#discountControls').empty();
 							$('#discountControls').html(

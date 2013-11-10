@@ -6,7 +6,7 @@ public interface ProductAccess {
 	
 	public Product load(String code);
 	
-	public List<Product> listForCategory(long categoryCode);
+	public List<Product> listInUseForCategory(long categoryCode);
 	
 	public List<ProductSet> listSets();
 	

@@ -3,22 +3,15 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<c:set var="title" scope="request" value="Y&#362;BI - Confirm Purchase"></c:set>
+<c:set var="currency" value="${sessionScope.currency}" />
 <jsp:include page="header.jsp" />
 <body>
 	<div class="container">
-		<div class="row" id="top-bar">
-			<div class="span9">
-				<ul id="links" class="nav nav-pills pull-left">
-					<li><a href="<spring:url value='/shop'/>">Home</a></li>
-					<li><a href="products.html" title="All specials">Gallery</a></li>
-					<li><a href="contact.html" title="Contact">Contact</a></li>
-				</ul>
-			</div>
-		</div>
 		<div class="row show-grid">
-			<div class="span3 logo">
+			<div class="span12 logo">
 				<a href="<spring:url value='/shop'/>"> <img alt=""
-					src="<spring:url value='/resources/shop/img/logo.jpg'/>" />
+					src="<spring:url value='/resources/shop/img/logo3.jpg'/>" />
 				</a>
 			</div>
 		</div>
@@ -29,7 +22,7 @@
 						<ul class="breadcrumb">
 							<li><a href="<spring:url value='/shop'/>"><i
 									class="icon-home"></i></a> <span class="divider">/</span></li>
-							<li class="active">Complete</li>
+							<li class="active">Confirm</li>
 						</ul>
 					</div>
 				</div>
@@ -41,26 +34,29 @@
 				<hr />
 				<h4>Delivery Address</h4>
 				<address>
-					<strong>${transaction.customer.name}</strong> 
-					<br>
-					${transaction.customer.addressLine1}<c:if test="${transaction.customer.addressLine2 != null}">, ${transaction.customer.addressLine2 }</c:if>
-					<br>
-					${transaction.customer.city}, <c:if test="${transaction.customer.county != null}">${transaction.customer.county} </c:if>${transaction.customer.postCode}
+					<strong>${transaction.customer.name}</strong> <br>
+					${transaction.customer.addressLine1}
+					<c:if test="${transaction.customer.addressLine2 != null}">, ${transaction.customer.addressLine2 }</c:if>
+					<br> ${transaction.customer.city},
+					<c:if test="${transaction.customer.county != null}">${transaction.customer.county} </c:if>${transaction.customer.postCode}
 					<br>
 				</address>
 				<hr />
 				<h2 class="title">Special Instructions</h2>
-				${transaction.message}
+				<br>
+				<c:choose>
+					<c:when test="${transaction.message == null}">
+					None
+					</c:when>
+					<c:otherwise>${transaction.message}</c:otherwise>
+				</c:choose>
+				
 				<hr />
-				<div class="row">
-					<div class="span2 offset7 pull-right">
-						<a href="<spring:url value='/shop/checkout/complete'/>"><button
-								class="btn btn-primary">
-								<i class="icon-ok-circle icon-white"></i> Confirm Order
-							</button></a>
-					</div>
+				<c:if test="${stockIssue}">
+				<div class="alert alert-error">We are very sorry but we have sold out of one or more of the products in your basket since you started shopping.
 				</div>
-				<h4>Order Detail</h4>
+				</c:if>
+				<h4>Order</h4>
 				<div class="entry">
 					<table class="table table-bordered table-striped">
 						<thead>
@@ -74,54 +70,62 @@
 						<tbody>
 							<c:forEach items="${basket.items}" var="item">
 								<tr>
-									<td>${item.value.productDescription}</td>
+									<td><c:if test="${item.value.notEnoughStock}"><i class="cus-exclamation"></i> </c:if>${item.value.productDescription}</td>
 									<td>${item.value.number}</td>
-									<td>£${item.value.itemCost}</td>
-									<td>£${item.value.totalCost}</td>
+									<td><fmt:formatNumber value="${item.value.product.getPriceInCurrency(currency)}" /></td>
+									<td><fmt:formatNumber value="${item.value.getLineCost(currency)}" /></td>
 								</tr>
 							</c:forEach>
-							<c:if test="${basket.discount != null}">
 							<tr>
-								<td>Discount</td>
-								<td>${basket.discount.description}</td>
 								<td>&nbsp;</td>
-								<td id="total"><strong>£${total}</strong></td>
-							</tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								</tr>
+							<c:if test="${basket.discount != null}">
+								<tr>
+									<td>${basket.discount.description}</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td id="total">- ${discountAmount}</td>
+								</tr>
 							</c:if>
+							<tr>
+									<td>${basket.deliveryMethod.description}</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td id="total">${basket.deliveryMethod.cost}</td>
+								</tr>
+								<tr>
+									<td>Total</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td><strong> <c:out value="${sessionScope.currency.symbol}" />
+								<fmt:formatNumber value="${total}" minFractionDigits="2" maxFractionDigits="2" />
+							</strong></td>
+								</tr>
 						</tbody>
 					</table>
-					<h4>Shipping</h4>
-					<div class="well">
-						<div id="shippingtotal" class="pull-right">
-							<strong>${basket.deliveryMethod.description}: £<fmt:formatNumber
-									value="${basket.deliveryMethod.cost}"  />
-							</strong>
-						</div>
-					</div>
-					<h4>Total</h4>
-					<div class="well">
-						<div id="shippingtotal" class="pull-right">
-							<strong> £<fmt:formatNumber value="${total}"  />
-							</strong>
-						</div>
-					</div>
 				</div>
 			</div>
-			<div class="row pull-right">
 				<div class="span3">
 					<a href="<spring:url value='/shop/basket/show'/>"><button
 							class="btn">
 							<i class="icon-shopping-cart"></i> Return to Basket
 						</button></a>
 				</div>
-				<div class="span2 offset7">
-					<a href="<spring:url value='/shop/checkout/complete'/>"><button
-							class="btn btn-primary">
-							<i class="icon-ok-circle icon-white"></i> Confirm Order
-						</button></a>
-				</div>
-			</div>
+				
+				<!-- If there isn't enough stock hide the complete order button. -->
+				<c:if test="${!stockIssue}">
+					<div class="span2 offset7">
+						<a href="<spring:url value='/shop/checkout/complete'/>"><button
+								class="btn">
+								<i class="icon-ok-circle icon"></i> Confirm Order
+							</button></a>
+					</div>
+				</c:if>
 		</div>
+		<hr>
 		<jsp:include page="footer.jsp" />
 	</div>
 	<script

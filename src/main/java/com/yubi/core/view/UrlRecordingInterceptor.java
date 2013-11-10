@@ -9,7 +9,6 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import org.springframework.web.util.WebUtils;
 
 import com.yubi.shop.basket.Basket;
 
@@ -29,16 +28,7 @@ public class UrlRecordingInterceptor extends HandlerInterceptorAdapter {
 			Basket basket = new Basket();
 			session.setAttribute(BASKET_KEY, basket);
 			session.setMaxInactiveInterval(60*10);
-			if (WebUtils.getCookie(request, "currency") != null) {
-				try {
-					session.setAttribute("currency", WebUtils.getCookie(request, "currency"));
-				} catch (RuntimeException e) {
-					session.setAttribute("currency", Currency.getInstance(request.getLocale()));
-				}
-			} else {
-				session.setAttribute("currency", Currency.getInstance(request.getLocale()));
-			}
-			
+			session.setAttribute("currency", Currency.getInstance(request.getLocale()));
 		}
 		return super.preHandle(request, response, handler);
 	}

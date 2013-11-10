@@ -1,5 +1,7 @@
 package com.yubi.shop.notification;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
@@ -30,8 +32,17 @@ public class InternalStockNotificationService implements StockNotificationServic
 	 */
 	@Transactional
 	public void notify(Product product) {
-		String messageText = "The following people need to be notified that product [" + product.getCode() + "] is back in stock. "; 
-		for (OutOfStockNotification notification : outOfStockService.loadNotificationsForProduct(product.getCode())) {
+		List<OutOfStockNotification> list = outOfStockService
+				.loadNotificationsForProduct(product.getCode());
+
+		// -- No need for an e-mail if there are no notifications to send.
+		if (list.isEmpty()) {
+			return;
+		}
+
+		String messageText = "The following people need to be notified that product ["
+				+ product.getCode() + "] is back in stock. ";
+		for (OutOfStockNotification notification : list) {
 			notification.setSent(true);
 			messageText = messageText + notification.getEmail() + ";";
 		}

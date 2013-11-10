@@ -3,6 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<c:set var="title" scope="request" value="Y&#362;BI - Shop Home"></c:set>
 <jsp:include page="header.jsp" />
 <body>
 	<div class="container">
@@ -72,11 +73,9 @@
 											varStatus="status">
 											<li class="span3">
 												<div class="product-box">
-													<a
-														href="<spring:url value='/shop/category/view/${child.id}/${child.urlName}'/>"><h4>${child.description}</h4></a>
-													<a
-														href="<spring:url value='/shop/category/view/${child.id}/${child.urlName}'/>"><img
-														src="<spring:url value='/shop/category/image/${child.id}'/>" /></a>
+													<a href="<spring:url value='/shop/category/view/${child.id}/${child.urlName}'/>"><h4>${child.description}</h4></a>
+													<a href="<spring:url value='/shop/category/view/${child.id}/${child.urlName}'/>">
+													<img src="<spring:url value='/image/category/${child.id}'/>" /></a>
 												</div>
 											</li>
 										</c:forEach>

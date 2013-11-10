@@ -26,7 +26,7 @@ public class EmailService {
 		messageToSend.setTo(environment.getProperty("admin.emails").split(","));
 		messageToSend.setSubject(message.getSubject());
 		messageToSend.setText(message.getText());
-		messageToSend.setFrom(message.getFrom());
+		messageToSend.setFrom("info@yuubi-jewellery.co.uk");
 		sender.send(messageToSend);
 	}
 }

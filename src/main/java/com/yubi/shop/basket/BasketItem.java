@@ -13,6 +13,8 @@ public class BasketItem {
 	private Product product;
 
 	private int number;
+	
+	private boolean notEnoughStock;
 
 	public BasketItem() {
 	}
@@ -75,5 +77,13 @@ public class BasketItem {
 	
 	public BigDecimal getLineCost(Currency currency) {
 		return product.getPriceInCurrency(currency).multiply(new BigDecimal(number));
+	}
+
+	public boolean isNotEnoughStock() {
+		return notEnoughStock;
+	}
+
+	public void setNotEnoughStock(boolean notEnoughStock) {
+		this.notEnoughStock = notEnoughStock;
 	}
 }

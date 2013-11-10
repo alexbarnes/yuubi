@@ -8,5 +8,7 @@ public interface BasketService {
 	public BigDecimal getBasketTotal(Basket basket, Currency currency);
 	
 	public BigDecimal getDiscountAmount(Basket basket, Currency currency);
-
+	
+	public boolean checkStockLevels(Basket basket);
+	
 }

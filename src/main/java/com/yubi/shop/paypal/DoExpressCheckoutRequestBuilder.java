@@ -16,6 +16,10 @@ public class DoExpressCheckoutRequestBuilder {
 	
 	private BigDecimal orderTotal;
 	
+	private String currencyCode;
+	
+	private String orderReference;
+	
 	public DoExpressCheckoutRequestBuilder(String username, String password,
 			String signature) {
 		super();
@@ -36,6 +40,16 @@ public class DoExpressCheckoutRequestBuilder {
 	
 	public DoExpressCheckoutRequestBuilder withOrderTotal(BigDecimal total) {
 		this.orderTotal = total;
+		return this;
+	}
+	
+	public DoExpressCheckoutRequestBuilder inCurrency(String currencyCode) {
+		this.currencyCode = currencyCode;
+		return this;
+	}
+	
+	public DoExpressCheckoutRequestBuilder withOrderReference(String orderReference) {
+		this.orderReference = orderReference;
 		return this;
 	}
 
@@ -69,7 +83,10 @@ public class DoExpressCheckoutRequestBuilder {
 		buffer.append("PAYMENTREQUEST_0_AMT=" + orderTotal.toString());
 		buffer.append("&");
 		
-		buffer.append("PAYMENTREQUEST_0_CURRENCYCODE=GBP");
+		buffer.append("PAYMENTREQUEST_0_CURRENCYCODE=" + currencyCode);
+		buffer.append("&");
+		
+		buffer.append("PAYMENTREQUEST_n_INVNUM=" + orderReference);
 		
 		return buffer.toString();
 	}

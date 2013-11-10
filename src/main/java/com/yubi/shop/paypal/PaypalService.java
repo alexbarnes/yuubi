@@ -22,7 +22,7 @@ public interface PaypalService {
 	 * Complete the flow. This is where the order is written to the database.
 	 * 
 	 */
-	public String completeTransaction(String token, String payerId, String sessionId, Basket basket, Currency currency);
+	public String completeTransaction(String token, String payerId, String sessionId, Basket basket, Currency currency, String orderReference);
 	
 	
 	/**

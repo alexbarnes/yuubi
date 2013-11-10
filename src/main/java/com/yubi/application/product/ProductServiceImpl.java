@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -68,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
 
 		final QueryBuilder b = fullTextSession.getSearchFactory()
 				.buildQueryBuilder().forEntity(Product.class).get();
-
+		
 		org.apache.lucene.search.Query luceneQuery = b.keyword().wildcard()
 				.onField("title")
 				.andField("productDescription")
@@ -76,8 +77,8 @@ public class ProductServiceImpl implements ProductService {
 				.andField("category.description")
 				.matching(query).createQuery();
 
-		org.hibernate.Query fullTextQuery = fullTextSession
-				.createFullTextQuery(luceneQuery);
+		 FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Product.class);
+		 fullTextQuery.enableFullTextFilter("inUseProduct");
 		
 		List<Product> products = fullTextQuery.list();
 		 return products;
@@ -88,8 +89,27 @@ public class ProductServiceImpl implements ProductService {
 		Product product = (Product) sessionFactory.getCurrentSession().get(
 				Product.class, code);
 		log.info("Set stock level for product with code [" + code + "] to [" + quantity + "].");
+		if (product.getStockLevel() == 0) {
+			stockNotificationService.notify(product);
+		}
 		product.setStockLevel(quantity);
-		stockNotificationService.notify(product);
 	}
 
+	@Transactional
+	public Product load(String code) {
+		return (Product) sessionFactory.getCurrentSession().get(Product.class, code);
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<Product> listAll() {
+		return sessionFactory.getCurrentSession().createQuery("from Product").list();
+	}
+
+	
+	@Transactional
+	public void save(Product toSave) {
+		sessionFactory.getCurrentSession().saveOrUpdate(toSave);
+	}
 }

@@ -3,22 +3,25 @@ package com.yubi.shop.controller;
 import java.util.Currency;
 
 import javax.inject.Inject;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.yubi.application.category.CategoryService;
+import com.yubi.application.product.Product;
 import com.yubi.application.product.ProductAccess;
 import com.yubi.application.product.ProductService;
 import com.yubi.core.mail.EmailService;
@@ -62,19 +65,26 @@ public class ShopController {
 	}
 	
 	
+	@RequestMapping("/heartbeat")
+	public @ResponseBody boolean heartbeat() {
+		return true;
+	}
+	
+	
 	@RequestMapping("/currency/change")
-	public String changeCurrency(String currencyCode, String url, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+	public RedirectView changeCurrency(String currencyCode, String url, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 		session.setAttribute("currency", Currency.getInstance(currencyCode));
-		Cookie cookie = new Cookie("currency", currencyCode);
-		cookie.setMaxAge(18144000);
-		response.addCookie(cookie);
-		return "redirect:" + url;
+		RedirectView view = new RedirectView(url);
+		view.setExposeModelAttributes(false);
+		return view;
 	}
 	
 	
 	@RequestMapping("/showerror")
-	public String errorHandle() {
-		return "redirect:/shop/error";
+	public RedirectView errorHandle() {
+		RedirectView view = new RedirectView("/shop/error");
+		view.setExposeModelAttributes(false);
+		return view;
 	}
 	
 	
@@ -90,9 +100,10 @@ public class ShopController {
 	@RequestMapping("/category/view/{id}/*")
 	public ModelAndView showCategory(@PathVariable("id") long id, HttpSession session, HttpServletRequest request) {
 		ModelAndView mav =  new ModelAndView("shop/productlist");
+		String description = categoryService.load(id).getDescription();
 		mav.addObject("menu", categoryService.buildProductMenu());
-		mav.addObject("products", productAccess.listForCategory(id));
-		mav.addObject("active", categoryService.load(id).getDescription());
+		mav.addObject("products", productAccess.listInUseForCategory(id));
+		mav.addObject("title", description);
 		session.setAttribute("current_url", request.getRequestURI());
 		return mav;
 	}
@@ -115,21 +126,30 @@ public class ShopController {
 	 * View a specific product detail.
 	 */
 	@RequestMapping("/product/view/{code}/*")
-	public ModelAndView viewProduct(@PathVariable("code") String code, HttpSession session, HttpServletRequest request) {
+	public ModelAndView showProduct(@PathVariable("code") String code, HttpSession session, HttpServletRequest request) {
+		Product product = productAccess.load(code);
+		
+		// -- If we try to access a not in use product redirect to the category.
+		if(!product.isOnDisplay()) {
+			RedirectView redirect = new RedirectView(String.format("/shop/category/view/%s/%s",product.getCategory().getId(), product.getCategory().getUrlName()));
+			redirect.setExposeModelAttributes(false);
+			return new ModelAndView(redirect);
+		}
 		ModelAndView mav = new ModelAndView("shop/productdetail");
 		mav.addObject("menu", categoryService.buildProductMenu());
-		mav.addObject("product", productAccess.load(code));
+		mav.addObject("product", product);
 		session.setAttribute("current_url", request.getRequestURI());
 		return mav;
 	}
 	
 	
 	@RequestMapping(value = "/product/search", method = RequestMethod.POST)
-	public ModelAndView searchForProducts(String query, RedirectAttributes redirectAttributes, HttpSession session) {
-		ModelAndView mav = new ModelAndView("redirect:/shop/product/searchresults");
+	public RedirectView searchForProducts(String query, RedirectAttributes redirectAttributes, HttpSession session) {
+		RedirectView view = new RedirectView("/shop/product/searchresults");
+		view.setExposeModelAttributes(false);
 		redirectAttributes.addFlashAttribute("active", "Search: " + query);
 		redirectAttributes.addFlashAttribute("products", productService.search(query));
-		return mav;
+		return view;
 	}
 	
 	
@@ -180,25 +200,23 @@ public class ShopController {
 	
 	
 	@RequestMapping(value = "/contact/send", method = RequestMethod.POST)
-	public ModelAndView sendContactForm(OutboundMailMessage message, RedirectAttributes redirectAttributes) {
-		ModelAndView mav = new ModelAndView("shop/contact");
-		if (StringUtils.isEmpty(message.getFrom())) {
-			mav.addObject("error-from", "true");
+	public ModelAndView sendContactForm(@ModelAttribute("message") @Valid OutboundMailMessage message,  BindingResult result, RedirectAttributes redirectAttributes) {
+		if (result.hasErrors()) {
+			ModelAndView mav = new ModelAndView("shop/contact");
+			mav.addObject("message", message);
+			mav.addObject("menu", categoryService.buildProductMenu());
 			return mav;
 		}
 		
-		if (StringUtils.isEmpty(message.getText())) {
-			mav.addObject("error-text", "true");
-			return mav;
-		}
-		
-		if (StringUtils.isEmpty(message.getFromName())) {
-			mav.addObject("error-from-name", "true");
-			return mav;
-		}
-		message.setSubject("Contact Form Submission [" + message.getFromName() + "]");
+		// If we get past the required validation send the message and redirect.
+		ModelAndView mav = new ModelAndView();
+		message.setSubject("Contact Form Submission [" + message.getFromName() + "] [" + message.getFrom() + "].");
 		emailService.sendMailToAdmins(message);
-		mav.setViewName("redirect:/shop/contact");
+		
+		
+		RedirectView view = new RedirectView("/shop/contact");
+		view.setExposeModelAttributes(false);
+		mav.setView(view);
 		redirectAttributes.addFlashAttribute("success", "true");
 		return mav;
 	}

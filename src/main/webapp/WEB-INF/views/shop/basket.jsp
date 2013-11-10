@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<c:set var="title" scope="request" value="Y&#362;BI - Basket"></c:set>
 <jsp:include page="header.jsp" />
 <body>
 	<div class="container">

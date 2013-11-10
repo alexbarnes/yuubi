@@ -1,0 +1,64 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+        xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                    http://www.springframework.org/schema/security 
+                    http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+        
+        <!-- No security for resources -->
+        <http pattern="/" security="none"/>
+        <http pattern="/resources/**" security="none"/>
+        <http pattern="/error" security="none" />
+        <http pattern="/sitemap.xml" security="none" />
+        <http pattern="/shop/**" security="none" create-session="always"/>
+        
+        <http use-expressions="true" create-session="always">
+                <!-- Ensure anyone can see the login page and related functionality -->
+                
+                <intercept-url pattern="/admin/login*" access="isAnonymous() or isAuthenticated()" />
+                <intercept-url pattern="/admin/forgotpassword" access="isAnonymous() or isAuthenticated()" />
+                <intercept-url pattern="/admin/resetsent" access="isAnonymous() or isAuthenticated()" />
+                <intercept-url pattern="/admin/password/change/*" access="isAnonymous() or isAuthenticated()" />
+                <intercept-url pattern="/admin/password/change" access="isAnonymous() or isAuthenticated()" />
+                
+                <!-- Everything else should be hidden -->
+                <intercept-url pattern="/admin/**" access="isAuthenticated()" />
+
+                <form-login 
+                        login-page="/admin/login" 
+                        default-target-url="/admin/home" 
+                        authentication-failure-url="/admin/loginfailed" 
+                        always-use-default-target="false"/>
+                        
+                <session-management invalid-session-url="/admin/login"/>
+                <remember-me data-source-ref="dataSource" />
+
+                <logout logout-url="/admin/logout" logout-success-url="/admin/login" />
+        </http>
+
+        <beans:bean id="daoAuthenticationProvider"
+                class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+                <beans:property name="userDetailsService" ref="userDetailsService" />
+        </beans:bean>
+
+        <beans:bean id="authenticationManager"
+                class="org.springframework.security.authentication.ProviderManager">
+                <beans:property name="providers">
+                        <beans:list>
+                                <beans:ref local="daoAuthenticationProvider" />
+                        </beans:list>
+                </beans:property>
+        </beans:bean>
+        
+        <beans:bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        	<beans:constructor-arg value="10" />
+		</beans:bean>
+        <!-- <beans:bean id="noOpPasswordEncoder" class="org.springframework.security.crypto.password.NoOpPasswordEncoder"></beans:bean> -->
+	
+
+        <authentication-manager>
+                <authentication-provider user-service-ref="userDetailsService">
+                	<password-encoder ref="bCryptPasswordEncoder"></password-encoder>
+                </authentication-provider>
+        </authentication-manager>
+</beans:beans>

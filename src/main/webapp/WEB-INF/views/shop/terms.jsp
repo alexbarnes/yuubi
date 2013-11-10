@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<c:set var="title" scope="request" value="Y&#362;B - Terms &amp; Conditions"></c:set>
 <jsp:include page="header.jsp" />
 <body>
 <div class="container">
@@ -11,7 +12,7 @@
 					<ul class="breadcrumb">
 						<li><a href='<spring:url value="/shop"/>'><i
 								class="icon-home"></i></a> <span class="divider">/</span></li>
-						<li class="active">Terms or Purchase</li>
+						<li class="active">Terms &amp; Conditions</li>
 					</ul>
 				</div>
 			</div>

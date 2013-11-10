@@ -55,12 +55,14 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="row pull-right">
-			<a href="<spring:url value='/shop/checkout'/>"><button
-					class="btn">
-					 Checkout
-				</button></a>
-		</div>
+		<c:if test="${open and not empty basket.items}">
+			<div class="row pull-right">
+				<a href="<spring:url value='/shop/checkout'/>"><button
+						class="btn">
+						 Checkout
+					</button></a>
+			</div>
+		</c:if>
 	</c:when>
 	<c:otherwise>
 		<h4>There are currently no items in your basket</h4>

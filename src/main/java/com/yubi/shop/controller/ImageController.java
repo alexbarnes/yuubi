@@ -12,7 +12,7 @@ import com.yubi.application.category.CategoryService;
 import com.yubi.application.product.ProductAccess;
 
 @Controller
-@RequestMapping("/shop")
+@RequestMapping("/image")
 public class ImageController {
 	
 	private final ProductAccess productAccess;
@@ -28,21 +28,21 @@ public class ImageController {
 		this.categoryService = categoryService;
 	}
 	
-	@RequestMapping(value = "/product/image/{id}", produces = "image/png")
+	@RequestMapping(value = "/product/{id}", produces = "image/png")
 	public @ResponseBody byte[] loadImage(@PathVariable("id") long id, HttpServletResponse response) {
 		response.setHeader("Expires", "31536000");
 		return productAccess.loadImage(id).getImage();
 	}
 	
 	
-	@RequestMapping(value = "/product/primaryimage/{code}", produces = "image/png")
+	@RequestMapping(value = "/product/primary/{code}", produces = "image/png")
 	public @ResponseBody byte[] loadProductPrimaryImage(@PathVariable("code") String code, HttpServletResponse response) {
 		response.setHeader("Expires", "31536000");
 		return productAccess.loadPrimaryImage(code).getImage();
 	}
 	
 	
-	@RequestMapping(value = "/category/image/{id}", produces = "image/png")
+	@RequestMapping(value = "/category/{id}", produces = "image/png")
 	public @ResponseBody byte[] loadCategoryImage(@PathVariable("id") long id, HttpServletResponse response) {
 		response.setHeader("Expires", "31536000");
 		return categoryService.loadWithChildren(id).getImage();

@@ -60,9 +60,6 @@ public class BasketController {
 	@RequestMapping("/add/{code}")
 	public @ResponseBody boolean addToBasket(@PathVariable("code") String code, HttpSession session) {
 		
-		// Check the product is still available - someone else might have 
-		// taken it in the meantime. Ensure that there are still enough of them.
-		
 		Basket basket = Basket.getBasketFromSession(session);
 		
 		// -- Check for the presence of this item in the basket

@@ -78,6 +78,6 @@ public class Category {
 	}
 	
 	public String getUrlName() {
-		return description.replace(" ", "_").toLowerCase();
+		return description.replace(" ", "-").toLowerCase();
 	}
 }

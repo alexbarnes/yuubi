@@ -1,5 +1,6 @@
 package com.yubi.application.order;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,16 @@ public class ProductOrder {
 	
 	@Column(length=3)
 	private String currencyCode;
+	
+	private String orderReference;
+
+	public String getOrderReference() {
+		return orderReference;
+	}
+
+	public void setOrderReference(String orderReference) {
+		this.orderReference = orderReference;
+	}
 
 	public long getId() {
 		return id;
@@ -88,5 +99,13 @@ public class ProductOrder {
 
 	public void setCurrencyCode(String currencyCode) {
 		this.currencyCode = currencyCode;
+	}
+	
+	public BigDecimal getOrderTotal() {
+		BigDecimal total = new BigDecimal("0.00");
+		for (ProductOrderItem item : items) {
+			total = total.add(item.getTotalCost());
+		}
+		return total;
 	}
 }

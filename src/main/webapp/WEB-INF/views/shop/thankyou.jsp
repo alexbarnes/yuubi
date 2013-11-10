@@ -1,21 +1,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<c:set var="title" scope="request" value="Y&#362;BI - Thank You"></c:set>
 <jsp:include page="header.jsp" />
 <body>
 	<div class="container">
-		<div class="row" id="top-bar">
-			<div class="span9">
-				<ul id="links" class="nav nav-pills pull-left">
-					<li><a href="<spring:url value='/shop'/>" title="Shop">Home</a></li>
-					<li><a href="<spring:url value='/shop'/>" title="Contact">Contact</a></li>
-				</ul>
-			</div>
-		</div>
-		<!-- Logo -->
 		<div class="row show-grid">
-			<div class="span8 logo">
+			<div class="span12 logo">
 				<a href="<spring:url value='/shop'/>"> <img alt=""
-					src="<spring:url value='/resources/shop/img/logo.jpg'/>" />
+					src="<spring:url value='/resources/shop/img/logo3.jpg'/>" />
 				</a>
 			</div>
 		</div>
@@ -23,12 +15,11 @@
 			<div class="span12">
 				<h2 class="title">Order completed</h2>
 				<hr />
-				<p>Thank you for placing your order with Y&#36;bi. A
-					confirmation e-mail has been sent to the e-mail address provided and
-					we are now working to ship your order as quickly as possible.</p>
+				<p>Thank you for placing your order with Y&#362;BI. We are now working to ship your order as quickly as possible.</p>
+				<p>If you need to contact us about this order for any reason please use the order reference ${order}.</p>
 			</div>
 		</div>
-
+		<hr>
 		<jsp:include page="footer.jsp" />
 	</div>
 	<script

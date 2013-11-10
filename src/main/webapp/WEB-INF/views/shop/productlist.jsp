@@ -1,8 +1,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<c:choose>
+<c:when test="${active != null}">
+	<c:set var="active" scope="request" value="${active}"></c:set>
+	<c:set var="title" scope="request" value="Y&#362;BI - ${active}"></c:set>
+</c:when>
+	<c:otherwise><c:set var="active" scope="request" value="${title}"></c:set>
+	<c:set var="title" scope="request" value="Y&#362;BI - ${title}"></c:set>
+</c:otherwise>
+</c:choose>
 <jsp:include page="header.jsp" />
 <body>
+
 	<div class="container">
 		<jsp:include page="menu.jsp" />
 		<div class="row">
@@ -36,7 +46,7 @@
 											href="<spring:url value='/shop/product/view/${product.code}/${product.urlName}'/>"><h4>${product.title}</h4></a>
 										<a
 											href="<spring:url value='/shop/product/view/${product.code}/${product.urlName}'/>"><img
-											src="<spring:url value='/shop/product/primaryimage/${product.code}'/>" /></a>
+											src="<spring:url value='/image/product/primary/${product.code}'/>" /></a>
 									</div>
 								</li>
 							</c:forEach>
