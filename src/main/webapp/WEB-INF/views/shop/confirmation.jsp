@@ -94,7 +94,7 @@
 									<td>${basket.deliveryMethod.description}</td>
 									<td>&nbsp;</td>
 									<td>&nbsp;</td>
-									<td id="total">${basket.deliveryMethod.cost}</td>
+									<td id="total">${basket.deliveryMethod.getCostInCurrency(currency)}</td>
 								</tr>
 								<tr>
 									<td>Total</td>

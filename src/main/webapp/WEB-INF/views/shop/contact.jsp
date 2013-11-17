@@ -33,7 +33,7 @@
 					<h2 class="title">Contact</h2>
 				<hr />
 				<p>Please use the following form to get in touch with us here at
-					Yuubi. We'd love to hear fom you. If you're contacting us about an
+					Y&#363;bi. We'd love to hear from you. If you're contacting us about an
 					order please include the order number in your message.</p>
 				<p>We look forward to hearing from you!</p>
 				<hr>

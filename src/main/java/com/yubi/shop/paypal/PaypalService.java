@@ -31,6 +31,6 @@ public interface PaypalService {
 	 * 
 	 * @param transactionId
 	 */
-	public void loadTransaction(String transactionId);
+	public PaypalTransaction loadTransaction(String transactionId);
 
 }

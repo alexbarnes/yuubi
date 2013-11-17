@@ -36,4 +36,17 @@ public class ShopStatusServiceImpl implements ShopStatusService {
 	public String getClosedMessage() {
 		return ((ShopStatus) sessionFactory.getCurrentSession().get(ShopStatus.class, 1L)).getClosedMessage();
 	}
+
+
+	@Transactional
+	public String getSiteMap() {
+		return ((ShopStatus) sessionFactory.getCurrentSession().get(ShopStatus.class, 1L)).getSiteMap();
+	}
+
+
+	@Transactional
+	public void saveClosedMessage(String message) {
+		ShopStatus status = (ShopStatus) sessionFactory.getCurrentSession().get(ShopStatus.class, 1L);
+		status.setClosedMessage(message);
+	}
 }

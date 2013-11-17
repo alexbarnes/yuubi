@@ -1,7 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,9 +7,6 @@
 <title>Admin Home</title>
 <link id="bootstrap-style"
 	href="<spring:url value='/resources/admin/css/bootstrap.css'/>"
-	rel="stylesheet">
-<link id="base-style"
-	href="<spring:url value='/resources/admin/css/style.css'/>"
 	rel="stylesheet">
 <link href="<spring:url value='/resources/admin/img/favicon.png'/>"
 	rel="shortcut icon" type="image/x-icon">
@@ -24,7 +19,6 @@
 	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 </head>
-
 <body>
 	<!-- start: Header -->
 	<div class="navbar">
@@ -44,32 +38,20 @@
 
 	<div class="container-fluid">
 		<div class="row-fluid">
-			<div class="span3">
-				<div class="well sidebar-nav">
-					<ul class="nav nav-list">
-						<li class="active"><a href="<spring:url value='/admin/home'/>"><span> Home</span></a></li>
-						<li><a href="<spring:url value='/admin/shop'/>"><span> Shop</span></a></li>
-						<li><a href="<spring:url value='/admin/products'/>"><span> Products</span></a></li>
-						<li><a href="<spring:url value='/admin/order'/>"><span> Orders</span></a></li>
-						<li><a href="<spring:url value='/admin/user'/>"><span> User</span></a></li>
-						<li class="divider"></li>
-						<li><a href="<spring:url value='/admin/logout'/>"><span> Logout</span></a></li>
-					</ul>
-				</div>
-			</div>
+			<c:set var="selected" value="home" scope="request"/>
+			<jsp:include page="menu.jsp"/>
 			<div id="content" class="span8">
 				<div class="row-fluid">
-					<div class="box span3"></div>
+					<div class="box span8">
+					<h3>Welcome to the Yuubi Admin Pages</h3>
+					
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="clearfix"></div>
 		<hr>
-
-		<footer>
-			
-		</footer>
-
+		<jsp:include page="footer.jsp"/>
 	</div>
 	<script
 		src="<spring:url value='/resources/admin/js/jquery-1.9.1.min.js'/>"></script>

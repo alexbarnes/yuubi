@@ -86,14 +86,15 @@ public class CheckoutController {
 		if (basket.getItems().size() == 0) {
 			return new ModelAndView("redirect:/");
 		}
+		Currency currency = (Currency) session.getAttribute("currency");
 		
 		ModelAndView mav = new ModelAndView("shop/checkout", "countries", countryAccess.listAll());
-		mav.addObject("total", basketService.getBasketTotal(basket, (Currency) session.getAttribute("currency")).setScale(2, RoundingMode.HALF_UP).toString());
+		mav.addObject("total", basketService.getBasketTotal(basket, currency).setScale(2, RoundingMode.HALF_UP).toString());
 		mav.addObject("menu", categoryService.buildProductMenu());
 		if (basket.getDeliveryMethod() != null) {
-			mav.addObject("shippingAmount", basket.getDeliveryMethod().getCost().setScale(2, RoundingMode.HALF_UP).toString());
+			mav.addObject("shippingAmount", basket.getDeliveryMethod().getCostInCurrency(currency).setScale(2, RoundingMode.HALF_UP).toString());
 		} 
-		mav.addObject("discountAmount", basketService.getDiscountAmount(basket, (Currency) session.getAttribute("currency")).toString());
+		mav.addObject("discountAmount", basketService.getDiscountAmount(basket, currency).toString());
 		return mav;
 	}
 	
@@ -189,7 +190,7 @@ public class CheckoutController {
 			OutboundMailMessage mailMessage = new OutboundMailMessage();
 			mailMessage.setFrom("Yuubi");
 			mailMessage.setSubject("Paypal Payment Error");
-			mailMessage.setText("Important: An error occurred when setting up a Paypal transaction. Please look into this immediately.");
+			mailMessage.setText("Important: An error occurred when setting up a Paypal transaction. Please look into this immediately. The recorded error was:" + e.getMessage());
 			emailService.sendMailToAdmins(mailMessage);
 			return result;
 	}
@@ -212,7 +213,9 @@ public class CheckoutController {
 		// If we came here without going to Paypal there will be no token. We need to go back to
 		// checkout so that the user can complete properly via Paypal.
 		if (sessionToken == null || !sessionToken.equals(token)) {
-			result.setViewName("redirect:/shop/checkout");
+			RedirectView redirectView = new RedirectView("/shop/checkout");
+			redirectView.setExposeModelAttributes(false);
+			result.setView(redirectView);
 			return result;
 		}
 		
@@ -253,6 +256,13 @@ public class CheckoutController {
 		String token = (String) session.getAttribute("paypal-token");
 		String payerId = (String) session.getAttribute("payer-id");
 		
+		// -- If we're not meant to be here don't continue
+		if (basket.getItems().isEmpty()) {
+			RedirectView redirectView = new RedirectView("/shop");
+			redirectView.setExposeModelAttributes(false);
+			mav.setView(redirectView);
+			return mav;
+		}
 		// Write the details of the order here. Link it to the Paypal order
 		ProductOrder order = productOrderService.createNewOrder(basket, (Currency) session.getAttribute("currency"));
 		
@@ -275,7 +285,7 @@ public class CheckoutController {
 			emailService.sendMailToAdmins(mailMessage);
 			
 			redirect.addFlashAttribute("error", true);
-			RedirectView redirectView = new RedirectView("redirect:/shop/checkout");
+			RedirectView redirectView = new RedirectView("/shop/checkout");
 			redirectView.setExposeModelAttributes(false);
 			mav.setView(redirectView);
 			return mav;

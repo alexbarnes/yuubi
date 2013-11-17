@@ -1,6 +1,7 @@
 package com.yubi.shop.delivery;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +31,9 @@ public class DeliveryMethod {
 	
 	@Column(nullable = false)
 	private BigDecimal cost;
+	
+	private BigDecimal costUsd;
+	private BigDecimal costEur;
 
 	public long getId() {
 		return id;
@@ -61,5 +65,33 @@ public class DeliveryMethod {
 
 	public void setCost(BigDecimal cost) {
 		this.cost = cost;
+	}
+
+	public BigDecimal getCostUsd() {
+		return costUsd;
+	}
+
+	public void setCostUsd(BigDecimal costUsd) {
+		this.costUsd = costUsd;
+	}
+
+	public BigDecimal getCostEur() {
+		return costEur;
+	}
+
+	public void setCostEur(BigDecimal costEur) {
+		this.costEur = costEur;
+	}
+	
+	public BigDecimal getCostInCurrency(Currency currency) {
+		if (currency == Currency.getInstance("GBP")) {
+			return cost;
+		} else if (currency == Currency.getInstance("USD")) {
+			return costUsd;
+		} else if (currency == Currency.getInstance("EUR")) {
+			return costEur;
+		} else {
+			throw new IllegalArgumentException("Unsupported currency [" + currency + "].");
+		}
 	}
 }

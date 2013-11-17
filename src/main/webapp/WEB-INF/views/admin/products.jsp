@@ -10,9 +10,6 @@
 <link id="bootstrap-style"
 	href="<spring:url value='/resources/admin/css/bootstrap.css'/>"
 	rel="stylesheet">
-<link id="base-style"
-	href="<spring:url value='/resources/admin/css/style.css'/>"
-	rel="stylesheet">
 <link href="<spring:url value='/resources/admin/img/favicon.png'/>"
 	rel="shortcut icon" type="image/x-icon">
 <link rel="stylesheet"
@@ -44,21 +41,12 @@
 
 	<div class="container-fluid">
 		<div class="row-fluid">
-			<div class="span3">
-				<div class="well sidebar-nav">
-					<ul class="nav nav-list">
-						<li><a href="<spring:url value='/admin/home'/>"><span> Home</span></a></li>
-						<li><a href="<spring:url value='/admin/shop'/>"><span> Shop</span></a></li>
-						<li class="active"><a href="<spring:url value='/admin/products'/>"><span> Products</span></a></li>
-						<li><a href="<spring:url value='/admin/user'/>"><span> User</span></a></li>
-						<li class="divider"></li>
-						<li><a href="<spring:url value='/admin/logout'/>"><span> Logout</span></a></li>
-					</ul>
-				</div>
-			</div>
+			<c:set var="selected" value="products" scope="request"/>
+			<jsp:include page="menu.jsp"/>
 			<div id="content" class="span8">
 				<div class="row-fluid">
 					<div class="box span8">
+					<h3>Products</h3>
 						<table class="table table-bordered">
 							<tr>
 								<th>Code</th>
@@ -90,11 +78,7 @@
 		</div>
 		<div class="clearfix"></div>
 		<hr>
-
-		<footer>
-			
-		</footer>
-
+		<jsp:include page="footer.jsp"/>
 	</div>
 	<script
 		src="<spring:url value='/resources/admin/js/jquery-1.9.1.min.js'/>"></script>

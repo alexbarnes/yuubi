@@ -27,6 +27,16 @@ public class PaypalRequest {
 	private String transactionId;
 	
 	private String timeStampString;
+	
+	private String requestType;
+
+	public String getRequestType() {
+		return requestType;
+	}
+
+	public void setRequestType(String requestType) {
+		this.requestType = requestType;
+	}
 
 	public String getRequest() {
 		return request;

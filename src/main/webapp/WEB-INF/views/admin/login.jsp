@@ -52,9 +52,7 @@ body {
 			</form>
 
 			<hr />
-			<footer>
-				<p>© Alex Barnes & Yubi Jewellery 2012</p>
-			</footer>
+			<jsp:include page="footer.jsp"/>
 		</div>
 	</div>
 	<script type="text/javascript">

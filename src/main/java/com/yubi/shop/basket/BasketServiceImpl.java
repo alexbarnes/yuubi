@@ -34,7 +34,7 @@ public class BasketServiceImpl implements BasketService {
 		
 		// -- Add on shipping
 		if (basket.getDeliveryMethod() != null) {
-			total = total.add(basket.getDeliveryMethod().getCost());
+			total = total.add(basket.getDeliveryMethod().getCostInCurrency(currency));
 		}
 		
 		total = total.setScale(2, RoundingMode.HALF_UP);

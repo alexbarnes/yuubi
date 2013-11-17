@@ -3,6 +3,7 @@ package com.yubi.shop.controller;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -99,6 +100,12 @@ public class BasketController {
 	
 	@RequestMapping("/show")
 	public ModelAndView showBasket(HttpSession session, HttpServletRequest request) {
+		Basket basket = Basket.getBasketFromSession(session);
+		// -- Clear any out of stock errors in case we're returning from the checkout
+		for (Entry<BasketKey, BasketItem> item : basket.getItems().entrySet()) {
+			item.getValue().setNotEnoughStock(false);
+		}
+				
 		session.setAttribute("current_url", request.getRequestURI());
 		ModelAndView model = new ModelAndView("shop/basket");
 		model.addObject("menu", categoryService.buildProductMenu());
@@ -114,11 +121,13 @@ public class BasketController {
 		return model;
 	}
 	
+	
 	@RequestMapping("/total")
 	public @ResponseBody BigDecimal getBasketTotal(HttpSession session) {
 		Basket basket = Basket.getBasketFromSession(session);
 		return basket.getTotal((Currency) session.getAttribute("currency")).setScale(0);
 	}
+	
 	
 	@RequestMapping("/setdeliverymethod")
 	public @ResponseBody DeliveryMethodUpdateResult setDeliveryMethod(HttpSession session, Long id) {
@@ -129,7 +138,7 @@ public class BasketController {
 		if (id != null) {
 			DeliveryMethod method = deliveryMethodAccess.get(id);
 			basket.setDeliveryMethod(method);
-			result.deliveryCost = method.getCost().setScale(2, RoundingMode.HALF_UP).toString();
+			result.deliveryCost = method.getCostInCurrency((Currency) session.getAttribute("currency")).setScale(2, RoundingMode.HALF_UP).toString();
 		} else {
 			basket.setDeliveryMethod(null);
 			result.deliveryCost = new BigDecimal(0.00).setScale(2, RoundingMode.HALF_UP).toString();

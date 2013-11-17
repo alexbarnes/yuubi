@@ -13,40 +13,41 @@
 				<div id="myCarousel" class="carousel slide home">
 					<div class="carousel-inner">
 						<div class="item active">
-							<img alt=""
-								src="<spring:url value='/resources/shop/img/home1.png'/>" />
+							<a href="<spring:url value='/shop/category/view/7/short-drop'/>"> <img alt="Short Drop"
+								src="<spring:url value='/resources/shop/img/home1.png'/>" /></a>
 						</div>
 						<div class="item">
-							<img alt=""
+							<a href="<spring:url value='/shop/category/view/11/pearl'/>">
+								<img alt=""
 								src="<spring:url value='/resources/shop/img/home2.png'/>" />
+							</a>
 						</div>
 						<div class="item">
-							<img alt=""
-								src="<spring:url value='/resources/shop/img/home3.png'/>" />
+							<img alt="" src="<spring:url value='/resources/shop/img/home3.png'/>" />
 						</div>
 						<div class="item">
-							<img alt=""
-								src="<spring:url value='/resources/shop/img/home4.png'/>" />
+							<a href="<spring:url value='/shop/category/view/9/long-drop'/>"><img
+								alt="" src="<spring:url value='/resources/shop/img/home4.png'/>" /></a>
 						</div>
 						<div class="item">
-							<img alt=""
-								src="<spring:url value='/resources/shop/img/home5.png'/>" />
+							<a href="<spring:url value='/shop/category/view/16/tama'/>"><img
+								alt="" src="<spring:url value='/resources/shop/img/home5.png'/>" /></a>
 						</div>
 						<div class="item">
-							<img alt=""
-								src="<spring:url value='/resources/shop/img/home6.png'/>" />
+							<a href="<spring:url value='/shop/category/view/8/medium-drop'/>"><img
+								alt="" src="<spring:url value='/resources/shop/img/home6.png'/>" /></a>
 						</div>
 						<div class="item">
-							<img alt=""
-								src="<spring:url value='/resources/shop/img/home7.png'/>" />
+							<a href="<spring:url value='/shop/category/view/18/sakura'/>"><img
+								alt="" src="<spring:url value='/resources/shop/img/home7.png'/>" /></a>
 						</div>
 						<div class="item">
-							<img alt=""
-								src="<spring:url value='/resources/shop/img/home8.png'/>" />
+							<a href="<spring:url value='/shop/category/view/17/nami'/>"><img
+								alt="" src="<spring:url value='/resources/shop/img/home8.png'/>" /></a>
 						</div>
 						<div class="item">
-							<img alt=""
-								src="<spring:url value='/resources/shop/img/home9.png'/>" />
+							<a href="<spring:url value='/shop/category/view/19/rose-garden'/>"><img
+								alt="" src="<spring:url value='/resources/shop/img/home9.png'/>" /></a>
 						</div>
 					</div>
 					<a class="left carousel-control" href="#myCarousel"

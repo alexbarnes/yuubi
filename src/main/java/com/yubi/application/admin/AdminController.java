@@ -46,6 +46,7 @@ public class AdminController {
 	public ModelAndView shopAdmin() {
 		ModelAndView mav = new ModelAndView("/admin/shop");
 		mav.addObject("open", shopStatusService.isOpen());
+		mav.addObject("closedMessage", shopStatusService.getClosedMessage());
 		return mav;
 	}
 	
@@ -119,4 +120,10 @@ public class AdminController {
 		return true;
 	}
 	
+	
+	@RequestMapping("/shop/closedmessage/save")
+	public @ResponseBody String saveClosedMessage(String message) {
+		shopStatusService.saveClosedMessage(message);
+		return message;
+	}
 }

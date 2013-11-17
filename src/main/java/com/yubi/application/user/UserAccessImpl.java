@@ -20,12 +20,14 @@ public class UserAccessImpl implements UserAccess {
 		this.sessionFactory = sessionFactory;
 	}
 
+	
 	@Transactional
 	public User loadByUserName(String userName) {
 		return (User) sessionFactory.getCurrentSession().get(User.class,
 				userName);
 	}
 
+	
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public User fetchByEmail(String email) {
@@ -49,5 +51,13 @@ public class UserAccessImpl implements UserAccess {
 	@Transactional
 	public void save(User user) {
 		sessionFactory.getCurrentSession().saveOrUpdate(user);
+	}
+
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<String> selectAdminUsers() {
+		Query query = sessionFactory.getCurrentSession().createQuery("select a.emailAddress from User as a where isAdministrator = true");
+		query.setCacheable(true);
+		return query.list();
 	}
 }

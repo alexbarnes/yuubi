@@ -57,9 +57,9 @@ public class DispatcherConfig extends WebMvcConfigurerAdapter {
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new UrlRecordingInterceptor()).addPathPatterns("/shop/**").excludePathPatterns("/resources/**");
+		registry.addInterceptor(new UrlRecordingInterceptor()).addPathPatterns("/shop/**").excludePathPatterns("/resources/**", "/shop/heartbeat", "/sitemap.xml", "/robots.txt");
 		registry.addInterceptor(new HttpsInterceptor()).addPathPatterns("/shop/**").excludePathPatterns("/resources/**");
-		registry.addInterceptor(new ShopStatusInterceptor(shopStatusService)).addPathPatterns("/shop/**").excludePathPatterns("/resources/**").excludePathPatterns("/image/**");
+		registry.addInterceptor(new ShopStatusInterceptor(shopStatusService)).addPathPatterns("/shop/**").excludePathPatterns("/resources/**", "/shop/heartbeat", "/sitemap.xml", "/robots.txt", "/image/**");
 		registry.addInterceptor(new SessionRecordingDeviceResolver()).addPathPatterns("/shop/**").excludePathPatterns("/resources/**").excludePathPatterns("/image/**");
 	}
 	

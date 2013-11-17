@@ -210,4 +210,8 @@ public class Product {
 			throw new IllegalArgumentException("Unsupported product currency [" + currency.getCurrencyCode() + "]."); 
 		}
 	}
+	
+	public BigDecimal getPriceInCurrencyForCode(String code) {
+		return getPriceInCurrency(Currency.getInstance(code));
+	}
 }

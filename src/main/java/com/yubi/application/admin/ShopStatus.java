@@ -3,6 +3,7 @@ package com.yubi.application.admin;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -16,6 +17,9 @@ public class ShopStatus {
 	private long id;
 	private boolean open;
 	private String closedMessage;
+	
+	@Lob
+	private String siteMap;
 
 	public String getClosedMessage() {
 		return closedMessage;
@@ -35,5 +39,13 @@ public class ShopStatus {
 
 	public void setOpen(boolean open) {
 		this.open = open;
+	}
+
+	public String getSiteMap() {
+		return siteMap;
+	}
+
+	public void setSiteMap(String siteMap) {
+		this.siteMap = siteMap;
 	}
 }

@@ -6,13 +6,12 @@
 	<c:set var="active" scope="request" value="${active}"></c:set>
 	<c:set var="title" scope="request" value="Y&#362;BI - ${active}"></c:set>
 </c:when>
-	<c:otherwise><c:set var="active" scope="request" value="${title}"></c:set>
-	<c:set var="title" scope="request" value="Y&#362;BI - ${title}"></c:set>
+	<c:otherwise><c:set var="active" scope="request" value="${category.description}"></c:set>
+	<c:set var="title" scope="request" value="Y&#362;BI - ${category.description}"></c:set>
 </c:otherwise>
 </c:choose>
 <jsp:include page="header.jsp" />
 <body>
-
 	<div class="container">
 		<jsp:include page="menu.jsp" />
 		<div class="row">
@@ -31,11 +30,19 @@
 		<div class="row">
 			<div class="span12">
 				<div class="row">
-					<div class="span9">
+					<div class="span12">
 						<h2 class="title">${active}</h2>
 						<hr />
 					</div>
 				</div>
+				<c:if test="${category.categoryText != null}">
+					<div class="row">
+						<div class="span12">
+						<p>${category.categoryText}</p>
+						<hr/>
+						</div>
+					</div>
+				</c:if>
 				<div class="row">
 					<div class="span12">
 						<ul class="thumbnails listing-products">

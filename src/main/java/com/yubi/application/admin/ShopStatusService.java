@@ -7,5 +7,9 @@ public interface ShopStatusService {
 	public void updateStatus(boolean status);
 	
 	public String getClosedMessage();
+	
+	public String getSiteMap();
+	
+	public void saveClosedMessage(String message);
 
 }

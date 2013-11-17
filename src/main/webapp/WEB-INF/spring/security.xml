@@ -31,7 +31,6 @@
                         always-use-default-target="false"/>
                         
                 <session-management invalid-session-url="/admin/login"/>
-                <remember-me data-source-ref="dataSource" />
 
                 <logout logout-url="/admin/logout" logout-success-url="/admin/login" />
         </http>

@@ -16,7 +16,7 @@
 				<h2 class="title">Order completed</h2>
 				<hr />
 				<p>Thank you for placing your order with Y&#362;BI. We are now working to ship your order as quickly as possible.</p>
-				<p>If you need to contact us about this order for any reason please use the order reference ${order}.</p>
+				<p>If you need to contact us about this order for any reason please use the order reference: <c:out value="${orderNumber}"/>.</p>
 			</div>
 		</div>
 		<hr>

@@ -1,6 +1,7 @@
 package com.yubi.application.order;
 
 import java.util.Currency;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -18,6 +19,7 @@ import com.yubi.application.product.ProductAccess;
 import com.yubi.shop.basket.Basket;
 import com.yubi.shop.basket.Basket.BasketKey;
 import com.yubi.shop.basket.BasketItem;
+import com.yubi.shop.basket.BasketService;
 
 @Service
 public class ProductOrderServiceImpl implements ProductOrderService {
@@ -28,13 +30,17 @@ public class ProductOrderServiceImpl implements ProductOrderService {
 	
 	private final ProductAccess productAccess;
 	
+	private final BasketService basketService;
+	
 	@Inject
 	public ProductOrderServiceImpl(
 			ProductOrderAccess productOrderAccess,
-			ProductAccess productAccess) {
+			ProductAccess productAccess,
+			BasketService basketService) {
 		super();
 		this.productOrderAccess = productOrderAccess;
 		this.productAccess = productAccess;
+		this.basketService = basketService;
 	}
 
 
@@ -52,12 +58,17 @@ public class ProductOrderServiceImpl implements ProductOrderService {
 			// -- Remove the products from stock as well.
 			product.setStockLevel(product.getStockLevel() - item.getValue().getNumber());
 		}
+		
 		order.setCurrencyCode(currency.getCurrencyCode());
+		order.setDelivery(basket.getDeliveryMethod());
+		order.setDiscount(basket.getDiscount());
+		order.setOrderTotal(basketService.getBasketTotal(basket, currency));
+		order.setStatus(OrderStatus.ENTERED);
+		order.setEnteredDate(new Date());
+		
 		long orderId = productOrderAccess.save(order);
 		
-		
-		
-		// Use the order id to generate a reference
+		// -- Use the order id to generate a unique reference.
 		LocalDate date = new LocalDate();
 		order.setOrderReference(String.format("%d%d%d-%d", date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), orderId));
 		return order;
@@ -86,5 +97,16 @@ public class ProductOrderServiceImpl implements ProductOrderService {
 			order.getItems().size();
 		}
 		return list;
+	}
+
+
+	@Transactional
+	public boolean orderSent(long orderId) {
+		ProductOrder order = productOrderAccess.get(orderId);
+		if (order.getStatus() == OrderStatus.ENTERED) {
+			order.setStatus(OrderStatus.SENT);
+			return true;
+		}
+		return false;
 	}
 }

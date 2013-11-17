@@ -69,7 +69,7 @@
 						<hr>
 						<div>
 							<select id="country">
-								<option value="">Select One</option>
+								<option class="input-large" value="">Select One</option>
 								<c:forEach items="${countries}" var="country">
 									<option value="${country.code}">${country.description}</option>
 								</c:forEach>
@@ -144,7 +144,6 @@
 		</div>
 		<hr>
 	</div>
-
 	<script src="<spring:url value='/resources/shop/js/jquery-1.7.2.min.js'/>"></script>
 	<script src="<spring:url value='/resources/shop/js/bootstrap.min.js'/>"></script>
 
@@ -162,8 +161,14 @@
 						$('#shipping').append(
 						$('<option>').text('Select One').attr('value', ''));
 						$.each(json.deliverymethods,function(i, value) {
+							 var localCost;
+								<c:choose>
+									<c:when test="${sessionScope.currency.currencyCode == 'USD'}">localCost = value.costUsd</c:when>
+									<c:when test="${sessionScope.currency.currencyCode == 'EUR'}">localCost = value.costEur</c:when>
+									<c:when test="${sessionScope.currency.currencyCode == 'GBP'}">localCost = value.cost</c:when>
+								</c:choose>
 							$('#shipping').append($('<option>')
-									.text(value.description + ' - ' + '<c:out value="${sessionScope.currency.symbol}"/> ' + value.cost)
+									.text(value.description + ' - ' + '<c:out value="${sessionScope.currency.symbol}"/> ' + localCost)
 									.attr('value',value.id));
 						});
 						$('#shipping').val('${basket.deliveryMethod.id}');
@@ -194,6 +199,7 @@
 						$('#total').html('<strong>' + '<c:out value="${sessionScope.currency.symbol}"/> ' + json.newTotal + '</strong>');
 					}
 				});
+				
 				$('#shipping').append($('<option>').text('Select One').attr('value',''));
 				if (selectedCountry != '') {
 					$.ajax({
@@ -201,10 +207,16 @@
 						type : 'GET',
 						datatype : 'JSON',
 						success : function(json) {
-							$.each(json.deliverymethods,function(i,value) {
+							$.each(json.deliverymethods,function(i, value) {
+								 var localCost;
+								<c:choose>
+									<c:when test="${sessionScope.currency.currencyCode == 'USD'}">localCost = value.costUsd</c:when>
+									<c:when test="${sessionScope.currency.currencyCode == 'EUR'}">localCost = value.costEur</c:when>
+									<c:when test="${sessionScope.currency.currencyCode == 'GBP'}">localCost = value.cost</c:when>
+								</c:choose>
 								$('#shipping')
 									.append($('<option>')
-											.text(value.description + ' - ' + '<c:out value="${sessionScope.currency.symbol}"/> ' + value.cost)
+											.text(value.description + ' - ' + '<c:out value="${sessionScope.currency.symbol}"/> ' + localCost)
 											.attr('value',value.id));
 							});
 						}
@@ -232,6 +244,7 @@
 			document.location = $(this).attr('href');
 		});
 		
+		
 		// Handle the click of the discount button
 		function applyDiscount() {
 			if ($('#discountCode').val() == '') {
@@ -244,7 +257,6 @@
 					datatype : 'JSON',
 					success : function(json) {
 						if (json.valid == true) {
-							$('#shippingtotal').html('<strong>'+ '<c:out value="${sessionScope.currency.symbol}"/> ' + json.deliveryCost + '</strong>');
 							$('#total').html('<strong>' + '<c:out value="${sessionScope.currency.symbol}"/> '+ json.newTotal + '</strong>');
 							
 							$('#discountNotification').empty();
@@ -276,9 +288,9 @@
 				type : 'GET',
 				datatype : 'JSON',
 				success : function(json) {
-						$('#shippingtotal').html('<strong><c:out value="${sessionScope.currency.symbol}"/> '+ json.deliveryCost + '</strong>');
 						$('#total').html('<strong><c:out value="${sessionScope.currency.symbol}"/> '+ json.newTotal + '</strong>');
 						$('#discountControls').empty();
+						$('#discountAmount').empty();
 						$('#discountControls').html(
 								'<input class="span4" id="discountCode" type="text" name="discountCode">' + 
 								'<button class="btn" id="applyDiscount" onClick="applyDiscount()" type="button">Apply</button>');

@@ -2,19 +2,25 @@ package com.yubi.application.order;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import com.yubi.application.product.Product;
+import com.yubi.shop.delivery.DeliveryMethod;
 import com.yubi.shop.discount.Discount;
 
 @Entity
@@ -40,6 +46,18 @@ public class ProductOrder {
 	private String currencyCode;
 	
 	private String orderReference;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date enteredDate;
+	
+	private BigDecimal orderTotal;
+	
+	@ManyToOne
+	@JoinColumn(name="deliveryMethodId")
+	private DeliveryMethod delivery;
+	
+	@Enumerated(EnumType.STRING)
+	private OrderStatus status;
 
 	public String getOrderReference() {
 		return orderReference;
@@ -101,11 +119,44 @@ public class ProductOrder {
 		this.currencyCode = currencyCode;
 	}
 	
-	public BigDecimal getOrderTotal() {
+	
+	public BigDecimal getProductTotal() {
 		BigDecimal total = new BigDecimal("0.00");
 		for (ProductOrderItem item : items) {
 			total = total.add(item.getTotalCost());
 		}
 		return total;
+	}
+
+	public BigDecimal getOrderTotal() {
+		return orderTotal;
+	}
+
+	public DeliveryMethod getDelivery() {
+		return delivery;
+	}
+
+	public void setDelivery(DeliveryMethod delivery) {
+		this.delivery = delivery;
+	}
+
+	public void setOrderTotal(BigDecimal orderTotal) {
+		this.orderTotal = orderTotal;
+	}
+
+	public OrderStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(OrderStatus status) {
+		this.status = status;
+	}
+
+	public Date getEnteredDate() {
+		return enteredDate;
+	}
+
+	public void setEnteredDate(Date enteredDate) {
+		this.enteredDate = enteredDate;
 	}
 }

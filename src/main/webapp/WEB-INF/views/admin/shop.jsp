@@ -10,9 +10,6 @@
 <link id="bootstrap-style"
 	href="<spring:url value='/resources/admin/css/bootstrap.css'/>"
 	rel="stylesheet">
-<link id="base-style"
-	href="<spring:url value='/resources/admin/css/style.css'/>"
-	rel="stylesheet">
 <link href="<spring:url value='/resources/admin/img/favicon.png'/>"
 	rel="shortcut icon" type="image/x-icon">
 <link rel="stylesheet"
@@ -39,29 +36,74 @@
 			</div>
 		</div>
 	</div>
-	<div id="under-header"></div>
-	<!-- start: Header -->
-
 	<div class="container-fluid">
 		<div class="row-fluid">
-			<div class="span3">
-				<div class="well sidebar-nav">
-					<ul class="nav nav-list">
-						<li><a href="<spring:url value='/admin/home'/>"><span> Home</span></a></li>
-						<li class="active"><a href="<spring:url value='/admin/shop'/>"><span> Shop</span></a></li>
-						<li><a href="<spring:url value='/admin/products'/>"><span> Products</span></a></li>
-						<li><a href="<spring:url value='/admin/user'/>"><span> User</span></a></li>
-						<li class="divider"></li>
-						<li><a href="<spring:url value='/admin/logout'/>"><span> Logout</span></a></li>
-					</ul>
+			<c:set var="selected" value="shop" scope="request" />
+			<jsp:include page="menu.jsp" />
+			<div id="content" class="span8">
+				<div class="row-fluid">
+					<div class="box span8">
+						<h3>Shop Options</h3>
+						<table class="table table-bordered">
+							<tr>
+								<td>Shop Status</td>
+								<td>
+									<div id="shop-switch" class="make-switch switch-medium"
+										data-on-label="Open" data-off-label="Closed">
+										<input type="checkbox" <c:if test="${open}">checked</c:if>>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>Clear Caches</td>
+								<td>
+									<button class="btn btn" id="clear-caches" type="button">Clear</button>
+								</td>
+							</tr>
+						</table>
+					</div>
 				</div>
 			</div>
 			<div id="content" class="span8">
 				<div class="row-fluid">
-				<h1>Shop Status</h1>
-					<div class="box span3">
-						<div id="shop-switch" class="make-switch switch-large" data-on-label="Open" data-off-label="Closed">
-							<input type="checkbox" <c:if test="${open}">checked</c:if>>
+					<div class="box span8">
+						<hr>
+						<div class="row-fluid">
+							<div class="box">
+								<div class="row">
+									<div class="form-horizontal">
+									<div class="span5">
+										<div class="control-group">
+											<label class="control-label" for="inputEmail">Closed
+												Message</label>
+											<div class="controls">
+												<textarea rows="3" name="closedMessage" id="closed-message">${closedMessage}</textarea>
+											</div>
+										</div>
+										<div class="control-group">
+											<div class="controls">
+												<button type="button" class="btn" id="save-message">Save</button>
+											</div>
+										</div>
+										</div>
+										<div class="span5">
+										<div class="control-group">
+											<label class="control-label" for="inputEmail">Closed
+												Message</label>
+											<div class="controls">
+												<textarea rows="3" name="closedMessage" id="closed-message">${closedMessage}</textarea>
+											</div>
+										</div>
+										<div class="control-group">
+											<div class="controls">
+												<button type="button" class="btn" id="save-message">Save</button>
+											</div>
+										</div>
+										</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -69,11 +111,7 @@
 		</div>
 		<div class="clearfix"></div>
 		<hr>
-
-		<footer>
-			
-		</footer>
-
+		<jsp:include page="footer.jsp" />
 	</div>
 	<script
 		src="<spring:url value='/resources/admin/js/jquery-1.9.1.min.js'/>"></script>
@@ -82,14 +120,37 @@
 		src="<spring:url value='/resources/admin/js/bootstrap-switch.js'/>"></script>
 	<script src="<spring:url value='/resources/admin/js/prettify.js'/>"></script>
 	<script type="text/javascript">
-	$('#shop-switch').on('switch-change', function (e, data) {
-		var status = data.value;
-		if (status) {
-			$.get('<spring:url value='/admin/shop/open'/>', function(response) {});
-		} else {
-			$.get('<spring:url value='/admin/shop/close'/>', function(response) {});
-		}
-	});
+		$('#shop-switch').on(
+				'switch-change',
+				function(e, data) {
+					var status = data.value;
+					if (status) {
+						$.get('<spring:url value='/admin/shop/open'/>',
+								function(response) {
+								});
+					} else {
+						$.get('<spring:url value='/admin/shop/close'/>',
+								function(response) {
+								});
+					}
+				});
+
+		$('#clear-caches').on(
+				'click',
+				function(e) {
+					$.get('<spring:url value='/admin/caches/clear'/>').done(
+							function(data) {
+							});
+				});
+
+		$('#save-message').on('click', function(e) {
+			var messageText = $('#closed-message').val();
+			$.get('<spring:url value='/admin/shop/closedmessage/save'/>', {
+				message : messageText
+			}).done(function(data) {
+				$('#closed-message').val(data);
+			});
+		});
 	</script>
 	<!-- end: JavaScript-->
 </body>

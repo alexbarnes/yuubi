@@ -31,7 +31,7 @@
 				to reset your password.
 				<hr />
 				<footer>
-					<p>© Alex Barnes & Yubi Jewellery 2012</p>
+					<p>© Alex Barnes &amp; Yubi Jewellery 2012</p>
 				</footer>
 			</div>
 		</div>

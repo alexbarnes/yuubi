@@ -100,10 +100,9 @@ public class ShopController {
 	@RequestMapping("/category/view/{id}/*")
 	public ModelAndView showCategory(@PathVariable("id") long id, HttpSession session, HttpServletRequest request) {
 		ModelAndView mav =  new ModelAndView("shop/productlist");
-		String description = categoryService.load(id).getDescription();
 		mav.addObject("menu", categoryService.buildProductMenu());
 		mav.addObject("products", productAccess.listInUseForCategory(id));
-		mav.addObject("title", description);
+		mav.addObject("category", categoryService.load(id));
 		session.setAttribute("current_url", request.getRequestURI());
 		return mav;
 	}

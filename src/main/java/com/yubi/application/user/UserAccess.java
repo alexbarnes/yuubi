@@ -1,5 +1,7 @@
 package com.yubi.application.user;
 
+import java.util.List;
+
 
 public interface UserAccess {
 	
@@ -8,5 +10,7 @@ public interface UserAccess {
 	public User fetchByEmail(String email);
 	
 	public void save(User user);
+	
+	public List<String> selectAdminUsers();
 
 }

@@ -28,7 +28,8 @@ public class UrlRecordingInterceptor extends HandlerInterceptorAdapter {
 			Basket basket = new Basket();
 			session.setAttribute(BASKET_KEY, basket);
 			session.setMaxInactiveInterval(60*10);
-			session.setAttribute("currency", Currency.getInstance(request.getLocale()));
+			// -- Always use USD
+			session.setAttribute("currency", Currency.getInstance("USD"));
 		}
 		return super.preHandle(request, response, handler);
 	}

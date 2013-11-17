@@ -9,18 +9,16 @@
 	<div class="container">
 		<jsp:include page="menu.jsp" />
 		<div class="row">
-			<div class="row">
-				<div class="span12">
-					<div class="row">
-						<div class="span12">
-							<ul class="breadcrumb">
-								<li><a href="<spring:url value='/shop'/>"><i
-										class="icon-home"></i></a> <span class="divider">/</span></li>
-								<li><a href="<spring:url value='/shop/category/view/${product.category.id}/${product.category.urlName}'/>">${product.category.description}</a><span
-									class="divider">/</span></li>
-								<li class="active">${product.title}</li>
-							</ul>
-						</div>
+			<div class="span12">
+				<div class="row">
+					<div class="span12">
+						<ul class="breadcrumb">
+							<li><a href="<spring:url value='/shop'/>"><i
+									class="icon-home"></i></a> <span class="divider">/</span></li>
+							<li><a href="<spring:url value='/shop/category/view/${product.category.id}/${product.category.urlName}'/>">${product.category.description}</a><span
+								class="divider">/</span></li>
+							<li class="active">${product.title}</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -116,6 +114,8 @@
 					</div>
 				</div>
 			</c:if>
+			<!-- Extra space for mobile viewers -->
+			<c:if test="${sessionScope.mobile == true}"><br></c:if>
 		</div>
 		<jsp:include page="footer.jsp" />
 	</div>

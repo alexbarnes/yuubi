@@ -70,13 +70,20 @@ class PaypalServiceImpl implements PaypalService {
 		PaypalRequest requestItem = new PaypalRequest();
 		requestItem.setRequest(request);
 		requestItem.setSessionId(sessionId);
-
+		requestItem.setRequestType("SetExpressCheckout");
 		paypalRequestAccess.save(requestItem);
 
 		ResponseEntity<String> response = new RestTemplate().postForEntity(
 				paypalURL, request, String.class);
+		
+		String decodedResponse;
+		try {
+			decodedResponse = URLDecoder.decode(response.getBody(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 
-		Map<String, String> resultMap = createResultMap(response.getBody());
+		Map<String, String> resultMap = createResultMap(decodedResponse);
 
 		requestItem.setResponse(response.getBody());
 		requestItem.setAck(resultMap.get("ACK"));
@@ -89,18 +96,11 @@ class PaypalServiceImpl implements PaypalService {
 							+ resultMap.get("ACK") + "].");
 		}
 
-		// Add the token once we know for sure that we have one (ACK=Success)
+		// -- Add the token once we know for sure that we have one
 		requestItem.setToken(resultMap.get("TOKEN"));
 		paypalRequestAccess.update(requestItem);
 
-		String token;
-		try {
-			token = URLDecoder.decode(resultMap.get("TOKEN"), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException(e);
-		}
-
-		return token;
+		return resultMap.get("TOKEN");
 	}
 
 	public String completeTransaction(String token, String payerId,
@@ -118,18 +118,28 @@ class PaypalServiceImpl implements PaypalService {
 		PaypalRequest requestItem = new PaypalRequest();
 		requestItem.setRequest(request);
 		requestItem.setSessionId(sessionId);
+		requestItem.setRequestType("DoExpressCheckoutPayment");
 		paypalRequestAccess.save(requestItem);
+		// -- Transaction is now committed
 
 		ResponseEntity<String> response = new RestTemplate().postForEntity(
 				paypalURL, request, String.class);
+		
+		String decodedResponse;
+		try {
+			decodedResponse = URLDecoder.decode(response.getBody(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 
-		Map<String, String> resultMap = createResultMap(response.getBody());
+		Map<String, String> resultMap = createResultMap(decodedResponse);
 
 		requestItem.setResponse(response.getBody());
 		requestItem.setAck(resultMap.get("ACK"));
 		requestItem.setTimeStampString(decode(resultMap.get("TIMESTAMP")));
 		paypalRequestAccess.update(requestItem);
-
+		// -- Transaction is now committed
+		
 		if (!resultMap.get("ACK").equals("Success")) {
 			throw new RuntimeException(
 					"An error occurred creating the express checkout. ACK ["
@@ -145,12 +155,13 @@ class PaypalServiceImpl implements PaypalService {
 		return requestItem.getTransactionId();
 	}
 
+	
 	private SetupExpressTransactionRequestBuilder setupRequest(Basket basket, Currency currency) {
 		SetupExpressTransactionRequestBuilder request = new SetupExpressTransactionRequestBuilder(
 				userName, password, signature);
 
 		request.withCancelURL(cancelURL).withReturnURL(successURL)
-				.withShippingCost(basket.getDeliveryMethod().getCost())
+				.withShippingCost(basket.getDeliveryMethod().getCostInCurrency(currency))
 				.withTotalCost(basketService.getBasketTotal(basket, currency)).inCurrency(currency.getCurrencyCode());
 		
 		if (basket.getDiscount() != null) {
@@ -180,6 +191,7 @@ class PaypalServiceImpl implements PaypalService {
 		PaypalRequest requestItem = new PaypalRequest();
 		requestItem.setRequest(request.createRequest());
 		requestItem.setSessionId(sessionId);
+		requestItem.setRequestType("GetExpressCheckoutDetails");
 		paypalRequestAccess.save(requestItem);
 
 		ResponseEntity<String> response = new RestTemplate().postForEntity(
@@ -211,8 +223,33 @@ class PaypalServiceImpl implements PaypalService {
 		return ExpressCheckoutDetailBuilder.build(resultMap);
 	}
 
-	public void loadTransaction(String transactionId) {
-
+	
+	public PaypalTransaction loadTransaction(String transactionId) {
+		String request = 
+				new LoadTransactionRequestBuilder(userName, password, signature).withTransactionId(transactionId).buildRequest();
+		
+		ResponseEntity<String> response = new RestTemplate().postForEntity(
+				paypalURL, request, String.class);
+		
+		String decodedResponse;
+		try {
+			decodedResponse = URLDecoder.decode(response.getBody(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+		
+		Map<String, String> resultMap = createResultMap(decodedResponse);
+		
+		// -- Build the result
+		return new PaypalTransaction(
+				resultMap.get("PAYMENTSTATUS"), 
+				String.format("%s %s %s", 
+						resultMap.get("SALUTATION") == null ? "" : resultMap.get("SALUTATION"), 
+						resultMap.get("FIRSTNAME"), 
+						resultMap.get("LASTNAME")), 
+				resultMap.get("EMAIL"),
+				resultMap.get("PENDINGREASON"),
+				resultMap.get("NOTE"));
 	}
 
 	private Map<String, String> createResultMap(String response) {

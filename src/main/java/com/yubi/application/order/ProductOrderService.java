@@ -14,5 +14,7 @@ public interface ProductOrderService {
 	public ProductOrder load(String reference);
 	
 	public List<ProductOrder> recentOrders();
+	
+	public boolean orderSent(long orderId);
 
 }

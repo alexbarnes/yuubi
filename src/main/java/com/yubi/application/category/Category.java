@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -21,7 +20,6 @@ import org.hibernate.search.annotations.Field;
 public class Category {
 	
 	@Id
-	@GeneratedValue
 	private long id;
 	
 	@Field
@@ -36,6 +34,9 @@ public class Category {
 	
 	@Lob
 	private byte[] image;
+	
+	@Lob
+	private String categoryText;
 	
 	public long getId() {
 		return id;
@@ -79,5 +80,13 @@ public class Category {
 	
 	public String getUrlName() {
 		return description.replace(" ", "-").toLowerCase();
+	}
+
+	public String getCategoryText() {
+		return categoryText;
+	}
+
+	public void setCategoryText(String categoryDescription) {
+		this.categoryText = categoryDescription;
 	}
 }
