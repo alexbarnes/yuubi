@@ -8,7 +8,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.yubi.application.user.User;
 import com.yubi.application.user.UserAccess;
 
 @Service
