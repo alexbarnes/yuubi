@@ -3,7 +3,7 @@ package com.yubi.core.country;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 

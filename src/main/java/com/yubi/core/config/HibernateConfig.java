@@ -30,7 +30,6 @@ public class HibernateConfig {
 	 * 
 	 * @return an initialised session factory
 	 */
-	@SuppressWarnings("deprecation")
 	@Bean
 	public SessionFactory sessionFactory() throws Exception {
 		Properties properties = new Properties();
@@ -62,7 +61,6 @@ public class HibernateConfig {
 	@Profile(value = "AWS")
 	public static class AWSDataSource {
 		
-		@SuppressWarnings("deprecation")
 		@Bean
 		public DataSource dataSource() {
 			
@@ -70,11 +68,13 @@ public class HibernateConfig {
 			String userName = System.getProperty("PARAM1");
 			String password = System.getProperty("PARAM2");
 			
-			return new DriverManagerDataSource(
-					"com.mysql.jdbc.Driver", 
+			DriverManagerDataSource ds = new DriverManagerDataSource(
 					url, 
 					userName, 
 					password);
+			
+			ds.setDriverClassName("com.mysql.jdbc.Driver");
+			return ds;
 		}
 	}
 	
@@ -84,19 +84,20 @@ public class HibernateConfig {
 		@Inject
 		private Environment env;
 		
-		@SuppressWarnings("deprecation")
 		@Bean
 		public DataSource dataSource() {
 			DatabasePlatform platform = 
 					DatabasePlatform.valueOf(env.getProperty("database.platform"));
 			
-			return new DriverManagerDataSource(platform.getDriverName(), 
-					platform.getUrl(
-							getDatabaseProperty("host"), 
-							Integer.parseInt(getDatabaseProperty("port")), 
-							getDatabaseProperty("name")), 
-					getDatabaseProperty("username"), 
-					getDatabaseProperty("password"));
+			DriverManagerDataSource ds = new DriverManagerDataSource(platform.getUrl(
+					getDatabaseProperty("host"), 
+					Integer.parseInt(getDatabaseProperty("port")), 
+					getDatabaseProperty("name")), 
+			getDatabaseProperty("username"), 
+			getDatabaseProperty("password"));
+			
+			ds.setDriverClassName(platform.getDriverName());
+			return ds;
 		}
 		
 		private String getDatabaseProperty(String name) {

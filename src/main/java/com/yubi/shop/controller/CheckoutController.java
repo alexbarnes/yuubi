@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.yubi.application.category.CategoryService;
 import com.yubi.application.order.ProductOrder;
@@ -105,7 +105,7 @@ public class CheckoutController {
 	 */
 	@RequestMapping("/listdeliverymethods/{code}")
 	public @ResponseBody ModelAndView getDeliveryMethodsForCountry(@PathVariable("code" )String code) {
-		return new ModelAndView(new MappingJacksonJsonView(), "deliverymethods", deliveryMethodAccess.loadForCountry(code));
+		return new ModelAndView(new MappingJackson2JsonView(), "deliverymethods", deliveryMethodAccess.loadForCountry(code));
 	}
 	
 	
